@@ -125,5 +125,3 @@ services:
       - analytics-postgres
     networks:
       - AnalyticsService
-      
-      
