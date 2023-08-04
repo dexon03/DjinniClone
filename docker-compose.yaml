@@ -1,0 +1,129 @@
+﻿networks:
+  IdentityService: 
+    driver: bridge
+  ProfileService: 
+    driver: bridge
+  VacanciesProfile:
+    driver: bridge
+  AnalyticsService:
+    driver: bridge
+  
+  
+services:
+  identity-postgres:
+    image: postgres
+    container_name: identity-postgres
+    ports:
+      - "5431:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres_identity
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: IdentityDb
+    volumes:
+      - ./identityDbDir:/var/lib/postgresql/data
+    networks:
+      - IdentityService
+        
+  identity-service:
+    image: identity-service
+    container_name: identity-service
+    build:
+      context: ./IdentityService
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5242:80"
+    depends_on:
+      - identity-postgres
+    networks:
+      - IdentityService
+    
+  profile-postgres:
+    image: postgres
+    container_name: profile-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres_profile
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ProfileDb
+    restart: always
+    volumes:
+        - ./profileDbDir:/var/lib/postgresql/data
+    networks:
+        - ProfileService
+  
+  profile-service:
+    image: profile-service
+    container_name: profile-service
+    build:
+      context: ./ProfilesService
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5243:80"
+    depends_on:
+      - profile-postgres
+    networks:
+      - ProfileService
+    
+  vacancies-postgres:
+    image: postgres
+    container_name: vacancies-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres_vacancies
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: VacanciesDb
+    restart: always
+    volumes:
+        - ./vacanciesDbDir:/var/lib/postgresql/data
+    networks:
+        - VacanciesProfile
+    
+  vacancies-service:
+    image: vacancies-service
+    container_name: vacancies-service
+    build:
+      context: ./VacanciesService
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5244:80"
+    depends_on:
+      - vacancies-postgres
+    networks:
+      - VacanciesProfile
+  
+  analytics-postgres:
+    image: postgres
+    container_name: analytics-postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres_analytics
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: AnalyticsDb
+    restart: always
+    volumes:
+        - ./analyticsDbDir:/var/lib/postgresql/data
+    networks:
+        - AnalyticsService
+  
+  analytics-service:
+    image: analytics-service
+    container_name: analytics-service
+    build:
+      context: ./AnalyticsService
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5245:80"
+    depends_on:
+      - analytics-postgres
+    networks:
+      - AnalyticsService
+      
+      

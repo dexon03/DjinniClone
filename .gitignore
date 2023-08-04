@@ -374,3 +374,8 @@ bower_components
 psd
 thumb
 sketch
+
+identityDbDir
+vacanciesDbDir
+profileDbDir
+analyticsDbDir
