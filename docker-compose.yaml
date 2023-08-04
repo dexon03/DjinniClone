@@ -15,7 +15,7 @@ services:
     container_name: identity-postgres
     ports:
       - "5431:5432"
-    restart: always
+    # restart: always
     environment:
       POSTGRES_USER: postgres_identity
       POSTGRES_PASSWORD: postgres
@@ -31,7 +31,7 @@ services:
     build:
       context: ./IdentityService
       dockerfile: Dockerfile
-    restart: always
+    # restart: always
     ports:
       - "5242:80"
     depends_on:
@@ -48,7 +48,7 @@ services:
       POSTGRES_USER: postgres_profile
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ProfileDb
-    restart: always
+    # restart: always
     volumes:
         - ./profileDbDir:/var/lib/postgresql/data
     networks:
@@ -60,7 +60,7 @@ services:
     build:
       context: ./ProfilesService
       dockerfile: Dockerfile
-    restart: always
+    # restart: always
     ports:
       - "5243:80"
     depends_on:
@@ -77,7 +77,7 @@ services:
       POSTGRES_USER: postgres_vacancies
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: VacanciesDb
-    restart: always
+    # restart: always
     volumes:
         - ./vacanciesDbDir:/var/lib/postgresql/data
     networks:
@@ -89,7 +89,7 @@ services:
     build:
       context: ./VacanciesService
       dockerfile: Dockerfile
-    restart: always
+    # restart: always
     ports:
       - "5244:80"
     depends_on:
@@ -106,7 +106,7 @@ services:
       POSTGRES_USER: postgres_analytics
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: AnalyticsDb
-    restart: always
+    # restart: always
     volumes:
         - ./analyticsDbDir:/var/lib/postgresql/data
     networks:
@@ -118,7 +118,7 @@ services:
     build:
       context: ./AnalyticsService
       dockerfile: Dockerfile
-    restart: always
+    # restart: always
     ports:
       - "5245:80"
     depends_on:

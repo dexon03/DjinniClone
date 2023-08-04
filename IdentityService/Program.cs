@@ -1,15 +1,26 @@
 using Core.Logging;
+using IdentityService.Database;
+using IdentityService.Database.AutoMigrations;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
+using IMigrationsManager = IdentityService.Database.AutoMigrations.IMigrationsManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.Console()
+    .CreateLogger();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.AddLogging();
+builder.AddSerilogLogging();
+builder.Services.AddDbContext<IdentityDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
+builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 var app = builder.Build();
 
