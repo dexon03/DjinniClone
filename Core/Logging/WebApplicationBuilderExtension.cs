@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace Core.Logging;
@@ -11,12 +12,9 @@ public static class WebApplicationBuilderExtension
         return builder;
     }
     
-    public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddSerilogLogging(this WebApplicationBuilder builder)
     {
-        Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .WriteTo.Console()
-            .CreateLogger();
+        builder.Services.AddSingleton(Log.Logger);
         builder.Host.UseSerilog();
         return builder;
     }
