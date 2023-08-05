@@ -1,4 +1,4 @@
-
+using Core.ExceptionHandler;
 using Core.Logging;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Database;
@@ -39,5 +39,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.Run();

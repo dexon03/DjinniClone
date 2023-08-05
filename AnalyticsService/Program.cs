@@ -1,9 +1,9 @@
 using AnalyticsService.Database;
 using AnalyticsService.Database.AutoMigrations;
+using Core.ExceptionHandler;
 using Core.Logging;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using IMigrationsManager = AnalyticsService.Database.AutoMigrations.IMigrationsManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,5 +44,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.Run();
