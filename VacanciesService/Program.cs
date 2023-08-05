@@ -1,3 +1,4 @@
+using Core.ExceptionHandler;
 using Core.Logging;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -38,5 +39,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.Run();

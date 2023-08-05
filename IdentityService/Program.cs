@@ -1,9 +1,9 @@
+using Core.ExceptionHandler;
 using Core.Logging;
 using IdentityService.Database;
 using IdentityService.Database.AutoMigrations;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using IMigrationsManager = IdentityService.Database.AutoMigrations.IMigrationsManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,5 +38,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.Run();
