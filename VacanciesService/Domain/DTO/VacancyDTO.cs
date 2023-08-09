@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using VacanciesService.Domain.Models;
 
-namespace VacanciesService.Models;
+namespace VacanciesService.Domain.DTO;
 
-public class Vacancy
+public class VacancyDTO
 {
     public Guid Id { get; set; }
-    [ForeignKey("Category")]
     public Guid CategoryId { get; set; }
-    [ForeignKey("Company")]
     public Guid CompanyId { get; set; }
     public string Title { get; set; }
     public string PositionTitle { get; set; }
@@ -18,6 +16,6 @@ public class Vacancy
     public DateTime? UpdatedAt { get; set; }
     public Category Category { get; set; }
     public Company Company { get; set; }
-    public virtual ICollection<LocationVacancy> LocationVacancies { get; set; }
-    public virtual ICollection<VacancySkill> VacancySkills { get; set; }
+    public List<Location> Locations { get; set; }
+    public List<Skill> Skills { get; set; }
 }

@@ -1,15 +1,9 @@
-using System.Reflection;
 using Core.ExceptionHandler;
 using Core.Logging;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
-using VacanciesService.Database;
 using VacanciesService.Database.AutoMigrations;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var assembly = Assembly.GetExecutingAssembly();
 
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
@@ -22,14 +16,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
-builder.Services.AddDbContext<VacanciesDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
-builder.Services.AddValidatorsFromAssembly(assembly);
-builder.Services.AddMediatR(configuration =>
-{
-    configuration.RegisterServicesFromAssembly(assembly);
-});
-builder.Services.AddAutoMapper(assembly);
 builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VacanciesService.Models;
+using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Database;
 

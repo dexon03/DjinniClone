@@ -1,4 +1,4 @@
-﻿namespace VacanciesService.Models;
+﻿namespace VacanciesService.Domain.Models;
 
 public class Company
 {

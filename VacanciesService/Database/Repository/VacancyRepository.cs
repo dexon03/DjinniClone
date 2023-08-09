@@ -1,27 +1,34 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using VacanciesService.Database;
-using VacanciesService.Models;
-using VacanciesService.Models.DTO;
+﻿using Microsoft.EntityFrameworkCore;
+using VacanciesService.Domain.Contracts;
+using VacanciesService.Domain.Models;
 
-namespace VacanciesService.UseCases.Vacancies.GetAll;
+namespace VacanciesService.Database.Repository;
 
-public class GetAllVacanciesQueryHandler : IRequestHandler<GetAllVacanciesQuery, List<Vacancy>>
+public class VacancyRepository : IVacancyRepository
 {
     private readonly VacanciesDbContext _context;
 
-    public GetAllVacanciesQueryHandler(VacanciesDbContext context)
+    public VacancyRepository(VacanciesDbContext context)
     {
         _context = context;
     }
-    public async Task<List<Vacancy>> Handle(GetAllVacanciesQuery request, CancellationToken cancellationToken)
+    
+    public async Task<Vacancy?> Get(Guid id)
     {
         // TODO: rewrite this query for using join instead of include
-        var vacancies = _context.Vacancies
-            .Include(_ => _.Company)
+        var vacancy = await _context.Vacancies
+            .Where(_ => _.Id == id)
             .Include(_ => _.Category)
+            .Include(_ => _.Company)
             .Include(_ => _.LocationVacancies).ThenInclude(_ => _.Location)
-            .Include(_ => _.VacancySkills).ThenInclude(_ => _.Skill);
+            .Include(_ => _.VacancySkills).ThenInclude(_ => _.Skill)
+            .FirstOrDefaultAsync();
+        return vacancy;
+    }
+
+    public async Task<IEnumerable<Vacancy>> GetAll()
+    {
+        // TODO: rewrite this query for using join instead of include
         
         // var vacancies = await (from vacancy in _context.Vacancies
         //     join company in _context.Companies on vacancy.CompanyId equals company.Id
@@ -64,7 +71,32 @@ public class GetAllVacanciesQueryHandler : IRequestHandler<GetAllVacanciesQuery,
             //     Skills = skill.Skill ?? null
             // };
         // var test = vacancies.ToQueryString();
-        var result = await vacancies.ToListAsync(cancellationToken: cancellationToken);
-        return result;
+        var vacancies = await _context.Vacancies
+            .Include(_ => _.Company)
+            .Include(_ => _.Category)
+            .Include(_ => _.LocationVacancies).ThenInclude(_ => _.Location)
+            .Include(_ => _.VacancySkills).ThenInclude(_ => _.Skill)
+            .ToListAsync();
+        return vacancies;
+    }
+
+    public async Task<Vacancy> Create(Vacancy vacancy)
+    {
+        var createdVacancy = await _context.Vacancies.AddAsync(vacancy);
+        await _context.SaveChangesAsync();
+        return createdVacancy.Entity;
+    }
+
+    public async Task<Vacancy> Update(Vacancy vacancy)
+    {
+        var updatedVacancy = _context.Vacancies.Update(vacancy);
+        await _context.SaveChangesAsync();
+        return updatedVacancy.Entity;
+    }
+
+    public async Task Delete(Vacancy vacancy)
+    {
+        _context.Vacancies.Remove(vacancy);
+        await _context.SaveChangesAsync();
     }
 }
