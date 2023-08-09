@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using VacanciesService.Application.Behaviors;
 using VacanciesService.Database;
 using VacanciesService.Database.AutoMigrations;
 using VacanciesService.Database.Repository;
@@ -19,6 +20,7 @@ public static class DependencyInjection
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(ApplicationAssembly);
+            configuration.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
         });
         services.AddAutoMapper(ApplicationAssembly);
         services.AddScoped<IVacancyRepository, VacancyRepository>();
