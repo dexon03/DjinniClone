@@ -29,8 +29,9 @@ services:
     image: identity-service
     container_name: identity-service
     build:
-      context: ./IdentityService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./IdentityService/Dockerfile
+    working_dir: "/app"
     # restart: always
     ports:
       - "5242:80"
@@ -58,8 +59,9 @@ services:
     image: profile-service
     container_name: profile-service
     build:
-      context: ./ProfilesService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./ProfilesService/Dockerfile
+    working_dir: "/app"
     # restart: always
     ports:
       - "5243:80"
@@ -87,9 +89,10 @@ services:
     image: vacancies-service
     container_name: vacancies-service
     build:
-      context: ./VacanciesService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./VacanciesService/Dockerfile
     # restart: always
+    working_dir: "/app"
     ports:
       - "5244:80"
     depends_on:
@@ -116,9 +119,10 @@ services:
     image: analytics-service
     container_name: analytics-service
     build:
-      context: ./AnalyticsService
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./AnalyticsService/Dockerfile
     # restart: always
+    working_dir: "/app"
     ports:
       - "5245:80"
     depends_on:
