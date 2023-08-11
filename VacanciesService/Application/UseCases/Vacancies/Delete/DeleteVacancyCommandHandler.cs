@@ -13,7 +13,7 @@ public class DeleteVacancyCommandHandler : IRequestHandler<DeleteVacancyCommand>
     }
     public async Task Handle(DeleteVacancyCommand request, CancellationToken cancellationToken)
     {
-        var vacancy = await _repository.Get(request.vacancy.Id);
+        var vacancy = await _repository.Get(request.Id);
         if (vacancy == null)
         {
             throw new Exception("Vacancy not found");

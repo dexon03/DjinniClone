@@ -2,6 +2,7 @@ using Core.ExceptionHandler;
 using Core.Logging;
 using Serilog;
 using VacanciesService.Database.AutoMigrations;
+using VacanciesService.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
+builder.Services.RegisterDependencies(builder.Configuration);
 builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 

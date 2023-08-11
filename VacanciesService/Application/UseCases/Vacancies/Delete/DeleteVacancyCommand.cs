@@ -3,4 +3,4 @@ using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Application.UseCases.Vacancies.Delete;
 
-public record DeleteVacancyCommand(Vacancy vacancy) : IRequest;
+public record DeleteVacancyCommand(Guid Id) : IRequest;
