@@ -12,8 +12,10 @@ public class CreateSkillQueryHandler : IRequestHandler<CreateSkillQuery,Skill>
     {
         _repository = repository;
     }
-    public Task<Skill> Handle(CreateSkillQuery request, CancellationToken cancellationToken)
+    public async Task<Skill> Handle(CreateSkillQuery request, CancellationToken cancellationToken)
     {
-        return _repository.CreateAsync(request.Skill);
+        var result = await _repository.CreateAsync(request.Skill);
+        await _repository.SaveChangesAsync(cancellationToken);
+        return result;
     }
 }
