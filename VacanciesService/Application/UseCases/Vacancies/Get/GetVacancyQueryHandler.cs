@@ -1,21 +1,20 @@
-﻿using MediatR;
-using VacanciesService.Database;
-using VacanciesService.Domain.Contracts;
+﻿using Core.Database;
+using MediatR;
 using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Application.UseCases.Vacancies.Get;
 
 public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, Vacancy>
 {
-    private readonly IVacancyRepository _repository;
+    private readonly IRepository _repository;
 
-    public GetVacancyQueryHandler(IVacancyRepository repository)
+    public GetVacancyQueryHandler(IRepository repository)
     {
         _repository = repository;
     }
     public async Task<Vacancy> Handle(GetVacancyQuery request, CancellationToken cancellationToken)
     {
-        var vacancy = await _repository.Get(request.Id);
+        var vacancy = await _repository.GetByIdAsync<Vacancy>(request.Id);
         if (vacancy == null)
         {
             throw new Exception("Vacancy not found");

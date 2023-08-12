@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
+using Core.Database;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using VacanciesService.Application.Behaviors;
 using VacanciesService.Database;
 using VacanciesService.Database.AutoMigrations;
 using VacanciesService.Database.Repository;
-using VacanciesService.Domain.Contracts;
 
 namespace VacanciesService.Setup;
 
@@ -23,7 +23,7 @@ public static class DependencyInjection
             configuration.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
         });
         services.AddAutoMapper(ApplicationAssembly);
-        services.AddScoped<IVacancyRepository, VacancyRepository>();
+        services.AddScoped<IRepository, Repository>();
         return services;
     }
 }

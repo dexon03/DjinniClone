@@ -10,11 +10,11 @@ public class VacanciesDbContext : DbContext
         
     }
     
-    public DbSet<Vacancy> Vacancies { get; set; }
-    public DbSet<Location> Locations { get; set; }
-    public DbSet<Skill> Skills { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<Company> Companies { get; set; }
-    public DbSet<LocationVacancy> LocationVacancies { get; set; }
-    public DbSet<VacancySkill> VacancySkills { get; set; }
+    public DbSet<Vacancy> Vacancy { get; set; }
+    public DbSet<Location> Location { get; set; }
+    public DbSet<Skill> Skill { get; set; }
+    public DbSet<Category> Category { get; set; }
+    public DbSet<Company> Company { get; set; }
+    public DbSet<LocationVacancy> LocationVacancy { get; set; }
+    public DbSet<VacancySkill> VacancySkill { get; set; }
 }
