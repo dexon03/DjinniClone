@@ -6,7 +6,7 @@ public class UpdateSkillValidator : AbstractValidator<UpdateSkillQuery>
 {
     public UpdateSkillValidator()
     {
-        RuleFor(x => x.Skill);
+        RuleFor(x => x.Skill.Id).NotEmpty();
         RuleFor(x => x.Skill.Name).MinimumLength(3);
     }
 }

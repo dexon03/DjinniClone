@@ -6,6 +6,7 @@ public class UpdateVacancyQueryValidator : AbstractValidator<UpdateVacancyQuery>
 {
     public UpdateVacancyQueryValidator()
     {
+        RuleFor(_ => _.vacancy.Id).NotEmpty();
         RuleFor(_ => _.vacancy.Title).NotEmpty().MinimumLength(3);
         RuleFor(_ => _.vacancy.Description).NotEmpty().MinimumLength(20);
         RuleFor(_ => _.vacancy.Salary).NotEmpty().GreaterThanOrEqualTo(0);
