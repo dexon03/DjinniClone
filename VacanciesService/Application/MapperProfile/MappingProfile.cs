@@ -12,5 +12,7 @@ public class MappingProfile : Profile
         CreateMap<VacancyCreateDto, Vacancy>();
         CreateMap<CompanyCreateDto, Company>();
         CreateMap<CompanyUpdateDto, Company>();
+        CreateMap<CategoryCreateDto, Category>();
+        CreateMap<CategoryUpdateDto, Category>();
     }
 }

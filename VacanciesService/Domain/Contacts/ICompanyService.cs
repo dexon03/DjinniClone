@@ -10,4 +10,6 @@ public interface ICompanyService
     Task<Company> CreateCompany(CompanyCreateDto company, CancellationToken cancellationToken = default);
     Task<Company> UpdateCompany(CompanyUpdateDto company, CancellationToken cancellationToken = default);
     Task DeleteCompany(Guid id, CancellationToken cancellationToken = default);
+    
+    
 }

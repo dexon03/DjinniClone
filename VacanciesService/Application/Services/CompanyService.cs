@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace VacanciesService.Application.Services;
 
@@ -46,7 +47,7 @@ public class CompanyService : ICompanyService
         var validationResult = await _createValidator.ValidateAsync(company,cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ExceptionWithStatusCode(string.Join(";  |  ",validationResult.Errors.Select(e => e.ErrorMessage)), HttpStatusCode.BadRequest);
+            throw new ValidationException(validationResult.Errors);
         }
         
         var companyEntity = _mapper.Map<Company>(company);
@@ -60,10 +61,16 @@ public class CompanyService : ICompanyService
         var validationResult = await _updateValidator.ValidateAsync(company,cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ExceptionWithStatusCode(string.Join(";  |  ",validationResult.Errors.Select(e => e.ErrorMessage)), HttpStatusCode.BadRequest);
+            throw new ValidationException(validationResult.Errors);;
         }
         
         var companyEntity = _mapper.Map<Company>(company);
+        var isExist = await _repository.GetByIdAsync<Company>(companyEntity.Id) != null;
+        if (!isExist)
+        {
+            throw new Exception("Company that you trying to update, not exist");
+        }
+        
         var result = _repository.Update(companyEntity);
         await _repository.SaveChangesAsync(cancellationToken);
         return result;
@@ -80,4 +87,6 @@ public class CompanyService : ICompanyService
         _repository.Delete(company);
         await _repository.SaveChangesAsync(cancellationToken);
     }
+    
+    
 }

@@ -1,17 +1,19 @@
-﻿namespace Core.Exceptions;
+﻿using FluentValidation.Results;
+
+namespace Core.Exceptions;
 
 public class ValidationException : Exception
 {
-    private readonly IReadOnlyCollection<ValidationError> _errors;
+    private readonly List<ValidationFailure> _errors;
 
-    public ValidationException(IReadOnlyCollection<ValidationError> errors) : base("Validation failed: " + GetErrorMessage(errors))
+    public ValidationException(List<ValidationFailure> errors) : base(GetErrorMessage(errors))
     {
         _errors = errors;
     }
     
-    private static string GetErrorMessage(IReadOnlyCollection<ValidationError> _errors)
+    private static string GetErrorMessage(List<ValidationFailure> _errors)
     {
-        return string.Join("; | ", _errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}"));
+        return string.Join(";  |  ", _errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}"));
     }
 }
 

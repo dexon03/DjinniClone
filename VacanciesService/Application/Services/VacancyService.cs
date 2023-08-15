@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace VacanciesService.Application.Services;
 
@@ -50,7 +51,7 @@ public class VacancyService : IVacanciesService
         var validationResult =  await _createValidator.ValidateAsync(vacancy,cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ExceptionWithStatusCode(string.Join(";  |   ",validationResult.Errors.Select(e => e.ErrorMessage)), HttpStatusCode.BadRequest);
+            throw new ValidationException(validationResult.Errors);
         }
         var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
         vacancyEntity.CreatedAt = DateTime.Now;
@@ -63,7 +64,16 @@ public class VacancyService : IVacanciesService
     public async Task<Vacancy> UpdateVacancy(VacancyUpdateDto vacancy, CancellationToken cancellationToken = default)
     {
         var validationResult = await _updateValidator.ValidateAsync(vacancy,cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
         var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
+        var isExists = await _repository.GetByIdAsync<Vacancy>(vacancyEntity.Id) != null;
+        if (!isExists)
+        {
+            throw new ExceptionWithStatusCode("Vacancy that you trying to update, not exist", HttpStatusCode.BadRequest);
+        }
         vacancyEntity.UpdatedAt = DateTime.Now;
         var result = _repository.Update(vacancyEntity);
         await _repository.SaveChangesAsync(cancellationToken);
