@@ -22,7 +22,7 @@ namespace VacanciesService.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("VacanciesService.Models.Category", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,10 +34,10 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.Company", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Company", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,10 +53,10 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Company");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.Location", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Location", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,10 +72,10 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Location");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.LocationVacancy", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.LocationVacancy", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,10 +93,10 @@ namespace VacanciesService.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("LocationVacancies");
+                    b.ToTable("LocationVacancy");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.Skill", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Skill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -108,10 +108,10 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skill");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.Vacancy", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Vacancy", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,9 +137,8 @@ namespace VacanciesService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Salary")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<double>("Salary")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -154,10 +153,10 @@ namespace VacanciesService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Vacancies");
+                    b.ToTable("Vacancy");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.VacancySkill", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.VacancySkill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -175,19 +174,19 @@ namespace VacanciesService.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("VacancySkills");
+                    b.ToTable("VacancySkill");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.LocationVacancy", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.LocationVacancy", b =>
                 {
-                    b.HasOne("VacanciesService.Models.Location", "Location")
+                    b.HasOne("VacanciesService.Domain.Models.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VacanciesService.Models.Vacancy", "Vacancy")
-                        .WithMany("Locations")
+                    b.HasOne("VacanciesService.Domain.Models.Vacancy", "Vacancy")
+                        .WithMany("LocationVacancies")
                         .HasForeignKey("VacancyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -197,15 +196,15 @@ namespace VacanciesService.Migrations
                     b.Navigation("Vacancy");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.Vacancy", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Vacancy", b =>
                 {
-                    b.HasOne("VacanciesService.Models.Category", "Category")
+                    b.HasOne("VacanciesService.Domain.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VacanciesService.Models.Company", "Company")
+                    b.HasOne("VacanciesService.Domain.Models.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -216,16 +215,16 @@ namespace VacanciesService.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.VacancySkill", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.VacancySkill", b =>
                 {
-                    b.HasOne("VacanciesService.Models.Skill", "Skill")
+                    b.HasOne("VacanciesService.Domain.Models.Skill", "Skill")
                         .WithMany()
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VacanciesService.Models.Vacancy", "Vacancy")
-                        .WithMany("Skills")
+                    b.HasOne("VacanciesService.Domain.Models.Vacancy", "Vacancy")
+                        .WithMany("VacancySkills")
                         .HasForeignKey("VacancyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -235,11 +234,11 @@ namespace VacanciesService.Migrations
                     b.Navigation("Vacancy");
                 });
 
-            modelBuilder.Entity("VacanciesService.Models.Vacancy", b =>
+            modelBuilder.Entity("VacanciesService.Domain.Models.Vacancy", b =>
                 {
-                    b.Navigation("Locations");
+                    b.Navigation("LocationVacancies");
 
-                    b.Navigation("Skills");
+                    b.Navigation("VacancySkills");
                 });
 #pragma warning restore 612, 618
         }
