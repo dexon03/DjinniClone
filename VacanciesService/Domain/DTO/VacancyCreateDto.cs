@@ -12,10 +12,9 @@ public class VacancyDTO
     public string Description { get; set; }
     public string Salary { get; set; }
     public bool IsActive { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public Category Category { get; set; }
-    public Company Company { get; set; }
-    public List<Location> Locations { get; set; }
-    public List<Skill> Skills { get; set; }
+    public List<Guid> LocationIds { get; set; }
+    public List<Guid> SkillIds { get; set; }
 }
