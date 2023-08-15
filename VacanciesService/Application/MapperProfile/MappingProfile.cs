@@ -10,6 +10,7 @@ public class MappingProfile : Profile
     {
         CreateMap<VacancyUpdateDto, Vacancy>();
         CreateMap<VacancyCreateDto, Vacancy>();
-        CreateMap<Skill, Skill>();
+        CreateMap<CompanyCreateDto, Company>();
+        CreateMap<CompanyUpdateDto, Company>();
     }
 }

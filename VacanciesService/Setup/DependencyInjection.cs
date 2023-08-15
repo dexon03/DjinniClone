@@ -35,6 +35,7 @@ public static class DependencyInjection
     private static IServiceCollection RegisterDomainServices(this IServiceCollection services)
     {
         services.AddScoped<IVacanciesService, VacancyService>();
+        services.AddScoped<ICompanyService, CompanyService>();
         return services;
     }
 }
