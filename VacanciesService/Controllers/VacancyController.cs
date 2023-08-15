@@ -1,60 +1,57 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VacanciesService.Application.UseCases.Vacancies.ActivateDeactivate;
-using VacanciesService.Application.UseCases.Vacancies.Create;
-using VacanciesService.Application.UseCases.Vacancies.Delete;
-using VacanciesService.Application.UseCases.Vacancies.Get;
-using VacanciesService.Application.UseCases.Vacancies.GetAll;
-using VacanciesService.Application.UseCases.Vacancies.Update;
-using VacanciesService.Domain.Models;
-
+using VacanciesService.Domain.Contacts;
+using VacanciesService.Domain.DTO;
 namespace VacanciesService.Controllers;
 
 public class VacancyController : BaseController
 {
-    public VacancyController(IMediator mediator) : base(mediator)
+    private readonly IVacanciesService _vacanciesService;
+
+    public VacancyController(IMediator mediator,IVacanciesService vacanciesService) : base(mediator)
     {
+        _vacanciesService = vacanciesService;
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetVacancyById(Guid id)
     {
-        var result = await _mediator.Send(new GetVacancyQuery(id));
+        var result = await _vacanciesService.GetVacancyById(id);
         return Ok(result);
     }
     
     [HttpGet]
     public async Task<IActionResult> GetVacancies()
     {
-        var result = await _mediator.Send(new GetAllVacanciesQuery());
+        var result = await _vacanciesService.GetAllVacancies();
         return Ok(result);
     }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVacancy(Guid id)
     {
-        await _mediator.Send(new DeleteVacancyCommand(id));
+        await _vacanciesService.DeleteVacancy(id);
         return Ok();
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateVacancy(Vacancy vacancy)
+    public async Task<IActionResult> CreateVacancy(VacancyCreateDto vacancy)
     {
-        var createdVacancy = await _mediator.Send(new CreateVacancyQuery(vacancy));
+        var createdVacancy = await _vacanciesService.CreateVacancy(vacancy);
         return Ok(createdVacancy);
     }
     
     [HttpPut]
-    public async Task<IActionResult> UpdateVacancy(Vacancy vacancy)
+    public async Task<IActionResult> UpdateVacancy(VacancyUpdateDto vacancy)
     {
-        var updatedVacancy = await _mediator.Send(new UpdateVacancyQuery(vacancy));
+        var updatedVacancy = await _vacanciesService.UpdateVacancy(vacancy);
         return Ok(updatedVacancy);
     }
     
-    [HttpPost("{id}/activate-deactivate")]
+    [HttpPut("{id}/activate-deactivate")]
     public async Task<IActionResult> ActivateDeactivateVacancy(Guid id)
     {
-        await _mediator.Send(new ActivateDeactivateVacancyCommand(id));
+        await _vacanciesService.ActivateDeactivateVacancy(id);
         return Ok();
     }
     
