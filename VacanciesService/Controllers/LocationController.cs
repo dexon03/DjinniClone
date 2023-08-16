@@ -1,60 +1,59 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VacanciesService.Application.UseCases.Locations.Create;
-using VacanciesService.Application.UseCases.Locations.Delete;
-using VacanciesService.Application.UseCases.Locations.DeleteMany;
-using VacanciesService.Application.UseCases.Locations.Get;
-using VacanciesService.Application.UseCases.Locations.GetAll;
-using VacanciesService.Application.UseCases.Locations.Update;
+using VacanciesService.Domain.Contacts;
+using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Controllers;
 
 public class LocationController : BaseController
 {
-    public LocationController(IMediator mediator) : base(mediator)
+    private readonly ILocationService _locationService;
+
+    public LocationController(IMediator mediator, ILocationService locationService) : base(mediator)
     {
+        _locationService = locationService;
     }
     
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllLocationsQuery());
+        var result = await _locationService.GetAllLocations();
         return Ok(result);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _mediator.Send(new GetLocationQuery(id));
+        var result = await _locationService.GetLocationById(id);
         return Ok(result);
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create(Location location)
+    public async Task<IActionResult> Create(LocationCreateDto location)
     {
-        var result = await _mediator.Send(new CreateLocationQuery(location));
+        var result = await _locationService.CreateLocation(location);
         return Ok(result);
     }
     
     [HttpPut]
-    public async Task<IActionResult> Update(Location location)
+    public async Task<IActionResult> Update(LocationUpdateDto location)
     {
-        var result = await _mediator.Send(new UpdateLocationQuery(location));
+        var result = await _locationService.UpdateLocation(location);
         return Ok(result);
     }
     
-    [HttpDelete]
-    public async Task<IActionResult> Delete( Location location)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        await _mediator.Send(new DeleteLocationCommand(location));
+        await _locationService.DeleteLocation(id);
         return Ok();
     }
     
     [HttpDelete("many")]
-    public async Task<IActionResult> DeleteMany([FromBody] Location[] locations)
+    public async Task<IActionResult> DeleteMany(Location[] locations)
     {
-        await _mediator.Send(new DeleteManyLocationCommand(locations));
+        await _locationService.DeleteManyLocations(locations);
         return Ok();
     }
 }

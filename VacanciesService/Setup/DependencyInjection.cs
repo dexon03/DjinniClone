@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IVacanciesService, VacancyService>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ILocationService, LocationService>();
         return services;
     }
 }
