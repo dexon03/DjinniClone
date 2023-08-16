@@ -65,7 +65,7 @@ public class CompanyService : ICompanyService
         }
         
         var companyEntity = _mapper.Map<Company>(company);
-        var isExist = await _repository.GetByIdAsync<Company>(companyEntity.Id) != null;
+        var isExist = await _repository.AnyAsync<Company>(x => x.Id == companyEntity.Id);
         if (!isExist)
         {
             throw new Exception("Company that you trying to update, not exist");

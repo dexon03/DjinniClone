@@ -62,7 +62,7 @@ public class CategoryService : ICategoryService
         }
         
         var categoryEntity = _mapper.Map<Category>(category);
-        var isExists = await _repository.GetByIdAsync<Category>(categoryEntity.Id) != null;
+        var isExists = await _repository.AnyAsync<Category>(x => x.Id == categoryEntity.Id);
         if (!isExists)
         {
             throw new Exception("Category not found");

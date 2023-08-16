@@ -69,7 +69,7 @@ public class VacancyService : IVacanciesService
             throw new ValidationException(validationResult.Errors);
         }
         var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
-        var isExists = await _repository.GetByIdAsync<Vacancy>(vacancyEntity.Id) != null;
+        var isExists = await _repository.AnyAsync<Vacancy>(x => x.Id == vacancyEntity.Id);
         if (!isExists)
         {
             throw new ExceptionWithStatusCode("Vacancy that you trying to update, not exist", HttpStatusCode.BadRequest);
