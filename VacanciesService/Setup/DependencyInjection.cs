@@ -38,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ILocationService, LocationService>();
+        services.AddScoped<ISkillService, SkillService>();
         return services;
     }
 }

@@ -7,12 +7,6 @@ namespace VacanciesService.Controllers;
 [Route("api/[controller]")]
 public class BaseController : ControllerBase
 {
-    protected readonly IMediator _mediator;
-    public BaseController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-    
     [HttpGet("healthCheck")]
     public IActionResult HealthCheck()
     {

@@ -10,7 +10,7 @@ public class LocationController : BaseController
 {
     private readonly ILocationService _locationService;
 
-    public LocationController(IMediator mediator, ILocationService locationService) : base(mediator)
+    public LocationController(ILocationService locationService)
     {
         _locationService = locationService;
     }

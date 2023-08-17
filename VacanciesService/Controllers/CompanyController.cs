@@ -9,7 +9,7 @@ public class CompanyController : BaseController
 {
     private readonly ICompanyService _companyService;
 
-    public CompanyController(IMediator mediator, ICompanyService companyService) : base(mediator)
+    public CompanyController(ICompanyService companyService)
     {
         _companyService = companyService;
     }

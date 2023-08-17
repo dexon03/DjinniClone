@@ -8,7 +8,7 @@ public class VacancyController : BaseController
 {
     private readonly IVacanciesService _vacanciesService;
 
-    public VacancyController(IMediator mediator,IVacanciesService vacanciesService) : base(mediator)
+    public VacancyController(IVacanciesService vacanciesService)
     {
         _vacanciesService = vacanciesService;
     }

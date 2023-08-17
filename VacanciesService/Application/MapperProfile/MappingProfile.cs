@@ -16,5 +16,7 @@ public class MappingProfile : Profile
         CreateMap<CategoryUpdateDto, Category>();
         CreateMap<LocationCreateDto, Location>();
         CreateMap<LocationUpdateDto, Location>();
+        CreateMap<SkillCreateDto, Skill>();
+        CreateMap<SkillUpdateDto, Skill>();
     }
 }

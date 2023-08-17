@@ -10,7 +10,7 @@ public class CategoryController : BaseController
 {
     private readonly ICategoryService _categoryService;
 
-    public CategoryController(IMediator mediator, ICategoryService categoryService) : base(mediator)
+    public CategoryController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
     }
