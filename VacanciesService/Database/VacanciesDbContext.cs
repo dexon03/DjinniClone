@@ -7,7 +7,8 @@ public class VacanciesDbContext : DbContext
 {
     public VacanciesDbContext(DbContextOptions<VacanciesDbContext> options) : base(options)
     {
-        
+        // timestamp problem 
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
     
     public DbSet<Vacancy> Vacancy { get; set; }

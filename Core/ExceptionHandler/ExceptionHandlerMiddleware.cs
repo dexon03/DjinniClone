@@ -41,6 +41,9 @@ public class ExceptionHandlerMiddleware
             case ExceptionWithStatusCode exceptionWithStatusCode:
                 response.StatusCode = (int)exceptionWithStatusCode.StatusCode;
                 break; 
+            case ValidationException:
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                break;
             default:
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 break;

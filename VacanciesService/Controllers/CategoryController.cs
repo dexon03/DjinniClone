@@ -1,60 +1,59 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using VacanciesService.Application.UseCases.Categories.Create;
-using VacanciesService.Application.UseCases.Categories.Delete;
-using VacanciesService.Application.UseCases.Categories.DeleteMany;
-using VacanciesService.Application.UseCases.Categories.Get;
-using VacanciesService.Application.UseCases.Categories.GetAll;
-using VacanciesService.Application.UseCases.Categories.Update;
+using VacanciesService.Domain.Contacts;
+using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Controllers;
 
 public class CategoryController : BaseController
 {
-    public CategoryController(IMediator mediator) : base(mediator)
+    private readonly ICategoryService _categoryService;
+
+    public CategoryController(ICategoryService categoryService)
     {
+        _categoryService = categoryService;
     }
     
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllCategoriesQuery());
+        var result = await _categoryService.GetAllCategories();
         return Ok(result);
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _mediator.Send(new GetCategoryQuery(id));
+        var result = await _categoryService.GetCategoryById(id);
         return Ok(result);
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create(Category category)
+    public async Task<IActionResult> Create(CategoryCreateDto category)
     {
-        var result = await _mediator.Send(new CreateCategoryQuery(category));
+        var result = await _categoryService.CreateCategory(category);
         return Ok(result);
     }
     
     [HttpPut]
-    public async Task<IActionResult> Update(Category category)
+    public async Task<IActionResult> Update(CategoryUpdateDto category)
     {
-        var result = await _mediator.Send(new UpdateCategoryQuery(category));
+        var result = await _categoryService.UpdateCategory(category);
         return Ok(result);
     }
     
-    [HttpDelete]
-    public async Task<IActionResult> Delete(Category category)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        await _mediator.Send(new DeleteCategoryCommand(category));
+        await _categoryService.DeleteCategory(id);
         return Ok();
     }
     
     [HttpDelete("many")]
     public async Task<IActionResult> DeleteMany(Category[] categories)
     {
-        await _mediator.Send(new DeleteManyCategoryCommand(categories));
+        await _categoryService.DeleteMany(categories);
         return Ok();
     }
     
