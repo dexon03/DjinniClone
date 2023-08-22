@@ -3,6 +3,7 @@ using Core.Logging;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Database;
 using ProfilesService.Database.AutoMigrations;
+using ProfilesService.Setup;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,8 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
-builder.Services.AddDbContext<ProfilesDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
+builder.Services.RegisterDependencies(builder.Configuration);
 builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 var app = builder.Build();

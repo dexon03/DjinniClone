@@ -2,20 +2,20 @@
 using Core.Database;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using VacanciesService.Application.Services;
-using VacanciesService.Database;
-using VacanciesService.Database.AutoMigrations;
-using VacanciesService.Database.Repository;
-using VacanciesService.Domain.Contacts;
+using ProfilesService.Application.Services;
+using ProfilesService.Database;
+using ProfilesService.Database.AutoMigrations;
+using ProfilesService.Database.Repository;
+using ProfilesService.Domain.Contracts;
 
-namespace VacanciesService.Setup;
+namespace ProfilesService.Setup;
 
 public static class DependencyInjection
 {
     private static Assembly ApplicationAssembly => Assembly.GetExecutingAssembly();
     public static IServiceCollection RegisterDependencies(this IServiceCollection services, IConfiguration appConfiguration)
     {
-        services.AddDbContext<VacanciesDbContext>(opt =>
+        services.AddDbContext<ProfilesDbContext>(opt =>
         {
             opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection"));
         });
@@ -29,11 +29,10 @@ public static class DependencyInjection
     
     private static IServiceCollection RegisterDomainServices(this IServiceCollection services)
     {
-        services.AddScoped<IVacanciesService, VacancyService>();
-        services.AddScoped<ICompanyService, CompanyService>();
-        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ILocationService, LocationService>();
-        services.AddScoped<ISkillService, SkillService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IProfileService, ProfileService>();
+        
         return services;
     }
 }

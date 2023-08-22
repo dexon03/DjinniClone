@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProfilesService.Models;
+namespace ProfilesService.Domain.Models;
 
 public class Profile
 {

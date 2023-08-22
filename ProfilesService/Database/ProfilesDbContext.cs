@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProfilesService.Models;
+using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Database;
 
@@ -7,13 +7,14 @@ public class ProfilesDbContext : DbContext
 {
     public ProfilesDbContext(DbContextOptions<ProfilesDbContext> options) : base(options)
     {
-        
+        // timestamp problem 
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
     
-    public DbSet<Profile> Profiles { get; set; }
-    public DbSet<Location> Locations { get; set; }
-    public DbSet<Skill> Skills { get; set; }
+    public DbSet<Profile> Profile { get; set; }
+    public DbSet<Location> Location { get; set; }
+    public DbSet<Skill> Skill { get; set; }
     public DbSet<ProfileSkills> ProfileSkills { get; set; }
-    public DbSet<LocationProfile> LocationProfiles { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<LocationProfile> LocationProfile { get; set; }
+    public DbSet<User> User { get; set; }
 }
