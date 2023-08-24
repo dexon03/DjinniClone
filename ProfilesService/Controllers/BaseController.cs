@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace VacanciesService.Controllers;
+namespace ProfilesService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

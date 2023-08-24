@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using VacanciesService.Domain.Contacts;
-using VacanciesService.Domain.DTO;
-using VacanciesService.Domain.Models;
+﻿
 
-namespace VacanciesService.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using ProfilesService.Domain.Contracts;
+using ProfilesService.Domain.DTO;
+using ProfilesService.Domain.Models;
+
+namespace ProfilesService.Controllers;
 
 public class LocationController : BaseController
 {

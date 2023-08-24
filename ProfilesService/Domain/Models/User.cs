@@ -1,4 +1,4 @@
-﻿namespace ProfilesService.Models;
+﻿namespace ProfilesService.Domain.Models;
 
 public class User
 {
