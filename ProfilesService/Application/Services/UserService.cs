@@ -87,8 +87,7 @@ public class UserService : IUserService
 
     public async Task DeleteManyUsers(User[] users, CancellationToken cancellationToken = default)
     {
-        var userEntities = _mapper.Map<List<User>>(users);
-        _repository.DeleteRange(userEntities);
+        _repository.DeleteRange(users);
         await _repository.SaveChangesAsync(cancellationToken);
     }
 }
