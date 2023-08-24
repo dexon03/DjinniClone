@@ -1,0 +1,20 @@
+name: Build and Run Docker Compose on PR
+
+on:
+  pull_request:
+    branches:
+      - main  # Change this to the target branch of your pull requests
+
+jobs:
+  build-and-run:
+    name: Build and Run
+    runs-on: ubuntu-latest  # You can choose another runner if needed
+
+    steps:
+      - name: Checkout Pull Request
+        uses: actions/checkout@v2
+
+      - name: Build and Run Docker Compose
+        run: |
+          docker-compose build
+          docker-compose up -d
