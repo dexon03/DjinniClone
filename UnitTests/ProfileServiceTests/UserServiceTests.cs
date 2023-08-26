@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using Core.Database;
-using FluentValidation;
-using Moq;
 using ProfilesService.Application.Services;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace UnitTests.ProfileServiceTests;
 

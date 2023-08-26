@@ -1,7 +1,5 @@
-﻿using System.Net;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Database;
-using Core.Exceptions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
@@ -87,6 +85,4 @@ public class CompanyService : ICompanyService
         _repository.Delete(company);
         await _repository.SaveChangesAsync(cancellationToken);
     }
-    
-    
 }

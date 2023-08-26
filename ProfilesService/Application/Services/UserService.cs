@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace ProfilesService.Application.Services;
 

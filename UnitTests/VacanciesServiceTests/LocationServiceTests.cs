@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using Core.Database;
-using ProfilesService.Application.Services;
-using ProfilesService.Domain.DTO;
-using ProfilesService.Domain.Models;
+using VacanciesService.Application.Services;
+using VacanciesService.Domain.DTO;
+using VacanciesService.Domain.Models;
 using ValidationException = Core.Exceptions.ValidationException;
 
-namespace UnitTests.ProfileServiceTests;
+namespace UnitTests.VacanciesServiceTests;
 
 
 public class LocationServiceTests
@@ -80,7 +80,7 @@ public class LocationServiceTests
     public async Task CreateLocation_InvalidDto_ShouldThrowValidationException()
     {
         // Arrange
-        var locationCreateDto = new LocationCreateDto { Country = "New Country", City = null };
+        var locationCreateDto = new LocationCreateDto { Country = "New Country", City = null! };
         var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("City", "City is required") };
         _createValidatorMock.Setup(validator => validator.ValidateAsync(locationCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
 

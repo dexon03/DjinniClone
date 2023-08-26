@@ -1,14 +1,10 @@
-﻿// using AutoMapper;
-
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
-using FluentValidation;
-using Moq;
 using ProfilesService.Application.Services;
 using ProfilesService.Domain.DTO;
 using Profile = ProfilesService.Domain.Models.Profile;
-using ValidationException = FluentValidation.ValidationException;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace UnitTests.ProfileServiceTests;
 
@@ -120,7 +116,7 @@ public class ProfileServiceTests
             PositionTitle = "Senior Developer",
             // ... other properties
         };
-        var mockProfile = new Profile { Id = profileUpdateDto.Id, UserId = Guid.NewGuid(), Name = "Initial", Surname = "Profile", PositionTitle = "Senior Developer"};
+        
         var mappedProfile = new Profile {
             Id = profileUpdateDto.Id,
             Name = "Updated",
