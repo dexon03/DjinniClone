@@ -87,8 +87,7 @@ public class CategoryService : ICategoryService
     
     public async Task DeleteMany(Category[] categories, CancellationToken cancellationToken = default)
     {
-        var categoryEntities = _mapper.Map<List<Category>>(categories);
-        _repository.DeleteRange(categoryEntities);
+        _repository.DeleteRange(categories);
         await _repository.SaveChangesAsync(cancellationToken);
     }
 }

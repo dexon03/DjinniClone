@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using Profile = ProfilesService.Domain.Models.Profile;
-using ValidationException = FluentValidation.ValidationException;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace ProfilesService.Application.Services;
 

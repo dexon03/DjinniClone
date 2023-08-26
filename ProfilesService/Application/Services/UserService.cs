@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace ProfilesService.Application.Services;
 
@@ -87,8 +88,7 @@ public class UserService : IUserService
 
     public async Task DeleteManyUsers(User[] users, CancellationToken cancellationToken = default)
     {
-        var userEntities = _mapper.Map<List<User>>(users);
-        _repository.DeleteRange(userEntities);
+        _repository.DeleteRange(users);
         await _repository.SaveChangesAsync(cancellationToken);
     }
 }
