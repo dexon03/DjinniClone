@@ -23,4 +23,12 @@
       </Content>
     </ItemGroup>
 
+
+
+
+    <ItemGroup>
+      <Folder Include="Application\" />
+      <Folder Include="Setup\" />
+    </ItemGroup>
+
 </Project>
