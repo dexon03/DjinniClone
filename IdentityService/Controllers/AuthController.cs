@@ -1,5 +1,7 @@
 ﻿
 
+using IdentityService.Domain.Contracts;
+using IdentityService.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Controllers;
@@ -8,6 +10,12 @@ namespace IdentityService.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly IJWTService _jwtService;
+
+    public AuthController(IJWTService jwtService)
+    {
+        _jwtService = jwtService;
+    }
     [HttpPost("login")]
     public async Task<IActionResult> Login()
     {

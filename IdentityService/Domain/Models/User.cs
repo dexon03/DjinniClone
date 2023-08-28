@@ -9,5 +9,5 @@ public class User
     public string PasswordHash { get; set; } = null!;
     public string PhoneNumber { get; set; }
     public Guid RoleId { get; set; }
-    public Role Role { get; set; } = null!;
+    public virtual Role Role { get; set; }
 }

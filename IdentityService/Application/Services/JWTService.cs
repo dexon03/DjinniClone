@@ -1,0 +1,46 @@
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using IdentityService.Domain.Contracts;
+using IdentityService.Domain.Models;
+using Microsoft.IdentityModel.Tokens;
+using Claim = System.Security.Claims.Claim;
+
+namespace IdentityService.Application.Services;
+
+public class JWTService : IJWTService
+{
+    private readonly IConfiguration _configuration;
+
+    public JWTService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+    public string GenerateToken(User user)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!));
+        var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var claims = new List<Claim>()
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Email),
+            new Claim(ClaimTypes.Role, user.Role.Name)
+        };
+        var token = new JwtSecurityToken(
+            _configuration["Jwt:Issuer"],
+            _configuration["Jwt:Audience"],
+            claims,
+            expires: DateTime.Now.AddHours(1),
+            signingCredentials: signingCredentials);
+
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public string GenerateRefreshToken(User user)
+    {
+        throw new NotImplementedException();
+    }
+}

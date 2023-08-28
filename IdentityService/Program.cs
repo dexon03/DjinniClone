@@ -2,6 +2,7 @@ using Core.ExceptionHandler;
 using Core.Logging;
 using IdentityService.Database;
 using IdentityService.Database.AutoMigrations;
+using IdentityService.Setup;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -18,8 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
-builder.Services.AddDbContext<IdentityDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
+builder.Services.RegisterDependencies(builder.Configuration);
 builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 var app = builder.Build();
