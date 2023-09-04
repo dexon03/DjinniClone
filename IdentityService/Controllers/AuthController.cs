@@ -1,7 +1,4 @@
-﻿
-
-using IdentityService.Domain.Contracts;
-using IdentityService.Domain.Models;
+﻿using IdentityService.Domain.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Controllers;
