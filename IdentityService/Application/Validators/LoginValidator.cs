@@ -11,8 +11,6 @@ public class LoginValidator : AbstractValidator<LoginRequest>
             .NotEmpty()
             .EmailAddress();
         RuleFor(x => x.Password)
-            .NotEmpty()
-            .MinimumLength(8);
+            .NotEmpty();
     }
-    
 }

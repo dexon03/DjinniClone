@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain.Contracts;
+using IdentityService.Domain.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Controllers;
@@ -7,22 +8,24 @@ namespace IdentityService.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IJWTService _jwtService;
-
-    public AuthController(IJWTService jwtService)
+    private readonly IAuthService _authService;
+    
+    public AuthController(IAuthService authService)
     {
-        _jwtService = jwtService;
+        _authService = authService;
     }
     [HttpPost("login")]
-    public async Task<IActionResult> Login()
+    public async Task<IActionResult> Login(LoginRequest request)
     {
-        return Ok();
+        var response = await _authService.LoginAsync(request);
+        return Ok(response);
     }
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register()
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        return Ok();
+        var response = await _authService.RegisterAsync(request);
+        return Ok(response);
     }
     
     [HttpPost("refresh")]
@@ -44,8 +47,9 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("forgotPassword")]
-    public async Task<IActionResult> ForgotPassword()
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
     {
-        return Ok();
+        var response = await _authService.ForgotPasswordAsync(request);
+        return Ok(response);
     }
 }

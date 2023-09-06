@@ -15,22 +15,29 @@ public class UserManager
     
     public async Task<User?> FindByEmailAsync(string email)
     {
-        return await _repository.FirstOrDefaultAsync<User>(u => u.Email == email);
+        var user =  await _repository.FirstOrDefaultAsync<User>(u => u.Email == email);
+        if (user == null)
+        {
+            throw new Exception("Wrong email");
+        }
+
+        return user;
     } 
     
     public async Task<User?> FindByIdAsync(Guid id)
     {
-        return await _repository.FirstOrDefaultAsync<User>(u => u.Id == id);
-    }
-    
-    public async Task<bool> CheckPasswordAsync(Guid id, string password)
-    {
         var user = await _repository.FirstOrDefaultAsync<User>(u => u.Id == id);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new Exception("User not found by email");
         }
+
+        return user;
+    }
+    
+    public Task<bool> CheckPasswordAsync(User user, string password)
+    {
         var hashedPassword = PasswordUtility.GetHashedPassword(password, user.PasswordSalt);
-        return hashedPassword == user.PasswordHash;
+        return Task.FromResult(hashedPassword == user.PasswordHash);
     }
 }
