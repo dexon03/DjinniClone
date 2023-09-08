@@ -1,11 +1,13 @@
 ﻿using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -29,15 +31,10 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh()
+    public async Task<IActionResult> Refresh(string refreshToken)
     {
-        return Ok();
-    }
-    
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        return Ok();
+        var response = await _authService.RefreshTokenAsync(refreshToken);
+        return Ok(response);
     }
     
     [HttpGet("healthCheck")]

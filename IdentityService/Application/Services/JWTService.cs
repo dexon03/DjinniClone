@@ -1,6 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Core.Database;
 using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
@@ -11,10 +13,12 @@ namespace IdentityService.Application.Services;
 public class JWTService : IJWTService
 {
     private readonly IConfiguration _configuration;
+    private readonly IRepository _repository;
 
-    public JWTService(IConfiguration configuration)
+    public JWTService(IConfiguration configuration, IRepository repository)
     {
         _configuration = configuration;
+        _repository = repository;
     }
     public string GenerateToken(User user)
     {
@@ -41,6 +45,69 @@ public class JWTService : IJWTService
 
     public string GenerateRefreshToken(User user)
     {
-        throw new NotImplementedException();
+        var refreshToken = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            subject: new ClaimsIdentity(new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            }),
+            expires: DateTime.UtcNow.AddHours(24), // You can adjust the expiration time for refresh tokens.
+            signingCredentials: new SigningCredentials(
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:RefreshTokenKey"]!)),
+                SecurityAlgorithms.HmacSha256)
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(refreshToken);
+    }
+    
+    public string? ValidateToken(string? token)
+    {
+        if (token == null)
+            return null;
+
+        var isTokenValid = TryValidateToken(token, out var principal);
+        var userId = principal?.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+
+        if (!isTokenValid || !IsRefreshTokenExistsForUser(userId, token))
+        {
+            return null;
+        }
+
+        return userId;
+    }
+
+    private bool TryValidateToken(string token, out ClaimsPrincipal principal)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+
+        try
+        {
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                ClockSkew = TimeSpan.Zero
+            };
+
+            principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+
+            return true;
+        }
+        catch
+        {
+            principal = null;
+            return false;
+        }
+    }
+
+    private bool IsRefreshTokenExistsForUser(string? userId, string token)
+    {
+        return _repository.GetById<User>(userId)?.RefreshToken == token;
     }
 }
