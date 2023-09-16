@@ -3,6 +3,7 @@ using System;
 using IdentityService.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityService.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230916095530_made_field_refreshToke_nullable")]
+    partial class made_field_refreshToke_nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace IdentityService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("IdentityService.Domain.Models.Claim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Claim");
+                });
 
             modelBuilder.Entity("IdentityService.Domain.Models.Role", b =>
                 {
@@ -38,32 +56,27 @@ namespace IdentityService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("397e34fc-8a3a-4f56-9bdd-5e71429884a3"),
-                            IsActive = true,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("ccb0ad8f-5080-410a-bf1e-19e97fcd9cbf"),
-                            IsActive = true,
-                            Name = "Recruiter"
-                        },
-                        new
-                        {
-                            Id = new Guid("280fc4c3-9bf1-4799-98ed-2b776ab1929a"),
-                            IsActive = true,
-                            Name = "Applicant"
-                        },
-                        new
-                        {
-                            Id = new Guid("7c365820-3447-4147-a839-2d1768a3ae23"),
-                            IsActive = true,
-                            Name = "CompanyOwner"
-                        });
+            modelBuilder.Entity("IdentityService.Domain.Models.RoleClaim", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClaimId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClaimId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RoleClaim");
                 });
 
             modelBuilder.Entity("IdentityService.Domain.Models.User", b =>
@@ -109,6 +122,21 @@ namespace IdentityService.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("IdentityService.Domain.Models.RoleClaim", b =>
+                {
+                    b.HasOne("IdentityService.Domain.Models.Claim", null)
+                        .WithMany("RoleClaim")
+                        .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityService.Domain.Models.Role", null)
+                        .WithMany("RoleClaim")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("IdentityService.Domain.Models.User", b =>
                 {
                     b.HasOne("IdentityService.Domain.Models.Role", "Role")
@@ -118,6 +146,16 @@ namespace IdentityService.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("IdentityService.Domain.Models.Claim", b =>
+                {
+                    b.Navigation("RoleClaim");
+                });
+
+            modelBuilder.Entity("IdentityService.Domain.Models.Role", b =>
+                {
+                    b.Navigation("RoleClaim");
                 });
 #pragma warning restore 612, 618
         }

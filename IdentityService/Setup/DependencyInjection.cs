@@ -22,6 +22,11 @@ public static class DependencyInjection
         services.AddScoped<IRepository, Repository>();
         services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = appConfiguration.GetConnectionString("Redis");
+            options.InstanceName = "IdentityService";
+        });
         return services;
     }
 }

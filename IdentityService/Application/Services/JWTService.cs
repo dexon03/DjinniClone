@@ -1,12 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using Core.Database;
 using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 using Claim = System.Security.Claims.Claim;
+using JwtConstants = IdentityService.Domain.Constants.JwtConstants;
 
 namespace IdentityService.Application.Services;
 
@@ -36,7 +36,7 @@ public class JWTService : IJWTService
             _configuration["Jwt:Issuer"],
             _configuration["Jwt:Audience"],
             claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.Now.AddHours(JwtConstants.TokenExpirationTimeInHours),
             signingCredentials: signingCredentials);
 
 
@@ -53,7 +53,7 @@ public class JWTService : IJWTService
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             }),
-            expires: DateTime.UtcNow.AddHours(24), // You can adjust the expiration time for refresh tokens.
+            expires: DateTime.UtcNow.AddHours(JwtConstants.RefreshTokenExpirationTimeInHours),
             signingCredentials: new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:RefreshTokenKey"]!)),
                 SecurityAlgorithms.HmacSha256)
@@ -91,7 +91,6 @@ public class JWTService : IJWTService
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                 ClockSkew = TimeSpan.Zero
             };
 

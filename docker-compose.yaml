@@ -10,6 +10,14 @@
   
   
 services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - IdentityService
   identity-postgres:
     image: postgres
     container_name: identity-postgres

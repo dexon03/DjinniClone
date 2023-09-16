@@ -2,6 +2,7 @@ using Core.ExceptionHandler;
 using Core.Logging;
 using IdentityService.Database;
 using IdentityService.Database.AutoMigrations;
+using IdentityService.Domain.Models;
 using IdentityService.Setup;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
