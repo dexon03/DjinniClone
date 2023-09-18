@@ -1,8 +1,9 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.JsonWebTokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Core.Middlewares;
 
@@ -20,16 +21,18 @@ public class CheckTokenInCacheMiddleware
         var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         if (token != null)
         {
-            var id = httpContext.User.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var id = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
             var cache = httpContext.RequestServices.GetRequiredService<IDistributedCache>();
             var cachedToken = await cache.GetStringAsync(id);
-            if (cachedToken != null)
+            if (cachedToken != null && cachedToken == token)
             {
                 await _next.Invoke(httpContext);
             }
             else
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return;
             }
         }
         await _next.Invoke(httpContext);

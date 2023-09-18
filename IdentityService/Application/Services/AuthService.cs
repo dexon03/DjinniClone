@@ -2,12 +2,14 @@
 using System.Text;
 using Core.Database;
 using Core.Exceptions;
+using FluentValidation;
 using IdentityService.Application.Utilities;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
 using Microsoft.Extensions.Caching.Distributed;
+using ValidationException = Core.Exceptions.ValidationException;
 
 namespace IdentityService.Application.Services;
 
@@ -17,16 +19,26 @@ public class AuthService : IAuthService
     private readonly IJWTService _jwtService;
     private readonly IRepository _repository;
     private readonly IDistributedCache _cache;
+    private readonly IValidator<RegisterRequest> _registerValidator;
+    private readonly IValidator<LoginRequest> _loginValidator;
 
-    public AuthService(UserManager userManager, IJWTService jwtService, IRepository repository, IDistributedCache cache)
+    public AuthService(UserManager userManager, 
+        IJWTService jwtService, 
+        IRepository repository, 
+        IDistributedCache cache,
+        IValidator<RegisterRequest> registerValidator,
+        IValidator<LoginRequest> loginValidator)
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _repository = repository;
         _cache = cache;
+        _registerValidator = registerValidator;
+        _loginValidator = loginValidator;
     }
-    public async Task<JwtResponse> LoginAsync(LoginRequest request)
+    public async Task<JwtResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {
+        await ValidateRequest(request, _loginValidator, cancellationToken);
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (!await IsLoginRequestValid(user, request.Password))
         {
@@ -40,35 +52,26 @@ public class AuthService : IAuthService
         return token;
     }
 
-    public async Task<JwtResponse> RegisterAsync(RegisterRequest request)
+
+    public async Task<JwtResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        var passwordSalt = PasswordUtility.CreatePasswordSalt();
-        var user = new User
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
-            PasswordSalt = passwordSalt,
-            PasswordHash = PasswordUtility.GetHashedPassword(request.Password, passwordSalt),
-            RoleId = request.RoleId
-        };
-        
-        var userFromDb = await _repository.CreateAsync(user);
-        await _repository.SaveChangesAsync();
-        var token = GetNewTokenForUser(userFromDb);
+        await ValidateRequest(request, _registerValidator, cancellationToken);
+
+        // TODO: GET RID OF TWO SAVE CHANGES IN ROW
+        var user = await AddUserToDb(request, cancellationToken);
+        var token = GetNewTokenForUser(user);
         
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         
         return token;
     }
 
-    public Task<JwtResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
+    public Task<JwtResponse> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<JwtResponse> RefreshTokenAsync(string refreshToken)
+    public async Task<JwtResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var userId = _jwtService.ValidateToken(refreshToken);
         if (userId == null)
@@ -76,7 +79,7 @@ public class AuthService : IAuthService
             throw new ExceptionWithStatusCode("Invalid refresh token", HttpStatusCode.Unauthorized);
         }
         
-        var user = await _repository.GetByIdAsync<User>(userId);
+        var user = await _userManager.FindByIdAsync(Guid.Parse(userId));
         var token = GetNewTokenForUser(user);
         
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
@@ -97,6 +100,33 @@ public class AuthService : IAuthService
             AccessToken = accessToken,
             RefreshToken = newRefreshToken
         };
+    }
+    
+    private async Task<User> AddUserToDb(RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var passwordSalt = PasswordUtility.CreatePasswordSalt();
+        var user = new User
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            PasswordSalt = passwordSalt,
+            PasswordHash = PasswordUtility.GetHashedPassword(request.Password, passwordSalt),
+            RoleId = request.RoleId,
+            Role = await _repository.GetByIdAsync<Role>(request.RoleId)
+        };
+        var userFromDb = await _repository.CreateAsync(user);
+        await _repository.SaveChangesAsync(cancellationToken);
+        return userFromDb;
+    }
+    private async Task ValidateRequest<T>(T request, IValidator<T> validator, CancellationToken cancellationToken)
+    {
+        var result = await validator.ValidateAsync(request, cancellationToken);
+        if (!result.IsValid)
+        {
+            throw new ValidationException(result.Errors);
+        }
     }
     
     private async Task<bool> IsLoginRequestValid(User? user, string password)

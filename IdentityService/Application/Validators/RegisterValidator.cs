@@ -14,6 +14,11 @@ public class RegisterValidator : AbstractValidator<RegisterRequest>
             .WithMessage("First name is required")
             .MaximumLength(50)
             .WithMessage("First name must not exceed 50 characters");
+        RuleFor(x => x.LastName)
+            .NotEmpty()
+            .WithMessage("Last name is required")
+            .MaximumLength(50)
+            .WithMessage("Last name must not exceed 50 characters");
         RuleFor(x => x.Email)
             .NotEmpty()
             .EmailAddress()
@@ -31,6 +36,6 @@ public class RegisterValidator : AbstractValidator<RegisterRequest>
             .Matches(@"[A-Z]+").WithMessage("Your password must contain at least one uppercase letter.")
             .Matches(@"[a-z]+").WithMessage("Your password must contain at least one lowercase letter.")
             .Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.")
-            .Matches(@"[\!\?\*\.]+").WithMessage("Your password must contain at least one non alphanumeric character.");
+            .Matches(@"[\!\?\*\._]+").WithMessage("Your password must contain at least one non alphanumeric character.");
     }
 }

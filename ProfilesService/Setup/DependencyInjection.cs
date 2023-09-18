@@ -23,6 +23,11 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(ApplicationAssembly);
         services.AddAutoMapper(ApplicationAssembly);
         services.AddScoped<IRepository, Repository>();
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = appConfiguration.GetConnectionString("Redis");
+            options.InstanceName = "IdentityService";
+        });
         services.RegisterDomainServices();
         return services;
     }

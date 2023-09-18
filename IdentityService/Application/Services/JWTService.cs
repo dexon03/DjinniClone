@@ -68,7 +68,7 @@ public class JWTService : IJWTService
             return null;
 
         var isTokenValid = TryValidateToken(token, out var principal);
-        var userId = principal?.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+        var userId = principal?.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
         if (!isTokenValid || !IsRefreshTokenExistsForUser(userId, token))
         {
@@ -81,7 +81,7 @@ public class JWTService : IJWTService
     private bool TryValidateToken(string token, out ClaimsPrincipal principal)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+        var key = Encoding.UTF8.GetBytes(_configuration["JWT:RefreshTokenKey"]);
 
         try
         {
@@ -91,7 +91,8 @@ public class JWTService : IJWTService
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ClockSkew = TimeSpan.Zero
+                ValidAudience = _configuration["Jwt:Audience"],
+                ValidIssuer = _configuration["Jwt:Issuer"],
             };
 
             principal = tokenHandler.ValidateToken(token, validationParameters, out _);
@@ -107,6 +108,7 @@ public class JWTService : IJWTService
 
     private bool IsRefreshTokenExistsForUser(string? userId, string token)
     {
-        return _repository.GetById<User>(userId)?.RefreshToken == token;
+        Guid.TryParse(userId, out Guid userIdGuid);
+        return _repository.GetById<User>(userIdGuid)?.RefreshToken == token;
     }
 }
