@@ -46,7 +46,7 @@ public class AuthController : ControllerBase
     [HttpPost("forgotPassword")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
     {
-        var response = await _authService.ForgotPasswordAsync(request);
-        return Ok(response);
+        await _authService.ForgotPasswordAsync(request);
+        return Ok();
     }
 }

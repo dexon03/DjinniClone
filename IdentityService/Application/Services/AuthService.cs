@@ -66,9 +66,17 @@ public class AuthService : IAuthService
         return token;
     }
 
-    public Task<JwtResponse> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
+    public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+        {
+            throw new ExceptionWithStatusCode("User with this email does not exist", HttpStatusCode.NotFound);
+        }
+
+        user.PasswordHash = PasswordUtility.GetHashedPassword(request.NewPassword, user.PasswordSalt);
+        _repository.Update(user);
+        await _repository.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<JwtResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)

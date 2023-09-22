@@ -109,6 +109,6 @@ public class JWTService : IJWTService
     private bool IsRefreshTokenExistsForUser(string? userId, string token)
     {
         Guid.TryParse(userId, out Guid userIdGuid);
-        return _repository.GetById<User>(userIdGuid)?.RefreshToken == token;
+        return _repository.Any<User>(x => x.Id == userIdGuid && x.RefreshToken == token);
     }
 }
