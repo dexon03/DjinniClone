@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 namespace VacanciesService.Controllers;
@@ -26,6 +27,7 @@ public class VacancyController : BaseController
         return Ok(result);
     }
     
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVacancy(Guid id)
     {
@@ -33,6 +35,7 @@ public class VacancyController : BaseController
         return Ok();
     }
     
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPost]
     public async Task<IActionResult> CreateVacancy(VacancyCreateDto vacancy)
     {
@@ -40,6 +43,7 @@ public class VacancyController : BaseController
         return Ok(createdVacancy);
     }
     
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPut]
     public async Task<IActionResult> UpdateVacancy(VacancyUpdateDto vacancy)
     {
@@ -47,6 +51,7 @@ public class VacancyController : BaseController
         return Ok(updatedVacancy);
     }
     
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPut("{id}/activate-deactivate")]
     public async Task<IActionResult> ActivateDeactivateVacancy(Guid id)
     {

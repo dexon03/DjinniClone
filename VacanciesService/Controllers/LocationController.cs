@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
@@ -28,6 +29,7 @@ public class LocationController : BaseController
         return Ok(result);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(LocationCreateDto location)
     {
@@ -35,6 +37,7 @@ public class LocationController : BaseController
         return Ok(result);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update(LocationUpdateDto location)
     {
@@ -42,6 +45,7 @@ public class LocationController : BaseController
         return Ok(result);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
@@ -49,6 +53,7 @@ public class LocationController : BaseController
         return Ok();
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpDelete("many")]
     public async Task<IActionResult> DeleteMany(Location[] locations)
     {

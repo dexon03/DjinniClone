@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
@@ -28,6 +29,7 @@ public class SkillController : BaseController
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPost]
     public async Task<IActionResult> Create(SkillCreateDto skill)
     {
@@ -35,6 +37,7 @@ public class SkillController : BaseController
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPut]
     public async Task<IActionResult> Update(SkillUpdateDto skill)
     {
@@ -42,6 +45,7 @@ public class SkillController : BaseController
         return Ok(result);
     }
     
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
@@ -49,6 +53,7 @@ public class SkillController : BaseController
         return Ok();
     }
     
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpDelete("many")]
     public async Task<IActionResult> DeleteMany(Skill[] skills)
     {

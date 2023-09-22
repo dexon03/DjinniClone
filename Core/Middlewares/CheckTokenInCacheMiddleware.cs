@@ -25,11 +25,7 @@ public class CheckTokenInCacheMiddleware
             var id = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
             var cache = httpContext.RequestServices.GetRequiredService<IDistributedCache>();
             var cachedToken = await cache.GetStringAsync(id);
-            if (cachedToken != null && cachedToken == token)
-            {
-                await _next.Invoke(httpContext);
-            }
-            else
+            if (cachedToken == null || cachedToken != token)
             {
                 httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return;

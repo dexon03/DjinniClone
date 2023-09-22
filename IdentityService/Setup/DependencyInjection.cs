@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 using Core.Database;
 using FluentValidation;
 using IdentityService.Application.Services;
@@ -6,7 +7,9 @@ using IdentityService.Database;
 using IdentityService.Database.AutoMigrations;
 using IdentityService.Database.Repository;
 using IdentityService.Domain.Contracts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Setup;
 
@@ -27,6 +30,20 @@ public static class DependencyInjection
             options.Configuration = appConfiguration.GetConnectionString("Redis");
             options.InstanceName = "IdentityService";
         });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = appConfiguration["Jwt:Issuer"],
+                    ValidAudience = appConfiguration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
+                };
+            });
         return services;
     }
 }
