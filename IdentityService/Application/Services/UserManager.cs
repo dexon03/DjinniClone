@@ -13,6 +13,25 @@ public class UserManager
     {
         _repository = repository;
     }
+
+    public async Task<List<User>> GetUsers()
+    {
+        return await (from u in _repository.GetAll<User>()
+            join r in _repository.GetAll<Role>() on u.RoleId equals r.Id
+            select new User
+            {
+                Id = u.Id,
+                Email = u.Email,
+                PasswordHash = u.PasswordHash,
+                PasswordSalt = u.PasswordSalt,
+                Role = r,
+                RoleId = r.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                PhoneNumber = u.PhoneNumber,
+                RefreshToken = u.RefreshToken,
+            }).ToListAsync(); 
+    }
     
     public async Task<User?> FindByEmailAsync(string email)
     {

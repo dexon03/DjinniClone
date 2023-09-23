@@ -21,13 +21,15 @@ public class AuthService : IAuthService
     private readonly IDistributedCache _cache;
     private readonly IValidator<RegisterRequest> _registerValidator;
     private readonly IValidator<LoginRequest> _loginValidator;
+    private readonly IValidator<ForgotPasswordRequest> _forgotPasswordValidator;
 
     public AuthService(UserManager userManager, 
         IJWTService jwtService, 
         IRepository repository, 
         IDistributedCache cache,
         IValidator<RegisterRequest> registerValidator,
-        IValidator<LoginRequest> loginValidator)
+        IValidator<LoginRequest> loginValidator,
+        IValidator<ForgotPasswordRequest> forgotPasswordValidator)
     {
         _userManager = userManager;
         _jwtService = jwtService;
@@ -35,6 +37,7 @@ public class AuthService : IAuthService
         _cache = cache;
         _registerValidator = registerValidator;
         _loginValidator = loginValidator;
+        _forgotPasswordValidator = forgotPasswordValidator;
     }
     public async Task<JwtResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {
@@ -68,6 +71,8 @@ public class AuthService : IAuthService
 
     public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
     {
+        await ValidateRequest(request, _forgotPasswordValidator, cancellationToken);
+        
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
