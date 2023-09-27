@@ -1,5 +1,6 @@
 using Core.ExceptionHandler;
 using Core.Logging;
+using FastEndpoints;
 using IdentityService.Database;
 using IdentityService.Database.AutoMigrations;
 using IdentityService.Domain.Models;
@@ -38,7 +39,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseFastEndpoints();
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();

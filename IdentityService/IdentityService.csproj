@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FastEndpoints" Version="5.17.1.25-beta" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
@@ -29,6 +30,8 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+
 
 
 
