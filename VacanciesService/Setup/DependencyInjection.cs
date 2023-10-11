@@ -1,7 +1,10 @@
 ﻿using System.Reflection;
+using System.Text;
 using Core.Database;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using VacanciesService.Application.Services;
 using VacanciesService.Database;
 using VacanciesService.Database.AutoMigrations;
@@ -23,7 +26,26 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(ApplicationAssembly);
         services.AddAutoMapper(ApplicationAssembly);
         services.AddScoped<IRepository, Repository>();
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = appConfiguration.GetConnectionString("Redis");
+            options.InstanceName = "IdentityService";
+        });
         services.RegisterDomainServices();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = appConfiguration["Jwt:Issuer"],
+                    ValidAudience = appConfiguration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
+                };
+            });
         return services;
     }
     

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 
 namespace ProfilesService.Controllers;
 
+[Authorize]
 public class ProfileController : BaseController
 {
     private readonly IProfileService _profileService;

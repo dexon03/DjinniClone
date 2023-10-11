@@ -62,7 +62,7 @@ public abstract class BaseRepository
 
     public virtual IQueryable<T> GetAll<T>() where T : class
     {
-        return DbContext.Set<T>();
+        return DbContext.Set<T>().AsNoTracking();
     }
 
     public virtual int Count<T>(Expression<Func<T, bool>>? predicate = null) where T : class

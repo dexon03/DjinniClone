@@ -1,5 +1,6 @@
 using Core.ExceptionHandler;
 using Core.Logging;
+using Core.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Database;
 using ProfilesService.Database.AutoMigrations;
@@ -35,10 +36,12 @@ app.UseSerilogLogging();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseMiddleware<CheckTokenInCacheMiddleware>();
 
 app.Run();

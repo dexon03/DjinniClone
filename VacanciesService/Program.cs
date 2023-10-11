@@ -1,5 +1,6 @@
 using Core.ExceptionHandler;
 using Core.Logging;
+using Core.Middlewares;
 using Serilog;
 using VacanciesService.Database.AutoMigrations;
 using VacanciesService.Setup;
@@ -34,10 +35,12 @@ app.UseSerilogLogging();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseMiddleware<CheckTokenInCacheMiddleware>();
 
 app.Run();
