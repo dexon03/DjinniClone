@@ -1,7 +1,4 @@
-﻿
-
-using System.ComponentModel;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;

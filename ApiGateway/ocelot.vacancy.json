@@ -1,0 +1,172 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/vacancy/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vacancy/{id}",
+      "UpstreamHttpMethod": ["GET", "DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vacancy",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/vacancy",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/vacancy/{id}/activate-deactivate",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vacancy/{id}/activate-deactivate",
+      "UpstreamHttpMethod": ["PUT"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/skill",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/skill",
+      "UpstreamHttpMethod": ["GET","POST", "PUT"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/skill/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/skill/{id}",
+      "UpstreamHttpMethod": ["GET","DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/skill/many",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/skill/many",
+      "UpstreamHttpMethod": ["DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/location",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/location",
+      "UpstreamHttpMethod": ["GET","POST", "PUT"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/location/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/location/{id}",
+      "UpstreamHttpMethod": ["GET","DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/location/many",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/location/many",
+      "UpstreamHttpMethod": ["DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/company",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/company",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/company/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/company/{id}",
+      "UpstreamHttpMethod": ["GET", "DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/category",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/category",
+      "UpstreamHttpMethod": ["GET", "POST", "PUT"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/category/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/category/{id}",
+      "UpstreamHttpMethod": ["GET", "DELETE"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/category/many",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vacancies-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/category/many",
+      "UpstreamHttpMethod": ["DELETE"]
+    }
+  ]
+}

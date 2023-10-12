@@ -10,6 +10,20 @@
   
   
 services:
+  api-gateway:
+    image: api-gateway
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: ./ApiGateway/Dockerfile
+    working_dir: "/app"
+    ports:
+      - "5000:80"
+    networks:
+      - IdentityService
+      - ProfileService
+      - VacanciesProfile
+      - AnalyticsService
   redis:
     image: redis
     container_name: redis
