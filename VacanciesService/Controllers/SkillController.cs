@@ -45,7 +45,7 @@ public class SkillController : BaseController
         return Ok(result);
     }
     
-    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
+    // [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

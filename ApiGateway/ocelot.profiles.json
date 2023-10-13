@@ -10,7 +10,28 @@
         }
       ],
       "UpstreamPathTemplate": "/api/profile/location",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT"]
+      "UpstreamHttpMethod": ["GET"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/location",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "profile-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/profile/location",
+      "UpstreamHttpMethod": ["POST", "PUT"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/location/{id}",
@@ -22,7 +43,28 @@
         }
       ],
       "UpstreamPathTemplate": "/api/profile/location/{id}",
-      "UpstreamHttpMethod": ["GET", "DELETE"]
+      "UpstreamHttpMethod": ["GET"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/location/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "profile-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/profile/location/{id}",
+      "UpstreamHttpMethod": ["DELETE"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/location/many",
@@ -34,7 +76,13 @@
         }
       ],
       "UpstreamPathTemplate": "/api/profile/location/many",
-      "UpstreamHttpMethod": ["DELETE"]
+      "UpstreamHttpMethod": ["DELETE"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/profile",
@@ -46,7 +94,25 @@
         }
       ],
       "UpstreamPathTemplate": "/api/profile",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT"]
+      "UpstreamHttpMethod": ["GET"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/profile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "profile-service",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/profile",
+      "UpstreamHttpMethod": ["POST", "PUT"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/profile/{id}",
@@ -58,7 +124,10 @@
         }
       ],
       "UpstreamPathTemplate": "/api/profile/{id}",
-      "UpstreamHttpMethod": ["GET", "DELETE"]
+      "UpstreamHttpMethod": ["GET", "DELETE"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     }
   ]
 }

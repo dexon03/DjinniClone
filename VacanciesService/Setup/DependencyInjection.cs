@@ -32,20 +32,20 @@ public static class DependencyInjection
             options.InstanceName = "IdentityService";
         });
         services.RegisterDomainServices();
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
-            {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = appConfiguration["Jwt:Issuer"],
-                    ValidAudience = appConfiguration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
-                };
-            });
+        // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        //     .AddJwtBearer(opt =>
+        //     {
+        //         opt.TokenValidationParameters = new TokenValidationParameters
+        //         {
+        //             ValidateIssuer = true,
+        //             ValidateAudience = true,
+        //             ValidateLifetime = true,
+        //             ValidateIssuerSigningKey = true,
+        //             ValidIssuer = appConfiguration["Jwt:Issuer"],
+        //             ValidAudience = appConfiguration["Jwt:Audience"],
+        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
+        //         };
+        //     });
         return services;
     }
     
