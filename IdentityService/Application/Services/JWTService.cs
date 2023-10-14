@@ -30,7 +30,7 @@ public class JWTService : IJWTService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim(ClaimTypes.NameIdentifier, user.Email),
-            new Claim("Role", user.Role.Name)
+            new Claim(ClaimTypes.Role, user.Role.Name)
         };
         var token = new JwtSecurityToken(
             _configuration["Jwt:Issuer"],

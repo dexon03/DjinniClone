@@ -28,9 +28,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,Recruiter,CompanyOwner"
       }
     },
     {
@@ -61,9 +58,6 @@
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,Recruiter,CompanyOwner"
       }
     },
     {
@@ -79,9 +73,6 @@
       "UpstreamHttpMethod": ["PUT"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,Recruiter,CompanyOwner"
       }
     },
     {
@@ -112,9 +103,6 @@
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,Recruiter,CompanyOwner"
       }
     },
     {
@@ -142,9 +130,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,Recruiter,CompanyOwner"
       }
     },
     {
@@ -160,9 +145,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,Recruiter,CompanyOwner"
       }
     },
     {
@@ -193,9 +175,6 @@
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
       }
     },
     {
@@ -226,9 +205,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
       }
     },
     {
@@ -244,9 +220,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
       }
     },
     {
@@ -277,9 +250,6 @@
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin,CompanyOwner"
       }
     },
     {
@@ -310,9 +280,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin, CompanyOwner"
       }
     },
     {
@@ -328,9 +295,6 @@
       "UpstreamHttpMethod": ["GET"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
       }
     },
     {
@@ -346,9 +310,6 @@
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
       }
     },
     {
@@ -379,9 +340,6 @@
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
       }
     },
     {
@@ -396,10 +354,8 @@
       "UpstreamPathTemplate": "/api/category/many",
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     }
   ]

@@ -27,7 +27,7 @@ public class VacancyController : BaseController
         return Ok(result);
     }
     
-    // [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
+    [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteVacancy(Guid id)
     {

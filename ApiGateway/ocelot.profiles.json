@@ -12,7 +12,8 @@
       "UpstreamPathTemplate": "/api/profile/location",
       "UpstreamHttpMethod": ["GET"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -27,10 +28,8 @@
       "UpstreamPathTemplate": "/api/profile/location",
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -45,7 +44,8 @@
       "UpstreamPathTemplate": "/api/profile/location/{id}",
       "UpstreamHttpMethod": ["GET"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -60,10 +60,8 @@
       "UpstreamPathTemplate": "/api/profile/location/{id}",
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -78,10 +76,8 @@
       "UpstreamPathTemplate": "/api/profile/location/many",
       "UpstreamHttpMethod": ["DELETE"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -96,7 +92,8 @@
       "UpstreamPathTemplate": "/api/profile",
       "UpstreamHttpMethod": ["GET"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -111,7 +108,8 @@
       "UpstreamPathTemplate": "/api/profile",
       "UpstreamHttpMethod": ["POST", "PUT"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     },
     {
@@ -126,7 +124,8 @@
       "UpstreamPathTemplate": "/api/profile/{id}",
       "UpstreamHttpMethod": ["GET", "DELETE"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     }
   ]

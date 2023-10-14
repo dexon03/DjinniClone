@@ -60,10 +60,8 @@
       "UpstreamPathTemplate": "/api/user",
       "UpstreamHttpMethod": ["GET"],
       "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "Role": "Admin"
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
       }
     }
   ]
