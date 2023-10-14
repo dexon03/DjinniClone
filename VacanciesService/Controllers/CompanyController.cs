@@ -47,5 +47,4 @@ public class CompanyController : BaseController
         await _companyService.DeleteCompany(id);
         return Ok();
     }
-    
 }
