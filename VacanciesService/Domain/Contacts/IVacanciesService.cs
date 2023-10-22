@@ -5,7 +5,7 @@ namespace VacanciesService.Domain.Contacts;
 
 public interface IVacanciesService
 {
-    Task<List<Vacancy>> GetAllVacancies(CancellationToken cancellationToken = default);
+    List<VacancyGetAllDto> GetAllVacancies(CancellationToken cancellationToken = default);
     Task<Vacancy> GetVacancyById(Guid id, CancellationToken cancellationToken = default);
     Task<Vacancy> CreateVacancy(VacancyCreateDto vacancy, CancellationToken cancellationToken = default);
     Task<Vacancy> UpdateVacancy(VacancyUpdateDto vacancy, CancellationToken cancellationToken = default);

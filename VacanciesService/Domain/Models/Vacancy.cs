@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using VacanciesService.Domain.Enums;
 
 namespace VacanciesService.Domain.Models;
 
@@ -12,6 +13,8 @@ public class Vacancy
     public string Title { get; set; }
     public string PositionTitle { get; set; }
     public string Description { get; set; }
+    public AttendanceMode AttendanceMode { get; set; }
+    public Experience Experience { get; set; }
     public double Salary { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }

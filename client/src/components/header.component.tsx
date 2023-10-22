@@ -22,15 +22,15 @@ export function HeaderComponent() {
     const pages : NavRoute[] = [
         {
             name: 'Offers',
-            link: '/offers'
+            route: '/offers'
         },
         {
             name: 'Vacancies',
-            link: '/vacancy',
+            route: '/vacancy',
         },
         {
             name: 'Salaries',
-            link: '/salaries',
+            route: '/salaries',
         }
     ]
     const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -86,7 +86,7 @@ export function HeaderComponent() {
                                 textDecoration: 'none',
                             }}
                         >
-                            Djinni
+                            JobSearchApp
                         </Typography>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -118,7 +118,7 @@ export function HeaderComponent() {
                                     display: { xs: 'block', md: 'none' },
                                 }}
                             >
-                                {pages.map<NavRoute>((page) => (
+                                {pages.map((page) => (
                                     <MenuItem key={page.name} onClick={handleCloseNavMenu}>
                                         <Typography textAlign="center">{page.name}</Typography>
                                     </MenuItem>
@@ -141,11 +141,11 @@ export function HeaderComponent() {
                                 textDecoration: 'none',
                             }}
                         >
-                            Djinni
+                            JobSearchApp
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                            {pages.map((page: NavRoute) => (
-                                <NavLink to={page.link} className="nav-link">
+                            {pages.map((page) => (
+                                <NavLink to={page.route} className="nav-link">
                                     <Typography
                                         variant="h6"
                                         noWrap

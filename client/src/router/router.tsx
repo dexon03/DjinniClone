@@ -1,5 +1,6 @@
 import {createBrowserRouter, RouteObject} from "react-router-dom";
 import App from "../App.tsx";
+import {VacancyPage} from "../pages/vacancy.page.tsx";
 
 const routes : RouteObject[] = [{
     path: "/",
@@ -7,7 +8,7 @@ const routes : RouteObject[] = [{
     children:[
         {
             path: "/vacancy",
-            element: <div>vacancy</div>
+            element: <VacancyPage />
         },
         {
             path: "/profile",
