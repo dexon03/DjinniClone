@@ -5,7 +5,7 @@ function App() {
   return (
     <>
         <HeaderComponent />
-        <Container>
+        <Container className="mt-5">
             <Outlet />
         </Container>
     </>

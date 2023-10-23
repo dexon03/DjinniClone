@@ -21,9 +21,9 @@ public class VacancyController : BaseController
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetVacancies()
+    public IActionResult GetVacancies()
     {
-        var result = await _vacanciesService.GetAllVacancies();
+        var result = _vacanciesService.GetAllVacancies();
         return Ok(result);
     }
     

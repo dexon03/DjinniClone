@@ -1,8 +1,8 @@
-import {RestClient} from "../api/rest.client.ts";
-import {ApiServicesRoutes} from "../api/api.services.routes.ts";
+import {RestClient} from "../../api/rest.client.ts";
+import {ApiServicesRoutes} from "../../api/api.services.routes.ts";
 import {useEffect} from "react";
-import {VacancyGetAll} from "../models/vacany/vacancy.getall.dto.ts";
-import {VacancyTile} from "../components/vacancy.tile.tsx";
+import {VacancyGetAll} from "../../models/vacany/vacancy.getall.dto.ts";
+import {VacancyTile} from "../../components/vacancy.tile.tsx";
 
 export function VacancyPage() {
     const url = ApiServicesRoutes.vacancy;

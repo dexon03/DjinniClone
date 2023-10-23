@@ -1,5 +1,5 @@
 export const ApiServicesRoutes  = {
-    vacancy : '/vacancy',
-    profile : '/profile',
-    auth : '/auth',
+    vacancy : '/api/vacancy',
+    profile : '/api/profile',
+    auth : '/api/auth',
 }

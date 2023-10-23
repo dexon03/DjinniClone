@@ -1,6 +1,8 @@
 import {createBrowserRouter, RouteObject} from "react-router-dom";
 import App from "../App.tsx";
-import {VacancyPage} from "../pages/vacancy.page.tsx";
+import {VacancyPage} from "../pages/vacancy/vacancy.page.tsx";
+import LoginPage from "../pages/auth/login.page.tsx";
+import RegisterPage from "../pages/auth/register.page.tsx";
 
 const routes : RouteObject[] = [{
     path: "/",
@@ -16,11 +18,11 @@ const routes : RouteObject[] = [{
         },
         {
             path: "/login",
-            element: <div>login</div>
+            element: <LoginPage />
         },
         {
             path: "/register",
-            element: <div>register</div>
+            element: <RegisterPage />
         },
         {
             path: "/salaries",
