@@ -13,7 +13,7 @@ export class RestClient {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body
+            body: JSON.stringify(body)
         });
         return await response.json();
     }
@@ -24,7 +24,7 @@ export class RestClient {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body
+            body: JSON.stringify(body)
         });
         return await response.json();
     }
