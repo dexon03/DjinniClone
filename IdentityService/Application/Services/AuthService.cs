@@ -8,6 +8,7 @@ using IdentityService.Domain.Constants;
 using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using ValidationException = Core.Exceptions.ValidationException;
 
@@ -59,11 +60,11 @@ public class AuthService : IAuthService
     public async Task<JwtResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         await ValidateRequest(request, _registerValidator, cancellationToken);
-
-        // TODO: GET RID OF TWO SAVE CHANGES IN ROW
-        var user = await AddUserToDb(request, cancellationToken);
-        var token = GetNewTokenForUser(user);
         
+        var user = await CreateUser(request, cancellationToken);
+        var token = GetNewTokenForUser(user);
+        await _repository.CreateAsync(user);
+        await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         
         return token;
@@ -105,8 +106,6 @@ public class AuthService : IAuthService
         var accessToken = _jwtService.GenerateToken(user);
         var newRefreshToken = _jwtService.GenerateRefreshToken(user);
         user.RefreshToken = newRefreshToken;
-        _repository.Update(user);
-        _repository.SaveChanges();
 
         return new JwtResponse
         {
@@ -115,9 +114,14 @@ public class AuthService : IAuthService
         };
     }
     
-    private async Task<User> AddUserToDb(RegisterRequest request, CancellationToken cancellationToken)
+    private async Task<User> CreateUser(RegisterRequest request, CancellationToken cancellationToken)
     {
         var passwordSalt = PasswordUtility.CreatePasswordSalt();
+        var role = await _repository.GetAsync<Role>(r => r.Name == request.Role.ToString() && r.IsActive);
+        if (role == null)
+        {
+            throw new ExceptionWithStatusCode("Role does not exist or no active", HttpStatusCode.BadRequest);
+        }
         var user = new User
         {
             FirstName = request.FirstName,
@@ -126,12 +130,10 @@ public class AuthService : IAuthService
             PhoneNumber = request.PhoneNumber,
             PasswordSalt = passwordSalt,
             PasswordHash = PasswordUtility.GetHashedPassword(request.Password, passwordSalt),
-            RoleId = request.RoleId,
-            Role = await _repository.GetByIdAsync<Role>(request.RoleId)
+            RoleId = role.Id,
+            Role = role,
         };
-        var userFromDb = await _repository.CreateAsync(user);
-        await _repository.SaveChangesAsync(cancellationToken);
-        return userFromDb;
+        return user;
     }
     private async Task ValidateRequest<T>(T request, IValidator<T> validator, CancellationToken cancellationToken)
     {
