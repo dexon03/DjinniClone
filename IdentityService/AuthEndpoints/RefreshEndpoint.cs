@@ -4,7 +4,7 @@ using IdentityService.Domain.Dto;
 
 namespace IdentityService.AuthEndpoints;
 
-public class RefreshEndpoint : Endpoint<string,JwtResponse>
+public class RefreshEndpoint : Endpoint<RefreshTokenRequest,JwtResponse>
 {
     private readonly IAuthService _authService;
 
@@ -19,9 +19,9 @@ public class RefreshEndpoint : Endpoint<string,JwtResponse>
         AllowAnonymous();
     }
     
-    public override async Task HandleAsync(string refreshToken, CancellationToken cancellationToken)
+    public override async Task HandleAsync(RefreshTokenRequest request, CancellationToken cancellationToken)
     {
-        var response = await _authService.RefreshTokenAsync(refreshToken, cancellationToken);
+        var response = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);
         await SendAsync(response, 200, cancellationToken);
     }
 }

@@ -15,11 +15,11 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import 'bootstrap/dist/css/bootstrap.css';
-import {NavRoute} from "../models/nav.route.ts";
-import {NavLink} from "react-router-dom";
+import { NavRoute } from "../models/nav.route.ts";
+import { NavLink } from "react-router-dom";
 
 export function HeaderComponent() {
-    const pages : NavRoute[] = [
+    const pages: NavRoute[] = [
         {
             name: 'Offers',
             route: '/offers'
@@ -38,7 +38,7 @@ export function HeaderComponent() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
     let theme = createTheme({});
-    theme = createTheme(theme,{
+    theme = createTheme(theme, {
         palette: {
             myTheme: theme.palette.augmentColor({
                 color: {
@@ -145,7 +145,7 @@ export function HeaderComponent() {
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             {pages.map((page) => (
-                                <NavLink to={page.route} className="nav-link">
+                                <NavLink key={page.name} to={page.route} className="nav-link">
                                     <Typography
                                         variant="h6"
                                         noWrap
@@ -170,7 +170,7 @@ export function HeaderComponent() {
                             <Button variant="contained" color="success" className="m-3 rounded-5">online</Button>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt="Remy Sharp" />
                                 </IconButton>
                             </Tooltip>
                             <Typography

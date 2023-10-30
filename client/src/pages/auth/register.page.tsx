@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, TextField, Container, Typography, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import {RestClient} from "../../api/rest.client.ts";
 import {JwtResponse} from "../../models/auth/jwt.respone.ts";
@@ -16,7 +16,6 @@ function RegisterPage() {
         setSelectedRole(event.target.value);
     };
 
-
     const restClient : RestClient = new RestClient();
 
     const onSubmit = async (event) => {
@@ -31,7 +30,7 @@ function RegisterPage() {
         } as RegisterModel);
 
         if(token){
-
+            
         };
     }
 

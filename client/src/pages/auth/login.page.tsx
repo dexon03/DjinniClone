@@ -1,6 +1,6 @@
 import { Button, TextField, Container, Typography } from '@mui/material';
 import {Link} from 'react-router-dom';
-import {useState} from "react";
+import {FormEvent, useState} from "react";
 import {RestClient} from "../../api/rest.client.ts";
 import {JwtResponse} from "../../models/auth/jwt.respone.ts";
 import {ApiServicesRoutes} from "../../api/api.services.routes.ts";
@@ -9,14 +9,14 @@ import {LoginModel} from "../../models/auth/login.model.ts";
 function LoginPage({setToken} : {setToken: (token: JwtResponse) => void}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
     const restClient = new RestClient();
-    const onSubmit = async (event) => {
+    const onSubmit = async (event : FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const token = await restClient.post<JwtResponse>(ApiServicesRoutes.auth + '/login', {
             email: email,
             password: password
         } as LoginModel);
-        console.log(token)
         setToken(token);
     }
     return (

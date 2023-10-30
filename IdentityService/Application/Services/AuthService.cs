@@ -50,7 +50,8 @@ public class AuthService : IAuthService
             throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.Unauthorized);
         }
         var token = GetNewTokenForUser(user);
-        
+        _repository.Update(user);
+        await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         
         return token;

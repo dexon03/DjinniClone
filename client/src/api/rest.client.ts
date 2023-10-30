@@ -1,38 +1,37 @@
-import {environment} from "../environment/environment.ts";
+import { environment } from "../environment/environment.ts";
+import api from "./api.ts";
 
 export class RestClient {
-    private readonly apiUrl : string = environment.apiUrl;
+    private readonly apiUrl: string = environment.apiUrl;
     async get<T>(url: string): Promise<T> {
-        const response = await fetch(this.apiUrl + url);
-        return await response.json();
+        const response = await api.get(this.apiUrl + url);
+        if (response.status >= 400) {
+            throw new Error(response.data);
+        }
+        return response.data;
     }
 
     async post<T>(url: string, body: any): Promise<T> {
-        const response = await fetch(this.apiUrl + url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-        return await response.json();
+        const response = await api.post(this.apiUrl + url, body);
+        if (response.status >= 400) {
+            throw new Error(await response.data);
+        }
+        return response.data;
     }
 
     async put<T>(url: string, body: any): Promise<T> {
-        const response = await fetch(this.apiUrl + url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-        return await response.json();
+        const response = await api.put(this.apiUrl + url, body);
+        if (response.status >= 400) {
+            throw new Error(await response.data);
+        }
+        return response.data;
     }
 
     async delete<T>(url: string): Promise<T> {
-        const response = await fetch(this.apiUrl + url, {
-            method: 'DELETE'
-        });
-        return await response.json();
+        const response = await api.delete(this.apiUrl + url);
+        if (response.status >= 400) {
+            throw new Error(await response.data);
+        }
+        return response.data;
     }
 }
