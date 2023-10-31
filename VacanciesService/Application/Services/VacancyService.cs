@@ -53,7 +53,8 @@ public class VacancyService : IVacanciesService
                     location.City,
                     location.Country
                 })
-                .ToList()
+                .ToList();
+        var groupedVacancies = vacancies
                 .GroupBy(v => new
                 {
                     v.Id,
@@ -82,7 +83,7 @@ public class VacancyService : IVacanciesService
                         Country = l.Country
                     })
                 });
-        return vacancies.ToList();
+        return groupedVacancies.ToList();
     }
 
     public async Task<Vacancy> GetVacancyById(Guid id, CancellationToken cancellationToken = default)
@@ -103,7 +104,7 @@ public class VacancyService : IVacanciesService
         {
             throw new ValidationException(validationResult.Errors);
         }
-        var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
+        var vacancyEntity = new Vacancy().MapCreate(vacancy);
         vacancyEntity.CreatedAt = DateTime.Now;
         var result = await _repository.CreateAsync(vacancyEntity);
         await _repository.SaveChangesAsync(cancellationToken);

@@ -21,6 +21,6 @@ public class Vacancy
     public DateTime? UpdatedAt { get; set; }
     public Category Category { get; set; }
     public Company Company { get; set; }
-    public virtual ICollection<LocationVacancy> LocationVacancies { get; set; }
-    public virtual ICollection<VacancySkill> VacancySkills { get; set; }
+    public ICollection<LocationVacancy> LocationVacancy { get; set; }
+    public ICollection<VacancySkill> VacancySkill { get; set; }
 }

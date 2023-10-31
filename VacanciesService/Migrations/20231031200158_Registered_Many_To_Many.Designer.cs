@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VacanciesService.Database;
@@ -11,9 +12,11 @@ using VacanciesService.Database;
 namespace VacanciesService.Migrations
 {
     [DbContext(typeof(VacanciesDbContext))]
-    partial class VacanciesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231031200158_Registered_Many_To_Many")]
+    partial class Registered_Many_To_Many
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,15 +80,21 @@ namespace VacanciesService.Migrations
 
             modelBuilder.Entity("VacanciesService.Domain.Models.LocationVacancy", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("VacancyId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("LocationId", "VacancyId");
+                    b.HasKey("Id");
 
                     b.HasIndex("VacancyId");
+
+                    b.HasIndex("LocationId", "VacancyId");
 
                     b.ToTable("LocationVacancy");
                 });
@@ -158,15 +167,21 @@ namespace VacanciesService.Migrations
 
             modelBuilder.Entity("VacanciesService.Domain.Models.VacancySkill", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("SkillId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("VacancyId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("SkillId", "VacancyId");
+                    b.HasKey("Id");
 
                     b.HasIndex("VacancyId");
+
+                    b.HasIndex("SkillId", "VacancyId");
 
                     b.ToTable("VacancySkill");
                 });
