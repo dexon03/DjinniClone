@@ -10,7 +10,7 @@ api.interceptors.request.use(
         const storageToken = localStorage.getItem('token');
         const token = storageToken ? JSON.parse(storageToken)?.accessToken : null;
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+           config.headers!.Authorization = `Bearer ${token}`;
         }
         return config;
     },
@@ -37,7 +37,6 @@ api.interceptors.response.use(
                 return axios(originalRequest);
             } catch (error) {
                 console.log(error);
-
             }
         }
 

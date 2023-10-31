@@ -117,14 +117,15 @@ public class AuthService : IAuthService
     
     private async Task<User> CreateUser(RegisterRequest request, CancellationToken cancellationToken)
     {
-        var passwordSalt = PasswordUtility.CreatePasswordSalt();
         var role = await _repository.GetAsync<Role>(r => r.Name == request.Role.ToString() && r.IsActive);
         if (role == null)
         {
             throw new ExceptionWithStatusCode("Role does not exist or no active", HttpStatusCode.BadRequest);
         }
+        var passwordSalt = PasswordUtility.CreatePasswordSalt();
         var user = new User
         {
+            Id = Guid.NewGuid(),
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,

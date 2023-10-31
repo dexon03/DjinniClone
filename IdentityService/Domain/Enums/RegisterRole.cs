@@ -1,4 +1,6 @@
-﻿namespace IdentityService.Domain.Enums;
+﻿using System.Runtime.Serialization;
+
+namespace IdentityService.Domain.Enums;
 
 public enum RegisterRole
 {

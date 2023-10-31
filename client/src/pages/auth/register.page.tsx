@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Button, TextField, Container, Typography, Radio, RadioGroup, FormControlLabel } from '@mui/material';
-import {RestClient} from "../../api/rest.client.ts";
-import {JwtResponse} from "../../models/auth/jwt.respone.ts";
-import {ApiServicesRoutes} from "../../api/api.services.routes.ts";
-import {RegisterModel} from "../../models/auth/register.model.ts";
+import { RestClient } from "../../api/rest.client.ts";
+import { JwtResponse } from "../../models/auth/jwt.respone.ts";
+import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
+import { RegisterModel } from "../../models/auth/register.model.ts";
+import useToken from '../../hooks/useToken.ts';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
-    const [selectedRole, setSelectedRole] = useState('candidate');
+    const [selectedRole, setSelectedRole] = useState(0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -15,8 +17,10 @@ function RegisterPage() {
     const handleRoleChange = (event) => {
         setSelectedRole(event.target.value);
     };
+    const { _, setToken } = useToken();
+    const navigate = useNavigate();
 
-    const restClient : RestClient = new RestClient();
+    const restClient: RestClient = new RestClient();
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -29,9 +33,10 @@ function RegisterPage() {
             role: selectedRole
         } as RegisterModel);
 
-        if(token){
-            
-        };
+        if (token) {
+            setToken(token);
+            return navigate('/vacancy');
+        }
     }
 
     return (
@@ -89,12 +94,12 @@ function RegisterPage() {
                     onChange={handleRoleChange}
                 >
                     <FormControlLabel
-                        value="recruiter"
+                        value={0}
                         control={<Radio />}
                         label="I am recruiter"
                     />
                     <FormControlLabel
-                        value="candidate"
+                        value={1}
                         control={<Radio />}
                         label="I am candidate"
                     />

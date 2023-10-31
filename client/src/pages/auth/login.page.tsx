@@ -1,23 +1,25 @@
 import { Button, TextField, Container, Typography } from '@mui/material';
-import {Link} from 'react-router-dom';
-import {FormEvent, useState} from "react";
-import {RestClient} from "../../api/rest.client.ts";
-import {JwtResponse} from "../../models/auth/jwt.respone.ts";
-import {ApiServicesRoutes} from "../../api/api.services.routes.ts";
-import {LoginModel} from "../../models/auth/login.model.ts";
+import { NavLink, useNavigate } from 'react-router-dom';
+import { FormEvent, useState } from "react";
+import { RestClient } from "../../api/rest.client.ts";
+import { JwtResponse } from "../../models/auth/jwt.respone.ts";
+import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
+import { LoginModel } from "../../models/auth/login.model.ts";
 
-function LoginPage({setToken} : {setToken: (token: JwtResponse) => void}) {
+function LoginPage({ setToken }: { setToken: (token: JwtResponse) => void }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const restClient = new RestClient();
-    const onSubmit = async (event : FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const token = await restClient.post<JwtResponse>(ApiServicesRoutes.auth + '/login', {
             email: email,
             password: password
         } as LoginModel);
         setToken(token);
+        navigate('/vacancy');
     }
     return (
         <Container maxWidth="sm">
@@ -62,7 +64,7 @@ function LoginPage({setToken} : {setToken: (token: JwtResponse) => void}) {
                 variant="text"
                 color="primary"
                 style={{ marginTop: 8 }}
-                component={Link} to="/register"
+                component={NavLink} to="/register"
             >
                 Sign Up
             </Button>
