@@ -5,12 +5,13 @@ const api = axios.create({
     baseURL: environment.apiUrl,
 });
 
+
 api.interceptors.request.use(
     (config) => {
         const storageToken = localStorage.getItem('token');
         const token = storageToken ? JSON.parse(storageToken)?.accessToken : null;
         if (token) {
-           config.headers!.Authorization = `Bearer ${token}`;
+            config.headers!.Authorization = `Bearer ${token}`;
         }
         return config;
     },
@@ -29,10 +30,9 @@ api.interceptors.response.use(
                 const storageToken = localStorage.getItem('token');
                 const refreshToken = storageToken ? JSON.parse(storageToken)?.refreshToken : null;
                 const response = await axios.post(environment.apiUrl + '/api/auth/refresh', { refreshToken });
-                const token = response.data;
-                debugger;
+                const token = JSON.stringify(response.data);
 
-                localStorage.setItem('token', JSON.stringify(token));
+                localStorage.setItem('token', token);
 
                 originalRequest.headers.Authorization = `Bearer ${token}`;
                 return axios(originalRequest);

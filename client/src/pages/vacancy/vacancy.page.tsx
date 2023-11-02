@@ -1,26 +1,22 @@
-import { RestClient } from "../../api/rest.client.ts";
-import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
-import { useEffect, useState } from "react";
-import { VacancyGetAll } from "../../models/vacany/vacancy.getall.dto.ts";
 import { VacancyTile } from "../../components/vacancy.tile.tsx";
+import { useGetVacanciesQuery } from "../../app/features/vacancy/vacancy.api.ts";
+
 
 export function VacancyPage() {
-    const url = ApiServicesRoutes.vacancy;
-    const [vacancies, setVacancies] = useState<VacancyGetAll[]>([]);
+    const { data, isError, isLoading, error } = useGetVacanciesQuery();
+    console.log(data)
 
-    useEffect(() => {
-        const restClient: RestClient = new RestClient();
-        function fetchVacancies() {
-            restClient.get<VacancyGetAll[]>(url).then((response) => { console.log('res:' + response); setVacancies(response); console.log(vacancies) });
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
 
-            console.log(vacancies)
-        }
-        fetchVacancies();
-        // console.log(vacancies)
-    }, [url, setVacancies]);
+    if (isError) {
+        return <p>Error: {error}</p>;
+    }
+
     return (
         <>
-            {vacancies && vacancies.map(vacancy => {
+            {data && data.map(vacancy => {
                 <VacancyTile vacancy={vacancy} />
             })}
         </>
