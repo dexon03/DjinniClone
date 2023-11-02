@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using VacanciesService.Domain.Enums;
 
 namespace VacanciesService.Domain.Models;
@@ -21,6 +22,6 @@ public class Vacancy
     public DateTime? UpdatedAt { get; set; }
     public Category Category { get; set; }
     public Company Company { get; set; }
-    public ICollection<LocationVacancy> LocationVacancy { get; set; }
-    public ICollection<VacancySkill> VacancySkill { get; set; }
+    [JsonIgnore]public ICollection<LocationVacancy> LocationVacancy { get; set; }
+    [JsonIgnore]public ICollection<VacancySkill> VacancySkill { get; set; }
 }
