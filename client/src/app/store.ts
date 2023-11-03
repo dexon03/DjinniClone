@@ -1,11 +1,9 @@
-import { vacanciesSlice } from './features/vacancy/vacancy.slice';
 import { configureStore } from '@reduxjs/toolkit'
 import { vacancyApi } from './features/vacancy/vacancy.api'
 import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 
 export const store = configureStore({
   reducer: {
-    vacancies: vacanciesSlice.reducer,
     [vacancyApi.reducerPath]: vacancyApi.reducer,
   },
   middleware(getDefaultMiddleware) {

@@ -72,9 +72,9 @@ public class VacancyService : IVacanciesService
                     Title = g.Key.Title,
                     PositionTitle = g.Key.PositionTitle,
                     Salary = g.Key.Salary,
-                    Experience = g.Key.Experience,
+                    Experience = g.Key.Experience.ToString(),
                     CreatedAt = g.Key.CreatedAt,
-                    AttendanceMode = g.Key.AttendanceMode,
+                    AttendanceMode = g.Key.AttendanceMode.ToString(),
                     Description = g.Key.Description,
                     CompanyName = g.Key.Name,
                     Locations = g.Select(l => new LocationGetDto

@@ -1,4 +1,5 @@
-﻿using VacanciesService.Domain.Models;
+﻿using VacanciesService.Domain.Enums;
+using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Domain.DTO;
 
@@ -10,6 +11,8 @@ public class VacancyCreateDto
     public string PositionTitle { get; set; }
     public string Description { get; set; }
     public double Salary { get; set; }
+    public AttendanceMode Attendance { get; set; }
+    public Experience Experience { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
@@ -30,6 +33,8 @@ public static class VacancyMap
         vacancy.Title = vacancyCreateDto.Title;
         vacancy.PositionTitle = vacancyCreateDto.PositionTitle;
         vacancy.Description = vacancyCreateDto.Description;
+        vacancy.AttendanceMode = vacancyCreateDto.Attendance;
+        vacancy.Experience = vacancyCreateDto.Experience;
         vacancy.Salary = vacancyCreateDto.Salary;
         vacancy.IsActive = vacancyCreateDto.IsActive;
         vacancy.VacancySkill = vacancyCreateDto.SkillIds.Select(skillId => new VacancySkill
