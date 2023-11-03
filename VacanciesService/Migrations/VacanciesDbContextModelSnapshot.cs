@@ -77,19 +77,13 @@ namespace VacanciesService.Migrations
 
             modelBuilder.Entity("VacanciesService.Domain.Models.LocationVacancy", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("VacancyId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
+                    b.HasKey("LocationId", "VacancyId");
 
                     b.HasIndex("VacancyId");
 
@@ -117,6 +111,9 @@ namespace VacanciesService.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<int>("AttendanceMode")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
@@ -124,11 +121,14 @@ namespace VacanciesService.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Experience")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -145,7 +145,7 @@ namespace VacanciesService.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -158,19 +158,13 @@ namespace VacanciesService.Migrations
 
             modelBuilder.Entity("VacanciesService.Domain.Models.VacancySkill", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("SkillId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("VacancyId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("SkillId");
+                    b.HasKey("SkillId", "VacancyId");
 
                     b.HasIndex("VacancyId");
 
@@ -180,13 +174,13 @@ namespace VacanciesService.Migrations
             modelBuilder.Entity("VacanciesService.Domain.Models.LocationVacancy", b =>
                 {
                     b.HasOne("VacanciesService.Domain.Models.Location", "Location")
-                        .WithMany()
+                        .WithMany("LocationVacancy")
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("VacanciesService.Domain.Models.Vacancy", "Vacancy")
-                        .WithMany("LocationVacancies")
+                        .WithMany("LocationVacancy")
                         .HasForeignKey("VacancyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -218,13 +212,13 @@ namespace VacanciesService.Migrations
             modelBuilder.Entity("VacanciesService.Domain.Models.VacancySkill", b =>
                 {
                     b.HasOne("VacanciesService.Domain.Models.Skill", "Skill")
-                        .WithMany()
+                        .WithMany("VacancySkill")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("VacanciesService.Domain.Models.Vacancy", "Vacancy")
-                        .WithMany("VacancySkills")
+                        .WithMany("VacancySkill")
                         .HasForeignKey("VacancyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -234,11 +228,21 @@ namespace VacanciesService.Migrations
                     b.Navigation("Vacancy");
                 });
 
+            modelBuilder.Entity("VacanciesService.Domain.Models.Location", b =>
+                {
+                    b.Navigation("LocationVacancy");
+                });
+
+            modelBuilder.Entity("VacanciesService.Domain.Models.Skill", b =>
+                {
+                    b.Navigation("VacancySkill");
+                });
+
             modelBuilder.Entity("VacanciesService.Domain.Models.Vacancy", b =>
                 {
-                    b.Navigation("LocationVacancies");
+                    b.Navigation("LocationVacancy");
 
-                    b.Navigation("VacancySkills");
+                    b.Navigation("VacancySkill");
                 });
 #pragma warning restore 612, 618
         }

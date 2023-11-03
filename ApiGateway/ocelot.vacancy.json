@@ -152,7 +152,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
+          "Host": "vacancies-service",
           "Port": 80
         }
       ],
@@ -167,7 +167,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
+          "Host": "vacancies-service",
           "Port": 80
         }
       ],
@@ -182,7 +182,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
+          "Host": "vacancies-service",
           "Port": 80
         }
       ],
@@ -197,7 +197,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
+          "Host": "vacancies-service",
           "Port": 80
         }
       ],
@@ -212,7 +212,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-service",
+          "Host": "vacancies-service",
           "Port": 80
         }
       ],

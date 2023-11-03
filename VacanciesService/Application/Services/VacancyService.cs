@@ -29,10 +29,61 @@ public class VacancyService : IVacanciesService
         _updateValidator = updateValidator;
     }
 
-    public Task<List<Vacancy>> GetAllVacancies(CancellationToken cancellationToken = default)
+    public List<VacancyGetAllDto> GetAllVacancies(CancellationToken cancellationToken = default)
     {
-        var vacancies = _repository.GetAll<Vacancy>();
-        return vacancies.ToListAsync(cancellationToken);
+        var vacancies = 
+                (from vacancy in _repository.GetAll<Vacancy>().Where(v => v.IsActive) 
+                join locationVacancy in _repository.GetAll<LocationVacancy>() 
+                    on vacancy.Id equals locationVacancy.VacancyId
+                join location in _repository.GetAll<Location>()
+                    on locationVacancy.LocationId equals location.Id
+                join company in _repository.GetAll<Company>()
+                    on vacancy.CompanyId equals company.Id
+                select new
+                {
+                    vacancy.Id,
+                    vacancy.Title,
+                    vacancy.PositionTitle,
+                    vacancy.Salary,
+                    vacancy.CreatedAt,
+                    vacancy.Experience,
+                    vacancy.AttendanceMode,
+                    vacancy.Description,
+                    company.Name,
+                    location.City,
+                    location.Country
+                })
+                .ToList();
+        var groupedVacancies = vacancies
+                .GroupBy(v => new
+                {
+                    v.Id,
+                    v.Title,
+                    v.PositionTitle,
+                    v.Salary,
+                    v.Experience,
+                    v.CreatedAt,
+                    v.AttendanceMode,
+                    v.Description,
+                    v.Name,
+                }).Select(g => new VacancyGetAllDto
+                {
+                    Id = g.Key.Id,
+                    Title = g.Key.Title,
+                    PositionTitle = g.Key.PositionTitle,
+                    Salary = g.Key.Salary,
+                    Experience = g.Key.Experience.ToString(),
+                    CreatedAt = g.Key.CreatedAt,
+                    AttendanceMode = g.Key.AttendanceMode.ToString(),
+                    Description = g.Key.Description,
+                    CompanyName = g.Key.Name,
+                    Locations = g.Select(l => new LocationGetDto
+                    {
+                        City = l.City,
+                        Country = l.Country
+                    })
+                });
+        return groupedVacancies.ToList();
     }
 
     public async Task<Vacancy> GetVacancyById(Guid id, CancellationToken cancellationToken = default)
@@ -53,7 +104,7 @@ public class VacancyService : IVacanciesService
         {
             throw new ValidationException(validationResult.Errors);
         }
-        var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
+        var vacancyEntity = new Vacancy().MapCreate(vacancy);
         vacancyEntity.CreatedAt = DateTime.Now;
         var result = await _repository.CreateAsync(vacancyEntity);
         await _repository.SaveChangesAsync(cancellationToken);
