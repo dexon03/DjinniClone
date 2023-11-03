@@ -7,7 +7,7 @@ export interface VacancyGetAll {
     description: string;
     salary: number;
     experience: string;
-    attendance: string;
+    attendanceMode: string;
     createdAt: Date;
     companyName: string;
     locations: LocationDto[];

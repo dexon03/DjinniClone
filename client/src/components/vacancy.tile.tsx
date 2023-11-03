@@ -3,7 +3,7 @@ import { Card, CardContent } from "@mui/material";
 
 export function VacancyTile({ vacancy }: { vacancy: VacancyGetAll }) {
     return (
-        <Card>
+        <Card className="m-2">
             <CardContent>
                 <h2 className="fw-bold">{vacancy.title}</h2>
                 <h4>{vacancy.companyName}</h4>

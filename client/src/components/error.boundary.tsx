@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ErrorInfo } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
 class ErrorBoundary extends React.Component {
@@ -6,6 +6,7 @@ class ErrorBoundary extends React.Component {
         super(props);
         this.state = {
             hasError: false,
+            errorMessage: ''
         };
     }
 
@@ -14,9 +15,10 @@ class ErrorBoundary extends React.Component {
         return { hasError: true };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error : Error, errorInfo: ErrorInfo) {
         // You can also log the error to an error reporting service
         console.log(error, errorInfo);
+        this.setState({ errorMessage: error.message });
     }
 
     handleReset = () => {
@@ -29,7 +31,7 @@ class ErrorBoundary extends React.Component {
                 <Dialog open={this.state.hasError} onClose={this.handleReset}>
                     <DialogTitle>Error</DialogTitle>
                     <DialogContent>
-                        Something went wrong. Please try again.
+                        {this.state.errorMessage}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleReset} color="primary">
