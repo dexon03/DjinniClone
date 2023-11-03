@@ -2,6 +2,7 @@
 using System.Text;
 using Core.Database;
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -46,6 +47,20 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
                 };
             });
+        services.AddMassTransit(x =>
+        {
+            x.SetKebabCaseEndpointNameFormatter();
+            x.UsingRabbitMq((context, configurator) =>
+            {
+                configurator.Host(new Uri(appConfiguration["MessageBroker:Host"]!), h =>
+                {
+                    h.Username(appConfiguration["MessageBroker:UserName"]);
+                    h.Password(appConfiguration["MessageBroker:Password"]);
+                });
+                
+                configurator.ConfigureEndpoints(context);
+            });
+        });
         return services;
     }
     

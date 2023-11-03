@@ -2,12 +2,14 @@
 using System.Text;
 using Core.Database;
 using Core.Exceptions;
+using Core.MessageContract;
 using FluentValidation;
 using IdentityService.Application.Utilities;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using ValidationException = Core.Exceptions.ValidationException;
@@ -20,6 +22,7 @@ public class AuthService : IAuthService
     private readonly IJWTService _jwtService;
     private readonly IRepository _repository;
     private readonly IDistributedCache _cache;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly IValidator<RegisterRequest> _registerValidator;
     private readonly IValidator<LoginRequest> _loginValidator;
     private readonly IValidator<ForgotPasswordRequest> _forgotPasswordValidator;
@@ -28,6 +31,7 @@ public class AuthService : IAuthService
         IJWTService jwtService, 
         IRepository repository, 
         IDistributedCache cache,
+        IPublishEndpoint publishEndpoint,
         IValidator<RegisterRequest> registerValidator,
         IValidator<LoginRequest> loginValidator,
         IValidator<ForgotPasswordRequest> forgotPasswordValidator)
@@ -36,6 +40,7 @@ public class AuthService : IAuthService
         _jwtService = jwtService;
         _repository = repository;
         _cache = cache;
+        _publishEndpoint = publishEndpoint;
         _registerValidator = registerValidator;
         _loginValidator = loginValidator;
         _forgotPasswordValidator = forgotPasswordValidator;
@@ -53,7 +58,6 @@ public class AuthService : IAuthService
         _repository.Update(user);
         await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
-        
         return token;
     }
 
@@ -67,7 +71,15 @@ public class AuthService : IAuthService
         await _repository.CreateAsync(user);
         await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
-        
+        await _publishEndpoint.Publish(new UserCreatedEvent
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
+            Role = user.Role.Name
+        }, cancellationToken);
         return token;
     }
 
