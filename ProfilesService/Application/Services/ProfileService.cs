@@ -84,4 +84,11 @@ public class ProfileService : IProfileService
         _repository.Delete(vacancy);
         await _repository.SaveChangesAsync(cancellationToken);
     }
+
+    public Task DeleteProfileByUserId(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var profile = _repository.GetAll<Profile>().FirstOrDefault(p => p.UserId == userId);
+        _repository.Delete(profile);
+        return _repository.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -10,4 +10,5 @@ public interface IProfileService
     Task<Profile> CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default);
     Task<Profile> UpdateProfile(ProfileUpdateDto profile, CancellationToken cancellationToken = default);
     Task DeleteProfile(Guid id, CancellationToken cancellationToken = default);
+    Task DeleteProfileByUserId(Guid userId, CancellationToken cancellationToken = default);
 }

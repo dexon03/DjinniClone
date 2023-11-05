@@ -13,12 +13,6 @@ public class ProfileCreateValidator : AbstractValidator<ProfileCreateDto>
         RuleFor(x => x.Surname).NotEmpty().WithMessage("Surname is required");
         RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("Email is required");
         RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("PhoneNumber is required");
-        RuleFor(x => x.UserId).NotEmpty().WithMessage("Linked user is required").Custom((id, context) =>
-        {
-            if (repository.GetById<User>(id) == null)
-            {
-                context.AddFailure("User not found");
-            }
-        });
+        RuleFor(x => x.UserId).NotEmpty().WithMessage("Linked user is required");
     }
 }

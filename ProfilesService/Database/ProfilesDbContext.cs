@@ -17,4 +17,5 @@ public class ProfilesDbContext : DbContext
     public DbSet<ProfileSkills> ProfileSkills { get; set; }
     public DbSet<LocationProfile> LocationProfile { get; set; }
     public DbSet<User> User { get; set; }
+    public DbSet<Company> Company { get; set; }
 }

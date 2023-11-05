@@ -1,10 +1,13 @@
-﻿using MassTransit;
+﻿using Core.MessageContract;
+using MassTransit;
+using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
+using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Application.MessageConsumers;
 
-public sealed class UserCreatedConsumer : IConsumer<UserCreatedConsumer>
+public sealed class UserCreatedConsumer : IConsumer<UserCreatedEvent>
 {
     private readonly IProfileService _profileService;
 
@@ -12,8 +15,19 @@ public sealed class UserCreatedConsumer : IConsumer<UserCreatedConsumer>
     {
         _profileService = profileService;
     }
-    public async Task Consume(ConsumeContext<UserCreatedConsumer> context)
+    public async Task Consume(ConsumeContext<UserCreatedEvent> context)
     {
-       
+        var message = context.Message;
+        var profile = new ProfileCreateDto
+        {
+            UserId = message.UserId,
+            Name = message.FirstName,
+            Surname = message.LastName,
+            Email = message.Email,
+            PhoneNumber = message.PhoneNumber,
+            Role = Enum.Parse<ProfileRole>(message.Role)
+        };
+        
+        await _profileService.CreateProfile(profile);
     }
 }
