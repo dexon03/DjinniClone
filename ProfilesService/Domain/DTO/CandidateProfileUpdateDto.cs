@@ -1,6 +1,6 @@
 ﻿namespace ProfilesService.Domain.DTO;
 
-public class ProfileUpdateDto
+public class CandidateProfileUpdateDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

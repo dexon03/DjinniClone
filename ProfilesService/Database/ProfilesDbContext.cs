@@ -11,7 +11,8 @@ public class ProfilesDbContext : DbContext
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
     
-    public DbSet<Profile> Profile { get; set; }
+    public DbSet<CandidateProfile> CandidateProfile { get; set; }
+    public DbSet<RecruiterProfile> RecruiterProfile { get; set; }
     public DbSet<Location> Location { get; set; }
     public DbSet<Skill> Skill { get; set; }
     public DbSet<ProfileSkills> ProfileSkills { get; set; }

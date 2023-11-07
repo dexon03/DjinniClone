@@ -3,7 +3,7 @@ using Core.Database;
 using Core.Exceptions;
 using ProfilesService.Application.Services;
 using ProfilesService.Domain.DTO;
-using Profile = ProfilesService.Domain.Models.Profile;
+using ProfilesService.Domain.Models;
 using ValidationException = Core.Exceptions.ValidationException;
 
 namespace UnitTests.ProfileServiceTests;
@@ -32,8 +32,8 @@ public class ProfileServiceTests
     {
         // Arrange
         var existingId = Guid.NewGuid();
-        var mockProfile = new Profile { Id = existingId, UserId = Guid.NewGuid(), Name = "Test", Surname = "User" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(existingId)).ReturnsAsync(mockProfile);
+        var mockProfile = new CandidateProfile { Id = existingId, UserId = Guid.NewGuid(), Name = "Test", Surname = "User" };
+        _repositoryMock.Setup(repo => repo.GetByIdAsync<CandidateProfile>(existingId)).ReturnsAsync(mockProfile);
 
         // Act
         var result = await _profileService.GetProfileById(existingId);
@@ -51,7 +51,7 @@ public class ProfileServiceTests
     {
         // Arrange
         var nonExistingId = Guid.NewGuid();
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(nonExistingId)).ReturnsAsync((Profile)null!);
+        _repositoryMock.Setup(repo => repo.GetByIdAsync<CandidateProfile>(nonExistingId)).ReturnsAsync((CandidateProfile)null!);
 
         // Act and Assert
         await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _profileService.GetProfileById(nonExistingId));
@@ -69,10 +69,10 @@ public class ProfileServiceTests
             PositionTitle = "Developer",
             // ... other properties
         };
-        var mockProfile = new Profile { Id = Guid.NewGuid(), UserId = profileCreateDto.UserId, Name = profileCreateDto.Name, Surname = profileCreateDto.Surname };
+        var mockProfile = new CandidateProfile { Id = Guid.NewGuid(), UserId = profileCreateDto.UserId, Name = profileCreateDto.Name, Surname = profileCreateDto.Surname };
         _createValidatorMock.Setup(validator => validator.ValidateAsync(profileCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-        _mapperMock.Setup(mapper => mapper.Map<Profile>(profileCreateDto)).Returns(mockProfile);
+        _mapperMock.Setup(mapper => mapper.Map<CandidateProfile>(profileCreateDto)).Returns(mockProfile);
         _repositoryMock.Setup(repo => repo.CreateAsync(mockProfile)).ReturnsAsync(mockProfile);
 
         // Act
@@ -117,7 +117,7 @@ public class ProfileServiceTests
             // ... other properties
         };
         
-        var mappedProfile = new Profile {
+        var mappedProfile = new CandidateProfile {
             Id = profileUpdateDto.Id,
             Name = "Updated",
             Surname = "Profile",
@@ -126,8 +126,8 @@ public class ProfileServiceTests
         };
         _updateValidatorMock.Setup(validator => validator.ValidateAsync(profileUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
 
-        _mapperMock.Setup(mapper => mapper.Map<Profile>(profileUpdateDto)).Returns(mappedProfile);
-        _repositoryMock.Setup(repo => repo.AnyAsync<Profile>(x => x.Id == mappedProfile.Id)).ReturnsAsync(true);
+        _mapperMock.Setup(mapper => mapper.Map<CandidateProfile>(profileUpdateDto)).Returns(mappedProfile);
+        _repositoryMock.Setup(repo => repo.AnyAsync<CandidateProfile>(x => x.Id == mappedProfile.Id)).ReturnsAsync(true);
         _repositoryMock.Setup(repo => repo.Update(mappedProfile)).Returns(mappedProfile);
 
         // Act
@@ -173,7 +173,7 @@ public class ProfileServiceTests
             // ... other properties
         };
         _updateValidatorMock.Setup(validator => validator.ValidateAsync(profileUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _repositoryMock.Setup(repo => repo.AnyAsync<Profile>(x => x.Id == profileUpdateDto.Id)).ReturnsAsync(false);
+        _repositoryMock.Setup(repo => repo.AnyAsync<CandidateProfile>(x => x.Id == profileUpdateDto.Id)).ReturnsAsync(false);
 
         // Act and Assert
         await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _profileService.UpdateProfile(profileUpdateDto));
@@ -184,8 +184,8 @@ public class ProfileServiceTests
     {
         // Arrange
         var existingId = Guid.NewGuid();
-        var mockProfile = new Profile { Id = existingId, UserId = Guid.NewGuid(), Name = "Test", Surname = "Profile" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(existingId)).ReturnsAsync(mockProfile);
+        var mockProfile = new CandidateProfile { Id = existingId, UserId = Guid.NewGuid(), Name = "Test", Surname = "Profile" };
+        _repositoryMock.Setup(repo => repo.GetByIdAsync<CandidateProfile>(existingId)).ReturnsAsync(mockProfile);
 
         // Act
         await _profileService.DeleteProfile(existingId);
@@ -200,7 +200,7 @@ public class ProfileServiceTests
     {
         // Arrange
         var nonExistingId = Guid.NewGuid();
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(nonExistingId)).ReturnsAsync((Profile)null);
+        _repositoryMock.Setup(repo => repo.GetByIdAsync<CandidateProfile>(nonExistingId)).ReturnsAsync((CandidateProfile)null);
 
         // Act and Assert
         await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _profileService.DeleteProfile(nonExistingId));
