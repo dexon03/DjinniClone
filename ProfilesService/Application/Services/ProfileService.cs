@@ -85,9 +85,17 @@ public class ProfileService : IProfileService
         return result;
     }
 
-    public Task<CandidateProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken = default)
+    public async Task<RecruiterProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var recruiterProfile = await _repository.GetByIdAsync<RecruiterProfile>(profile.Id);
+        if (recruiterProfile == null)
+        {
+            throw new ExceptionWithStatusCode("Profile not found", HttpStatusCode.BadRequest);
+        }
+        recruiterProfile.MapUpdate(profile);
+        var result = _repository.Update(recruiterProfile);
+        await _repository.SaveChangesAsync(cancellationToken);
+        return result;
     }
 
     public async Task DeleteProfile(Guid id, CancellationToken cancellationToken = default)

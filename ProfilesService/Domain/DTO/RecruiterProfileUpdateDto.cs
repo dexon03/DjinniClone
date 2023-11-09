@@ -1,6 +1,8 @@
-﻿namespace ProfilesService.Domain.DTO;
+﻿using ProfilesService.Domain.Models.Common;
 
-public record RecruiterProfileUpdateDto
+namespace ProfilesService.Domain.DTO;
+
+public class RecruiterProfileUpdateDto : Profile
 {
-    
+    public Guid CompanyId { get; set; }
 };

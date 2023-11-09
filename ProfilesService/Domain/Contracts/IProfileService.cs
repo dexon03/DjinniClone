@@ -9,7 +9,7 @@ public interface IProfileService
     Task<CandidateProfile> GetProfileById(Guid id, CancellationToken cancellationToken = default);
     Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default);
     Task<CandidateProfile> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken = default);
-    Task<CandidateProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken = default);
+    Task<RecruiterProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken = default);
     Task DeleteProfile(Guid id, CancellationToken cancellationToken = default);
     Task DeleteProfileByUserId(Guid userId, CancellationToken cancellationToken = default);
     

@@ -49,4 +49,11 @@ public class ProfileController : BaseController
         var updatedProfile = await _profileService.UpdateCandidateProfile(profile);
         return Ok(updatedProfile);
     }
+    
+    [HttpPut]
+    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile)
+    {
+        var updatedProfile = await _profileService.UpdateRecruiterProfile(profile);
+        return Ok(updatedProfile);
+    }
 }
