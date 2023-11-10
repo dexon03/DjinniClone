@@ -52,15 +52,12 @@ public static class DependencyInjection
             x.SetKebabCaseEndpointNameFormatter();
             x.UsingRabbitMq((context, configurator) =>
             {
-                configurator.Host(new Uri(appConfiguration["MessageBroker:Host"]!), h =>
-                {
-                    h.Username(appConfiguration["MessageBroker:UserName"]);
-                    h.Password(appConfiguration["MessageBroker:Password"]);
-                });
+                configurator.Host("rabbitmq", "/", h => { });
                 
                 configurator.ConfigureEndpoints(context);
             });
         });
+        services.AddMassTransitHostedService();
         return services;
     }
 }

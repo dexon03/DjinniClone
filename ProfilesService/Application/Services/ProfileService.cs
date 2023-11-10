@@ -52,18 +52,18 @@ public class ProfileService : IProfileService
         {
             throw new ValidationException(validationResult.Errors);
         }
-
-        var profileEntity = new Profile();
+        
         if (profile.Role == ProfileRole.Candidate)
         {
-            profileEntity = profileEntity.MapCreateToCandidateProfile();
+            var profileEntity = new CandidateProfile().MapCreateToCandidateProfile(profile);
+            var result = await _repository.CreateAsync(profileEntity);
         }
         else
         {
-            profileEntity = profileEntity.MapCreateToRecruiterProfile();
+            var profileEntity = new RecruiterProfile().MapCreateToRecruiterProfile(profile);
+            var result = await _repository.CreateAsync(profileEntity);
         }
         
-        var result = await _repository.CreateAsync(profileEntity);
         await _repository.SaveChangesAsync(cancellationToken);
     }
 

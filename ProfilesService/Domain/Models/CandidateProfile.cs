@@ -14,28 +14,28 @@ public class CandidateProfile : Profile
 
 public static class ProfileMapperExtension
 {
-    public static CandidateProfile MapCreateToCandidateProfile(this Profile profile)
+    public static CandidateProfile MapCreateToCandidateProfile(this CandidateProfile profile, ProfileCreateDto profileCreateDto )
     {
         return new CandidateProfile
         {
-            UserId = profile.UserId,
-            Name = profile.Name,
-            Surname = profile.Surname,
-            PositionTitle = profile.PositionTitle,
-            Email = profile.Email,
-            PhoneNumber = profile.PhoneNumber,
+            UserId = profileCreateDto.UserId,
+            Name = profileCreateDto.Name,
+            Surname = profileCreateDto.Surname,
+            PositionTitle = profileCreateDto.PositionTitle,
+            Email = profileCreateDto.Email,
+            PhoneNumber = profileCreateDto.PhoneNumber,
         };
     }
     
-    public static RecruiterProfile MapCreateToRecruiterProfile(this Profile profile)
+    public static RecruiterProfile MapCreateToRecruiterProfile(this RecruiterProfile profile, ProfileCreateDto profileCreateDto)
     {
         return new RecruiterProfile
         {
-            UserId = profile.UserId,
-            Name = profile.Name,
-            Surname = profile.Surname,
-            Email = profile.Email,
-            PhoneNumber = profile.PhoneNumber,
+            UserId = profileCreateDto.UserId,
+            Name = profileCreateDto.Name,
+            Surname = profileCreateDto.Surname,
+            Email = profileCreateDto.Email,
+            PhoneNumber = profileCreateDto.PhoneNumber,
         };
     }
 }

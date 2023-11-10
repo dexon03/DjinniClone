@@ -13,6 +13,6 @@ public class Profile
     public string? ImageUrl { get; set; }
     public string? GitHubUrl { get; set; }
     public string? LinkedInUrl { get; set; }
-    public string PositionTitle { get; set; }
+    public string? PositionTitle { get; set; }
     public bool IsActive { get; set; } = false;
 }

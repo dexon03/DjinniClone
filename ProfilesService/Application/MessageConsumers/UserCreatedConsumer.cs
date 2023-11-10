@@ -3,7 +3,6 @@ using MassTransit;
 using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
-using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Application.MessageConsumers;
 

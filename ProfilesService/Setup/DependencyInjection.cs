@@ -6,6 +6,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ProfilesService.Application.MessageConsumers;
 using ProfilesService.Application.Services;
 using ProfilesService.Database;
 using ProfilesService.Database.AutoMigrations;
@@ -50,17 +51,15 @@ public static class DependencyInjection
         services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
+            x.AddConsumers(ApplicationAssembly);
             x.UsingRabbitMq((context, configurator) =>
             {
-                configurator.Host(new Uri(appConfiguration["MessageBroker:Host"]!), h =>
-                {
-                    h.Username(appConfiguration["MessageBroker:UserName"]);
-                    h.Password(appConfiguration["MessageBroker:Password"]);
-                });
+                configurator.Host("rabbitmq", "/", h => { });
                 
                 configurator.ConfigureEndpoints(context);
             });
         });
+        services.AddMassTransitHostedService();
         return services;
     }
     

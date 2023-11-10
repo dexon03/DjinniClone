@@ -71,7 +71,7 @@ public class AuthService : IAuthService
         await _repository.CreateAsync(user);
         await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
-        await _publishEndpoint.Publish(new UserCreatedEvent
+        await _publishEndpoint.Publish<UserCreatedEvent>(new 
         {
             UserId = user.Id,
             Email = user.Email,
