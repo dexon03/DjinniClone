@@ -2,14 +2,11 @@
 using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
-using Profile = ProfilesService.Domain.Models.Common.Profile;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace ProfilesService.Application.Services;
 
@@ -17,15 +14,11 @@ public class ProfileService : IProfileService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IValidator<ProfileCreateDto> _createValidator;
-    private readonly IValidator<CandidateProfileUpdateDto> _updateValidator;
 
-    public ProfileService(IRepository repository, IMapper mapper, IValidator<ProfileCreateDto> createValidator, IValidator<CandidateProfileUpdateDto> updateValidator)
+    public ProfileService(IRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
 
 
@@ -47,12 +40,6 @@ public class ProfileService : IProfileService
 
     public async Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default)
     {
-        var validationResult =  await _createValidator.ValidateAsync(profile,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-        
         if (profile.Role == ProfileRole.Candidate)
         {
             var profileEntity = new CandidateProfile().MapCreateToCandidateProfile(profile);
@@ -69,11 +56,6 @@ public class ProfileService : IProfileService
 
     public async Task<CandidateProfile> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _updateValidator.ValidateAsync(profile,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
         var profileEntity = _mapper.Map<CandidateProfile>(profile);
         var isExists = await _repository.AnyAsync<CandidateProfile>(x => x.Id == profileEntity.Id);
         if (!isExists)

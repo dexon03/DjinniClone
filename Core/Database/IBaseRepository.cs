@@ -20,8 +20,8 @@ public interface IBaseRepository
     Task<bool> AllAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
     T Get<T>(Expression<Func<T,bool>> predicate) where T : class;
     Task<T> GetAsync<T>(Expression<Func<T,bool>> predicate) where T : class;
-    T? GetById<T>(object id) where T : class;
-    ValueTask<T?> GetByIdAsync<T>(object id) where T : class;
+    T? GetById<T>(Guid id) where T : class;
+    ValueTask<T?> GetByIdAsync<T>(Guid id) where T : class;
     IQueryable<T> GetByIds<T>(params object[] ids) where T : class;
     T Create<T>(T entity) where T : class;
     Task<T> CreateAsync<T>(T entity) where T : class;

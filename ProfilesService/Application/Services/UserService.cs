@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Core.Database;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace ProfilesService.Application.Services;
 
@@ -13,15 +11,11 @@ public class UserService : IUserService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IValidator<UserCreateDto> _createValidator;
-    private readonly IValidator<UserUpdateDto> _updateValidator;
 
-    public UserService(IRepository repository, IMapper mapper, IValidator<UserCreateDto> createValidator, IValidator<UserUpdateDto> updateValidator)
+    public UserService(IRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
 
     public Task<List<User>> GetAllUsers(CancellationToken cancellationToken = default)
@@ -42,12 +36,6 @@ public class UserService : IUserService
 
     public async Task<User> CreateUser(UserCreateDto user, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _createValidator.ValidateAsync(user, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-
         var userEntity = _mapper.Map<User>(user);
         var result = await _repository.CreateAsync(userEntity);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -56,12 +44,6 @@ public class UserService : IUserService
 
     public async Task<User> UpdateUser(UserUpdateDto user, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _updateValidator.ValidateAsync(user, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-
         var userEntity = _mapper.Map<User>(user);
         var isExists = await _repository.AnyAsync<User>(x => x.Id == userEntity.Id);
         if (!isExists)

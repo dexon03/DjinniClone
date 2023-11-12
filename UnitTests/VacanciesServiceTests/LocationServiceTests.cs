@@ -21,9 +21,7 @@ public class LocationServiceTests
     {
         _locationService = new LocationService(
             _repositoryMock.Object,
-            _mapperMock.Object,
-            _createValidatorMock.Object,
-            _updateValidatorMock.Object
+            _mapperMock.Object
         );
     }
 
@@ -77,18 +75,6 @@ public class LocationServiceTests
     }
 
     [Fact]
-    public async Task CreateLocation_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var locationCreateDto = new LocationCreateDto { Country = "New Country", City = null! };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("City", "City is required") };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(locationCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _locationService.CreateLocation(locationCreateDto));
-    }
-
-    [Fact]
     public async Task UpdateLocation_ValidDtoAndExistingLocation_ShouldUpdateAndReturnLocation()
     {
         // Arrange
@@ -108,18 +94,6 @@ public class LocationServiceTests
         Assert.Equal(locationUpdateDto.Id, result.Id);
         Assert.Equal(locationUpdateDto.Country, result.Country);
         Assert.Equal(locationUpdateDto.City, result.City);
-    }
-
-    [Fact]
-    public async Task UpdateLocation_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var locationUpdateDto = new LocationUpdateDto { Id = Guid.NewGuid(), Country = "Updated Country", City = null };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("City", "City is required") };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(locationUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _locationService.UpdateLocation(locationUpdateDto));
     }
 
     [Fact]

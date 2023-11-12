@@ -20,9 +20,7 @@ public class CompanyServiceTests
     {
         _companyService = new CompanyService(
             _repositoryMock.Object,
-            _mapperMock.Object,
-            _createValidatorMock.Object,
-            _updateValidatorMock.Object
+            _mapperMock.Object
         );
     }
 
@@ -78,22 +76,6 @@ public class CompanyServiceTests
     }
 
     [Fact]
-    public async Task CreateCompany_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var companyCreateDto = new CompanyCreateDto
-        {
-            Name = null, // Name is required
-            Description = "New Description"
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Name", "Name is required") };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(companyCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _companyService.CreateCompany(companyCreateDto));
-    }
-
-    [Fact]
     public async Task UpdateCompany_ValidDtoAndExistingCompany_ShouldUpdateAndReturnCompany()
     {
         // Arrange
@@ -118,23 +100,6 @@ public class CompanyServiceTests
         Assert.Equal(companyUpdateDto.Id, result.Id);
         Assert.Equal(companyUpdateDto.Name, result.Name);
         Assert.Equal(companyUpdateDto.Description, result.Description);
-    }
-
-        [Fact]
-    public async Task UpdateCompany_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var companyUpdateDto = new CompanyUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            Name = null, // Name is required
-            Description = "Updated Description"
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Name", "Name is required") };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(companyUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _companyService.UpdateCompany(companyUpdateDto));
     }
 
     [Fact]

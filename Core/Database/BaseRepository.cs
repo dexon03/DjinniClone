@@ -120,12 +120,12 @@ public abstract class BaseRepository
         return FirstAsync(predicate);
     }
 
-    public T? GetById<T>(object id) where T : class
+    public T? GetById<T>(Guid id) where T : class
     {
         return DbContext.Set<T>().Find(id);
     }
     
-    public ValueTask<T?> GetByIdAsync<T>(object id) where T : class
+    public ValueTask<T?> GetByIdAsync<T>(Guid id) where T : class
     {
         return DbContext.Set<T>().FindAsync(id);
     }

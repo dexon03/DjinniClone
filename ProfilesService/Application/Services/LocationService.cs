@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Core.Database;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace ProfilesService.Application.Services;
 
@@ -13,18 +11,11 @@ public class LocationService : ILocationService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IValidator<LocationCreateDto> _createValidator;
-    private readonly IValidator<LocationUpdateDto> _updateValidator;
 
-    public LocationService(IRepository repository, 
-        IMapper mapper,
-        IValidator<LocationCreateDto> createValidator, 
-        IValidator<LocationUpdateDto> updateValidator)
+    public LocationService(IRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
     public Task<List<Location>> GetAllLocations(CancellationToken cancellationToken = default)
     {
@@ -44,12 +35,6 @@ public class LocationService : ILocationService
 
     public async Task<Location> CreateLocation(LocationCreateDto location, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _createValidator.ValidateAsync(location,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-        
         var locationEntity = _mapper.Map<Location>(location);
         var result = await _repository.CreateAsync(locationEntity);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -58,12 +43,6 @@ public class LocationService : ILocationService
 
     public async Task<Location> UpdateLocation(LocationUpdateDto location, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _updateValidator.ValidateAsync(location,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-        
         var locationEntity = _mapper.Map<Location>(location);
         var isExists = await _repository.AnyAsync<Location>(x => x.Id == location.Id);
         if (!isExists)

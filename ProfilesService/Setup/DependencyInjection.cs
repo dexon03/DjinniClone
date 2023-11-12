@@ -12,12 +12,13 @@ using ProfilesService.Database;
 using ProfilesService.Database.AutoMigrations;
 using ProfilesService.Database.Repository;
 using ProfilesService.Domain.Contracts;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace ProfilesService.Setup;
 
 public static class DependencyInjection
 {
-    private static Assembly ApplicationAssembly => Assembly.GetExecutingAssembly();
+    private static Assembly _applicationAssembly = Assembly.GetExecutingAssembly();
     public static IServiceCollection RegisterDependencies(this IServiceCollection services, IConfiguration appConfiguration)
     {
         services.AddDbContext<ProfilesDbContext>(opt =>
@@ -25,8 +26,9 @@ public static class DependencyInjection
             opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection"));
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
-        services.AddValidatorsFromAssembly(ApplicationAssembly);
-        services.AddAutoMapper(ApplicationAssembly);
+        services.AddValidatorsFromAssembly(_applicationAssembly);
+        services.AddFluentValidationAutoValidation();
+        services.AddAutoMapper(_applicationAssembly);
         services.AddScoped<IRepository, Repository>();
         services.AddStackExchangeRedisCache(options =>
         {
@@ -51,7 +53,7 @@ public static class DependencyInjection
         services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-            x.AddConsumers(ApplicationAssembly);
+            x.AddConsumers(_applicationAssembly);
             x.UsingRabbitMq((context, configurator) =>
             {
                 configurator.Host("rabbitmq", "/", h => { });

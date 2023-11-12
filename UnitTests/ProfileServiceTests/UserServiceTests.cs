@@ -20,9 +20,7 @@ public class UserServiceTests
     {
         _userService = new UserService(
             _repositoryMock.Object,
-            _mapperMock.Object,
-            _createValidatorMock.Object,
-            _updateValidatorMock.Object
+            _mapperMock.Object
         );
     }
 
@@ -75,18 +73,6 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task CreateUser_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var userCreateDto = new UserCreateDto { UserName = "NewUser", Email = null, UserRole = "NewRole" };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Email", "Email is required") };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(userCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _userService.CreateUser(userCreateDto));
-    }
-
-    [Fact]
     public async Task UpdateUser_ValidDtoAndExistingUser_ShouldUpdateAndReturnUser()
     {
         // Arrange
@@ -107,18 +93,6 @@ public class UserServiceTests
         Assert.Equal(userUpdateDto.UserName, result.UserName);
         Assert.Equal(userUpdateDto.Email, result.Email);
         Assert.Equal(userUpdateDto.UserRole, result.UserRole);
-    }
-
-    [Fact]
-    public async Task UpdateUser_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var userUpdateDto = new UserUpdateDto { Id = Guid.NewGuid(), UserName = "UpdatedUser", Email = null, UserRole = "UpdatedRole" };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Email", "Email is required") };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(userUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _userService.UpdateUser(userUpdateDto));
     }
 
     [Fact]
