@@ -3,6 +3,7 @@ import App from "../App.tsx";
 import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
 import RegisterPage from "../pages/auth/register.page.tsx";
 import LoginPage from "../pages/auth/login.page.tsx";
+import ProfilePage from "../pages/profile/profile.page.tsx";
 
 const routes: RouteObject[] = [
     {
@@ -15,7 +16,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/profile",
-                element: <div>profile</div>
+                element: <ProfilePage />
             },
             {
                 path: "/salaries",

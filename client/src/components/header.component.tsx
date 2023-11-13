@@ -33,7 +33,7 @@ export function HeaderComponent() {
             route: '/salaries',
         }
     ]
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+    const settings = ['Profile', 'Logout'];
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -202,9 +202,11 @@ export function HeaderComponent() {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
+                                    <NavLink to={setting} className={'nav-link'}>
+                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Typography textAlign="center">{setting}</Typography>
+                                        </MenuItem>
+                                    </NavLink>
                                 ))}
                             </Menu>
                         </Box>

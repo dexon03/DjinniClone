@@ -52,7 +52,7 @@ public class AuthService : IAuthService
         if (!await IsLoginRequestValid(user, request.Password))
         {
             //TODO: replace all exception by ErrorOr
-            throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.Unauthorized);
+            throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.BadRequest);
         }
         var token = GetNewTokenForUser(user);
         _repository.Update(user);
@@ -103,7 +103,7 @@ public class AuthService : IAuthService
         var userId = _jwtService.ValidateToken(refreshToken);
         if (userId == null)
         {
-            throw new ExceptionWithStatusCode("Invalid refresh token", HttpStatusCode.Unauthorized);
+            throw new ExceptionWithStatusCode("Invalid refresh token", HttpStatusCode.BadRequest);
         }
         
         var user = await _userManager.FindByIdAsync(Guid.Parse(userId));
