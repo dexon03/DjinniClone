@@ -5,9 +5,9 @@ using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Application.Validators;
 
-public class ProfileUpdateValidator : AbstractValidator<ProfileUpdateDto>
+public class CandidateProfileUpdateValidator : AbstractValidator<CandidateProfileUpdateDto>
 {
-    public ProfileUpdateValidator(IRepository repository)
+    public CandidateProfileUpdateValidator(IRepository repository)
     {
         RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
         RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");

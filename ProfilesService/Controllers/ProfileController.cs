@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
@@ -10,7 +10,7 @@ public class ProfileController : BaseController
 {
     private readonly IProfileService _profileService;
 
-    public ProfileController(IProfileService profileService)
+    public ProfileController(IProfileService profileService, HttpContextAccessor httpContextAccessor)
     {
         _profileService = profileService;
     }
@@ -36,17 +36,24 @@ public class ProfileController : BaseController
         return Ok();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateProfile(ProfileCreateDto profile)
-    {
-        var createdProfile = await _profileService.CreateProfile(profile);
-        return Ok(createdProfile);
-    }
+    // [HttpPost]
+    // public async Task<IActionResult> CreateProfile(ProfileCreateDto profile)
+    // {
+    //     var createdProfile = await _profileService.CreateProfile(profile);
+    //     return Ok(createdProfile);
+    // }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateProfile(ProfileUpdateDto profile)
+    public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile)
     {
-        var updatedProfile = await _profileService.UpdateProfile(profile);
+        var updatedProfile = await _profileService.UpdateCandidateProfile(profile);
+        return Ok(updatedProfile);
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile)
+    {
+        var updatedProfile = await _profileService.UpdateRecruiterProfile(profile);
         return Ok(updatedProfile);
     }
 }

@@ -20,9 +20,7 @@ public class CategoryServiceTests
     {
         _categoryService = new CategoryService(
             _repositoryMock.Object,
-            _mapperMock.Object,
-            _createValidatorMock.Object,
-            _updateValidatorMock.Object
+            _mapperMock.Object
         );
     }
 
@@ -76,21 +74,6 @@ public class CategoryServiceTests
     }
 
     [Fact]
-    public async Task CreateCategory_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var categoryCreateDto = new CategoryCreateDto
-        {
-            Name = null! // Name is required
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Name", "Name is required") };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(categoryCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _categoryService.CreateCategory(categoryCreateDto));
-    }
-
-    [Fact]
     public async Task UpdateCategory_ValidDtoAndExistingCategory_ShouldUpdateAndReturnCategory()
     {
         // Arrange
@@ -114,22 +97,6 @@ public class CategoryServiceTests
         Assert.NotNull(result);
         Assert.Equal(categoryUpdateDto.Id, result.Id);
         Assert.Equal(categoryUpdateDto.Name, result.Name);
-    }
-
-    [Fact]
-    public async Task UpdateCategory_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var categoryUpdateDto = new CategoryUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            Name = null // Name is required
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Name", "Name is required") };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(categoryUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _categoryService.UpdateCategory(categoryUpdateDto));
     }
 
     [Fact]

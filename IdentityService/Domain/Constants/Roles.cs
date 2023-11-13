@@ -4,6 +4,6 @@ public enum Roles
 {
     Admin,
     Recruiter,
-    Applicant,
+    Candidate,
     CompanyOwner,
 }

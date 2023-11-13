@@ -1,3 +1,4 @@
+using Core.Database;
 using Core.ExceptionHandler;
 using Core.Logging;
 using FastEndpoints;
@@ -12,6 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("JobService", Serilog.Events.LogEventLevel.Debug)
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
     .ReadFrom.Configuration(builder.Configuration)
     .WriteTo.Console()
     .CreateLogger();
@@ -22,9 +29,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
 builder.Services.RegisterDependencies(builder.Configuration);
-builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 var app = builder.Build();
+
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+
+    var myDependency = services.GetRequiredService<IMigrationsManager>();
+
+    //Use the service
+    myDependency?.MigrateDbIfNeeded().Wait();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

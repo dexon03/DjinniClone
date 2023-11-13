@@ -23,4 +23,12 @@ public class UserController : ControllerBase
         var users = await _userManager.GetUsers();
         return Ok(users);
     }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(Guid id)
+    {
+        await _userManager.DeleteUser(id);
+        return Ok();
+    }
+    
 }

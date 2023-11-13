@@ -1,31 +1,20 @@
 ﻿using AutoMapper;
 using Core.Database;
-using Core.Exceptions;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
-using ValidationException = Core.Exceptions.ValidationException;
-
 namespace VacanciesService.Application.Services;
 
 public class SkillService : ISkillService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IValidator<SkillCreateDto> _createValidator;
-    private readonly IValidator<SkillUpdateDto> _updateValidator;
 
-    public SkillService(IRepository repository, 
-        IMapper mapper,
-        IValidator<SkillCreateDto> createValidator, 
-        IValidator<SkillUpdateDto> updateValidator)
+    public SkillService(IRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
     public Task<List<Skill>> GetAllSkills(CancellationToken cancellationToken = default)
     {
@@ -45,12 +34,6 @@ public class SkillService : ISkillService
 
     public async Task<Skill> CreateSkill(SkillCreateDto skill, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _createValidator.ValidateAsync(skill, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-        
         var skillEntity = _mapper.Map<Skill>(skill);
         var result = await _repository.CreateAsync(skillEntity);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -59,12 +42,6 @@ public class SkillService : ISkillService
 
     public async Task<Skill> UpdateSkill(SkillUpdateDto skill, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _updateValidator.ValidateAsync(skill, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-        
         var skillEntity = _mapper.Map<Skill>(skill);
         var isExists = await _repository.AnyAsync<Skill>(x => x.Id == skillEntity.Id);
         if (!isExists)

@@ -36,7 +36,7 @@ public class IdentityDbContext : DbContext
             new Role()
             {
                 Id = Guid.NewGuid(),
-                Name = Roles.Applicant.ToString(),
+                Name = Roles.Candidate.ToString(),
             },
             new Role()
             {

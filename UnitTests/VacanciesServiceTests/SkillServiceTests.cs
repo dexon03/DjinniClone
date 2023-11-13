@@ -20,9 +20,7 @@ public class SkillServiceTests
     {
         _skillService = new SkillService(
             _repositoryMock.Object,
-            _mapperMock.Object,
-            _createValidatorMock.Object,
-            _updateValidatorMock.Object
+            _mapperMock.Object
         );
     }
 
@@ -76,21 +74,6 @@ public class SkillServiceTests
     }
 
     [Fact]
-    public async Task CreateSkill_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var skillCreateDto = new SkillCreateDto
-        {
-            Name = null! // Name is required
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Name", "Name is required") };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(skillCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _skillService.CreateSkill(skillCreateDto));
-    }
-
-    [Fact]
     public async Task UpdateSkill_ValidDtoAndExistingSkill_ShouldUpdateAndReturnSkill()
     {
         // Arrange
@@ -113,22 +96,6 @@ public class SkillServiceTests
         Assert.NotNull(result);
         Assert.Equal(skillUpdateDto.Id, result.Id);
         Assert.Equal(skillUpdateDto.Name, result.Name);
-    }
-
-    [Fact]
-    public async Task UpdateSkill_InvalidDto_ShouldThrowValidationException()
-    {
-        // Arrange
-        var skillUpdateDto = new SkillUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            Name = null! // Name is required
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Name", "Name is required") };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(skillUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _skillService.UpdateSkill(skillUpdateDto));
     }
 
     [Fact]

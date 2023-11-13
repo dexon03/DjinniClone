@@ -1,14 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Database;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using ILogger = Serilog.ILogger;
 
 namespace AnalyticsService.Database.AutoMigrations;
-
-public interface IMigrationsManager
-{
-    Task MigrateDbIfNeeded();
-}
-
 public class MigrationsManager : IMigrationsManager
 {
     private readonly AnalyticsDbContext _context;

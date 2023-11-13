@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using VacanciesService.Application.Services;
 using VacanciesService.Database;
 using VacanciesService.Database.AutoMigrations;
@@ -24,6 +26,7 @@ public static class DependencyInjection
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);
+        services.AddFluentValidationAutoValidation();
         services.AddAutoMapper(ApplicationAssembly);
         services.AddScoped<IRepository, Repository>();
         services.AddStackExchangeRedisCache(options =>

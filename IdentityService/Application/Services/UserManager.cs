@@ -1,6 +1,8 @@
 ﻿using Core.Database;
+using Core.MessageContract;
 using IdentityService.Application.Utilities;
 using IdentityService.Domain.Models;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Application.Services;
@@ -8,10 +10,12 @@ namespace IdentityService.Application.Services;
 public class UserManager
 {
     private readonly IRepository _repository;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public UserManager(IRepository repository)
+    public UserManager(IRepository repository, IPublishEndpoint publishEndpoint)
     {
         _repository = repository;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<List<User>> GetUsers()
@@ -89,5 +93,16 @@ public class UserManager
     {
         var hashedPassword = PasswordUtility.GetHashedPassword(password, user.PasswordSalt);
         return Task.FromResult(hashedPassword == user.PasswordHash);
+    }
+    
+    public async Task DeleteUser(Guid id)
+    {
+        var user = await FindByIdAsync(id);
+        _repository.Delete(user);
+        await _repository.SaveChangesAsync();
+        await _publishEndpoint.Publish(new UserDeletedEvent
+        {
+            UserId = id
+        });
     }
 }

@@ -1,8 +1,8 @@
+using Core.Database;
 using Core.ExceptionHandler;
 using Core.Logging;
 using Core.Middlewares;
 using Serilog;
-using VacanciesService.Database.AutoMigrations;
 using VacanciesService.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +19,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
 builder.Services.RegisterDependencies(builder.Configuration);
-builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
-
 
 var app = builder.Build();
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+
+    var myDependency = services.GetRequiredService<IMigrationsManager>();
+
+    //Use the service
+    myDependency?.MigrateDbIfNeeded().Wait();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

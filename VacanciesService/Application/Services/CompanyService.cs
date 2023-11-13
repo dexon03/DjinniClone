@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Core.Database;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace VacanciesService.Application.Services;
 
@@ -13,15 +11,11 @@ public class CompanyService : ICompanyService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IValidator<CompanyCreateDto> _createValidator;
-    private readonly IValidator<CompanyUpdateDto> _updateValidator;
 
-    public CompanyService(IRepository repository, IMapper mapper, IValidator<CompanyCreateDto> createValidator, IValidator<CompanyUpdateDto> updateValidator)
+    public CompanyService(IRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
 
     public Task<List<Company>> GetAllCompanies(CancellationToken cancellationToken = default)
@@ -42,12 +36,6 @@ public class CompanyService : ICompanyService
 
     public async Task<Company> CreateCompany(CompanyCreateDto company, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _createValidator.ValidateAsync(company,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-        
         var companyEntity = _mapper.Map<Company>(company);
         var result = await _repository.CreateAsync(companyEntity);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -56,12 +44,6 @@ public class CompanyService : ICompanyService
 
     public async Task<Company> UpdateCompany(CompanyUpdateDto company, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _updateValidator.ValidateAsync(company,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);;
-        }
-        
         var companyEntity = _mapper.Map<Company>(company);
         var isExist = await _repository.AnyAsync<Company>(x => x.Id == companyEntity.Id);
         if (!isExist)

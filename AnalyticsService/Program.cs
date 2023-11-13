@@ -1,5 +1,6 @@
 using AnalyticsService.Database;
 using AnalyticsService.Database.AutoMigrations;
+using Core.Database;
 using Core.ExceptionHandler;
 using Core.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -26,9 +27,18 @@ builder.Services.AddSingleton(Log.Logger);
 builder.Host.UseSerilog();
 builder.Services.AddDbContext<AnalyticsDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
-builder.Services.BuildServiceProvider().GetService<IMigrationsManager>()?.MigrateDbIfNeeded().Wait();
 
 var app = builder.Build();
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+
+    var myDependency = services.GetRequiredService<IMigrationsManager>();
+
+    //Use the service
+    myDependency?.MigrateDbIfNeeded().Wait();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

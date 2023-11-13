@@ -1,30 +1,27 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using ProfilesService.Application.Services;
+using ProfilesService.Domain;
 using ProfilesService.Domain.DTO;
-using Profile = ProfilesService.Domain.Models.Profile;
+using ProfilesService.Domain.Models;
 using ValidationException = Core.Exceptions.ValidationException;
 
 namespace UnitTests.ProfileServiceTests;
 
 public class ProfileServiceTests
 {
-    private readonly Mock<IRepository> _repositoryMock = new Mock<IRepository>();
-    private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
-    private readonly Mock<IValidator<ProfileCreateDto>> _createValidatorMock = new Mock<IValidator<ProfileCreateDto>>();
-    private readonly Mock<IValidator<ProfileUpdateDto>> _updateValidatorMock = new Mock<IValidator<ProfileUpdateDto>>();
-
-    private readonly ProfileService _profileService;
+    private readonly Mock<IRepository> mockRepository;
+    private readonly Mock<IMapper> mockMapper;
+    private readonly ProfileService profileService;
 
     public ProfileServiceTests()
     {
-        _profileService = new ProfileService(
-            _repositoryMock.Object,
-            _mapperMock.Object,
-            _createValidatorMock.Object,
-            _updateValidatorMock.Object
-        );
+        mockRepository = new Mock<IRepository>();
+        mockMapper = new Mock<IMapper>();
+        profileService = new ProfileService(mockRepository.Object, mockMapper.Object);
     }
 
     [Fact]
@@ -32,151 +29,94 @@ public class ProfileServiceTests
     {
         // Arrange
         var existingId = Guid.NewGuid();
-        var mockProfile = new Profile { Id = existingId, UserId = Guid.NewGuid(), Name = "Test", Surname = "User" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(existingId)).ReturnsAsync(mockProfile);
+        var profile = new CandidateProfile { Id = existingId, Name = "John" };
+
+        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(existingId))
+                      .ReturnsAsync(profile);
 
         // Act
-        var result = await _profileService.GetProfileById(existingId);
+        var result = await profileService.GetProfileById(existingId);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(existingId, result.Id);
-        Assert.Equal(mockProfile.UserId, result.UserId);
-        Assert.Equal(mockProfile.Name, result.Name);
-        Assert.Equal(mockProfile.Surname, result.Surname);
+        Assert.Equal(profile, result);
     }
 
     [Fact]
-    public async Task GetProfileById_NonExistingId_ShouldThrowException()
+    public async Task CreateProfile_CandidateRole_ShouldCreateCandidateProfile()
     {
         // Arrange
-        var nonExistingId = Guid.NewGuid();
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(nonExistingId)).ReturnsAsync((Profile)null!);
+        var profileCreateDto = new ProfileCreateDto { Role = ProfileRole.Candidate };
+        var createdProfile = new CandidateProfile();
 
-        // Act and Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _profileService.GetProfileById(nonExistingId));
-    }
-
-    [Fact]
-    public async Task CreateProfile_ValidDto_ShouldCreateAndReturnProfile()
-    {
-        // Arrange
-        var profileCreateDto = new ProfileCreateDto
-        {
-            UserId = Guid.NewGuid(),
-            Name = "New",
-            Surname = "Profile",
-            PositionTitle = "Developer",
-            // ... other properties
-        };
-        var mockProfile = new Profile { Id = Guid.NewGuid(), UserId = profileCreateDto.UserId, Name = profileCreateDto.Name, Surname = profileCreateDto.Surname };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(profileCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-
-        _mapperMock.Setup(mapper => mapper.Map<Profile>(profileCreateDto)).Returns(mockProfile);
-        _repositoryMock.Setup(repo => repo.CreateAsync(mockProfile)).ReturnsAsync(mockProfile);
+        mockRepository.Setup(r => r.CreateAsync(It.IsAny<CandidateProfile>()))
+                      .ReturnsAsync(createdProfile);
 
         // Act
-        var result = await _profileService.CreateProfile(profileCreateDto);
+        await profileService.CreateProfile(profileCreateDto);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(profileCreateDto.UserId, result.UserId);
-        Assert.Equal(profileCreateDto.Name, result.Name);
-        Assert.Equal(profileCreateDto.Surname, result.Surname);
+        mockRepository.Verify(r => r.CreateAsync(It.IsAny<CandidateProfile>()), Times.Once);
+        mockRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task CreateProfile_InvalidDto_ShouldThrowValidationException()
+    public async Task CreateProfile_RecruiterRole_ShouldCreateRecruiterProfile()
     {
         // Arrange
-        var profileCreateDto = new ProfileCreateDto
-        {
-            UserId = Guid.NewGuid(),
-            Name = "New",
-            Surname = "Profile",
-            PositionTitle = "Developer",
-            Email = null, // Email is required
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Email", "Email is required") };
-        _createValidatorMock.Setup(validator => validator.ValidateAsync(profileCreateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
+        var profileCreateDto = new ProfileCreateDto { Role = ProfileRole.Recruiter };
+        var createdProfile = new RecruiterProfile();
 
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _profileService.CreateProfile(profileCreateDto));
-    }
-
-        [Fact]
-    public async Task UpdateProfile_ValidDtoAndExistingProfile_ShouldUpdateAndReturnProfile()
-    {
-        // Arrange
-        var profileUpdateDto = new ProfileUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            Name = "Updated",
-            Surname = "Profile",
-            PositionTitle = "Senior Developer",
-            // ... other properties
-        };
-        
-        var mappedProfile = new Profile {
-            Id = profileUpdateDto.Id,
-            Name = "Updated",
-            Surname = "Profile",
-            PositionTitle = "Senior Developer",
-            // ... other properties
-        };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(profileUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-
-        _mapperMock.Setup(mapper => mapper.Map<Profile>(profileUpdateDto)).Returns(mappedProfile);
-        _repositoryMock.Setup(repo => repo.AnyAsync<Profile>(x => x.Id == mappedProfile.Id)).ReturnsAsync(true);
-        _repositoryMock.Setup(repo => repo.Update(mappedProfile)).Returns(mappedProfile);
+        mockRepository.Setup(r => r.CreateAsync(It.IsAny<RecruiterProfile>()))
+                      .ReturnsAsync(createdProfile);
 
         // Act
-        var result = await _profileService.UpdateProfile(profileUpdateDto);
+        await profileService.CreateProfile(profileCreateDto);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(profileUpdateDto.Id, result.Id);
-        Assert.Equal(profileUpdateDto.Name, result.Name);
-        Assert.Equal(profileUpdateDto.Surname, result.Surname);
+        mockRepository.Verify(r => r.CreateAsync(It.IsAny<RecruiterProfile>()), Times.Once);
+        mockRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task UpdateProfile_InvalidDto_ShouldThrowValidationException()
+    public async Task UpdateCandidateProfile_ExistingProfile_ShouldUpdateProfile()
     {
         // Arrange
-        var profileUpdateDto = new ProfileUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            Name = "Updated",
-            Surname = "Profile",
-            PositionTitle = "Senior Developer",
-            Email = null, // Email is required
-            // ... other properties
-        };
-        var validationFailures = new List<FluentValidation.Results.ValidationFailure> { new FluentValidation.Results.ValidationFailure("Email", "Email is required") };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(profileUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
+        var candidateProfileUpdateDto = new CandidateProfileUpdateDto();
+        var existingProfile = new CandidateProfile { Id = Guid.NewGuid() };
 
-        // Act and Assert
-        await Assert.ThrowsAsync<ValidationException>(() => _profileService.UpdateProfile(profileUpdateDto));
+        mockRepository.Setup(r => r.AnyAsync<CandidateProfile>(It.IsAny<Expression<Func<CandidateProfile, bool>>>()))
+                      .ReturnsAsync(true);
+        mockRepository.Setup(r => r.Update(It.IsAny<CandidateProfile>()))
+                      .Returns(existingProfile);
+
+        // Act
+        var result = await profileService.UpdateCandidateProfile(candidateProfileUpdateDto);
+
+        // Assert
+        Assert.Equal(existingProfile, result);
+        mockRepository.Verify(r => r.Update(It.IsAny<CandidateProfile>()), Times.Once);
+        mockRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task UpdateProfile_NonExistingProfile_ShouldThrowException()
+    public async Task UpdateRecruiterProfile_ExistingProfile_ShouldUpdateProfile()
     {
         // Arrange
-        var profileUpdateDto = new ProfileUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            Name = "Updated",
-            Surname = "Profile",
-            PositionTitle = "Senior Developer",
-            // ... other properties
-        };
-        _updateValidatorMock.Setup(validator => validator.ValidateAsync(profileUpdateDto, default)).ReturnsAsync(new FluentValidation.Results.ValidationResult());
-        _repositoryMock.Setup(repo => repo.AnyAsync<Profile>(x => x.Id == profileUpdateDto.Id)).ReturnsAsync(false);
+        var recruiterProfileUpdateDto = new RecruiterProfileUpdateDto();
+        var existingProfile = new RecruiterProfile { Id = Guid.NewGuid() };
 
-        // Act and Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _profileService.UpdateProfile(profileUpdateDto));
+        mockRepository.Setup(r => r.GetByIdAsync<RecruiterProfile>(It.IsAny<Guid>()))
+                      .ReturnsAsync(existingProfile);
+        mockRepository.Setup(r => r.Update(It.IsAny<RecruiterProfile>()))
+                      .Returns(existingProfile);
+
+        // Act
+        var result = await profileService.UpdateRecruiterProfile(recruiterProfileUpdateDto);
+
+        // Assert
+        Assert.Equal(existingProfile, result);
+        mockRepository.Verify(r => r.Update(It.IsAny<RecruiterProfile>()), Times.Once);
+        mockRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -184,15 +124,61 @@ public class ProfileServiceTests
     {
         // Arrange
         var existingId = Guid.NewGuid();
-        var mockProfile = new Profile { Id = existingId, UserId = Guid.NewGuid(), Name = "Test", Surname = "Profile" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(existingId)).ReturnsAsync(mockProfile);
+        var existingProfile = new CandidateProfile { Id = existingId };
+
+        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(existingId))
+                      .ReturnsAsync(existingProfile);
 
         // Act
-        await _profileService.DeleteProfile(existingId);
+        await profileService.DeleteProfile(existingId);
 
         // Assert
-        _repositoryMock.Verify(repo => repo.Delete(mockProfile), Times.Once);
-        _repositoryMock.Verify(repo => repo.SaveChangesAsync(CancellationToken.None), Times.Once);
+        mockRepository.Verify(r => r.Delete(existingProfile), Times.Once);
+        mockRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ActivateDisactivateProfile_ExistingId_ShouldToggleIsActive()
+    {
+        // Arrange
+        var existingId = Guid.NewGuid();
+        var profile = new CandidateProfile { Id = existingId, IsActive = true };
+
+        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(existingId))
+                      .ReturnsAsync(profile);
+
+        // Act
+        await profileService.ActivateDisactivateProfile(existingId);
+
+        // Assert
+        Assert.False(profile.IsActive);
+        mockRepository.Verify(r => r.Update(profile), Times.Once);
+        mockRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+     [Fact]
+    public async Task UpdateCandidateProfile_NonExistingProfile_ShouldThrowException()
+    {
+        // Arrange
+        var candidateProfileUpdateDto = new CandidateProfileUpdateDto();
+
+        mockRepository.Setup(r => r.AnyAsync<CandidateProfile>(It.IsAny<Expression<Func<CandidateProfile, bool>>>()))
+                      .ReturnsAsync(false);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.UpdateCandidateProfile(candidateProfileUpdateDto));
+    }
+
+    [Fact]
+    public async Task UpdateRecruiterProfile_NonExistingProfile_ShouldThrowException()
+    {
+        // Arrange
+        var recruiterProfileUpdateDto = new RecruiterProfileUpdateDto();
+
+        mockRepository.Setup(r => r.GetByIdAsync<RecruiterProfile>(It.IsAny<Guid>()))
+                      .ReturnsAsync((RecruiterProfile)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.UpdateRecruiterProfile(recruiterProfileUpdateDto));
     }
 
     [Fact]
@@ -200,9 +186,24 @@ public class ProfileServiceTests
     {
         // Arrange
         var nonExistingId = Guid.NewGuid();
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Profile>(nonExistingId)).ReturnsAsync((Profile)null);
 
-        // Act and Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _profileService.DeleteProfile(nonExistingId));
+        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(nonExistingId))
+                      .ReturnsAsync((CandidateProfile)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.DeleteProfile(nonExistingId));
+    }
+
+    [Fact]
+    public async Task ActivateDisactivateProfile_NonExistingId_ShouldThrowException()
+    {
+        // Arrange
+        var nonExistingId = Guid.NewGuid();
+
+        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(nonExistingId))
+                      .ReturnsAsync((CandidateProfile)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.ActivateDisactivateProfile(nonExistingId));
     }
 }

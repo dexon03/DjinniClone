@@ -2,12 +2,9 @@
 using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace VacanciesService.Application.Services;
 
@@ -15,18 +12,11 @@ public class VacancyService : IVacanciesService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
-    private readonly IValidator<VacancyCreateDto> _createValidator;
-    private readonly IValidator<VacancyUpdateDto> _updateValidator;
 
-    public VacancyService(IRepository repository, 
-        IMapper mapper, 
-        IValidator<VacancyCreateDto> createValidator, 
-        IValidator<VacancyUpdateDto> updateValidator)
+    public VacancyService(IRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
     }
 
     public List<VacancyGetAllDto> GetAllVacancies(CancellationToken cancellationToken = default)
@@ -99,11 +89,6 @@ public class VacancyService : IVacanciesService
 
     public async Task<Vacancy> CreateVacancy(VacancyCreateDto vacancy, CancellationToken cancellationToken = default)
     {
-        var validationResult =  await _createValidator.ValidateAsync(vacancy,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
         var vacancyEntity = new Vacancy().MapCreate(vacancy);
         vacancyEntity.CreatedAt = DateTime.Now;
         var result = await _repository.CreateAsync(vacancyEntity);
@@ -114,11 +99,6 @@ public class VacancyService : IVacanciesService
 
     public async Task<Vacancy> UpdateVacancy(VacancyUpdateDto vacancy, CancellationToken cancellationToken = default)
     {
-        var validationResult = await _updateValidator.ValidateAsync(vacancy,cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
         var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
         var isExists = await _repository.AnyAsync<Vacancy>(x => x.Id == vacancyEntity.Id);
         if (!isExists)

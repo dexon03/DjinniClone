@@ -379,3 +379,5 @@ identityDbDir
 vacanciesDbDir
 profileDbDir
 analyticsDbDir
+rabbitmq-data
+rabbitmq-logs
