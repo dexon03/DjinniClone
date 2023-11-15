@@ -4,7 +4,7 @@ using IdentityService.Domain.Dto;
 
 namespace IdentityService.AuthEndpoints;
 
-public class LoginEndpoint : Endpoint<LoginRequest, JwtResponse>
+public class LoginEndpoint : Endpoint<LoginRequest, TokenResponse>
 {
     private readonly IAuthService _authService;
 

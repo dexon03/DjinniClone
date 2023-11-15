@@ -45,7 +45,7 @@ public class AuthService : IAuthService
         _loginValidator = loginValidator;
         _forgotPasswordValidator = forgotPasswordValidator;
     }
-    public async Task<JwtResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {
         await ValidateRequest(request, _loginValidator, cancellationToken);
         var user = await _userManager.FindByEmailAsync(request.Email);
@@ -62,7 +62,7 @@ public class AuthService : IAuthService
     }
 
 
-    public async Task<JwtResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         await ValidateRequest(request, _registerValidator, cancellationToken);
         
@@ -98,7 +98,7 @@ public class AuthService : IAuthService
         await _repository.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<JwtResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var userId = _jwtService.ValidateToken(refreshToken);
         if (userId == null)
@@ -114,16 +114,17 @@ public class AuthService : IAuthService
         return token;
     }
 
-    private JwtResponse GetNewTokenForUser(User user)
+    private TokenResponse GetNewTokenForUser(User user)
     {
         var accessToken = _jwtService.GenerateToken(user);
         var newRefreshToken = _jwtService.GenerateRefreshToken(user);
         user.RefreshToken = newRefreshToken;
-
-        return new JwtResponse
+        return new TokenResponse
         {
             AccessToken = accessToken,
-            RefreshToken = newRefreshToken
+            RefreshToken = newRefreshToken,
+            Role = user.Role.Name,
+            UserId = user.Id
         };
     }
     

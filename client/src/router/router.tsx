@@ -15,6 +15,10 @@ const routes: RouteObject[] = [
                 element: <VacancyPage />
             },
             {
+                path: "/candidate",
+                element: <div>candidate</div>
+            },
+            {
                 path: "/profile",
                 element: <ProfilePage />
             },

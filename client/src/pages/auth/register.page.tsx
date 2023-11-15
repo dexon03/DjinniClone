@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Button, TextField, Container, Typography, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import { RestClient } from "../../api/rest.client.ts";
-import { JwtResponse } from "../../models/auth/jwt.respone.ts";
+import { TokenResponse } from "../../models/auth/jwt.respone.ts";
 import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
 import { RegisterModel } from "../../models/auth/register.model.ts";
 import useToken from '../../hooks/useToken.ts';
 import { useNavigate } from 'react-router-dom';
+import { Role } from '../../models/auth/role.enum.ts';
 
 function RegisterPage() {
-    const [selectedRole, setSelectedRole] = useState(0);
+    const [selectedRole, setSelectedRole] = useState<Role>(0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -24,7 +25,7 @@ function RegisterPage() {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        const token = await restClient.post<JwtResponse>(ApiServicesRoutes.auth + '/register', {
+        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.auth + '/register', {
             email: email,
             password: password,
             firstName: firstName,
@@ -94,12 +95,12 @@ function RegisterPage() {
                     onChange={handleRoleChange}
                 >
                     <FormControlLabel
-                        value={0}
+                        value={Role.recruiter}
                         control={<Radio />}
                         label="I am recruiter"
                     />
                     <FormControlLabel
-                        value={1}
+                        value={Role.candidate}
                         control={<Radio />}
                         label="I am candidate"
                     />

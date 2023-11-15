@@ -1,6 +1,6 @@
-export interface JwtResponse{
+export interface TokenResponse {
     accessToken: string;
     refreshToken: string;
-    tokenType: string;
-    error: string;
+    role: string;
+    userId: string;
 }

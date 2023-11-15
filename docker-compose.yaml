@@ -47,7 +47,7 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
-      - ./rabbitmq-data:/var/lib/rabbitmq
+      - ./rabbitmq-data:/var/lib/rabbitmq/mnesia
       - ./rabbitmq-logs:/var/log/rabbitmq
     networks:
         - IdentityService

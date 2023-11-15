@@ -4,7 +4,7 @@ using IdentityService.Domain.Dto;
 
 namespace IdentityService.AuthEndpoints;
 
-public class RegisterEndpoint : Endpoint<RegisterRequest, JwtResponse>
+public class RegisterEndpoint : Endpoint<RegisterRequest, TokenResponse>
 {
     private readonly IAuthService _authService;
 

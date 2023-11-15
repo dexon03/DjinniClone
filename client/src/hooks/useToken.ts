@@ -1,24 +1,24 @@
 import { useState } from "react";
-import { JwtResponse } from "../models/auth/jwt.respone";
+import { TokenResponse } from "../models/auth/jwt.respone";
 
 export default function useToken() {
-  
-  function saveToken(token: JwtResponse) {
+
+  function saveToken(token: TokenResponse) {
     localStorage.setItem('token', JSON.stringify(token));
     setToken(token);
   }
-  
-  function getToken() : JwtResponse | null {
+
+  function getToken(): TokenResponse | null {
     const tokenString = localStorage.getItem('token');
-    if(tokenString){
+    if (tokenString) {
       return JSON.parse(tokenString);
     }
     return null;
   }
 
-  const [token,setToken] = useState<JwtResponse | null>(getToken());
-  
-  return{
+  const [token, setToken] = useState<TokenResponse | null>(getToken());
+
+  return {
     setToken: saveToken,
     token
   }
