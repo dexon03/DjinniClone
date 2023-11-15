@@ -1,94 +1,117 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel } from '@mui/material';
 
-const ProfilePage = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your form submission logic here
-  };
+const CandidateProfileComponent = () => {
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [description, setDescription] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [githubUrl, setGithubUrl] = useState('');
+    const [linkedInUrl, setLinkedInUrl] = useState('');
+    const [positionTitle, setPositionTitle] = useState('');
+    const [workExperience, setWorkExperience] = useState('');
+    const [active, setActive] = useState(false);
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+    };
 
-  return (
+    return (
     <Container component="main" maxWidth="xs">
-      <div>
+        <div>
         <Avatar> {/* Add user avatar here */}</Avatar>
         <Typography component="h1" variant="h5">
-          Profile
+            Profile
         </Typography>
         <form onSubmit={handleSubmit}>
-          <TextField
+            <TextField
             label="Name"
             margin="normal"
             fullWidth
+            onChange={(e) => setName(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Surname"
             margin="normal"
             fullWidth
+            onChange={(e) => setSurname(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Email"
             margin="normal"
             fullWidth
+            onChange={(e) => setEmail(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Phone Number"
             margin="normal"
             fullWidth
+            onChange={(e) => setPhoneNumber(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Date of Birth"
             type="date"
             margin="normal"
             fullWidth
+            onChange={(e) => setDateOfBirth(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Description"
             multiline
             rows={4}
             margin="normal"
             fullWidth
+            onChange={(e) => setDescription(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Image URL"
             margin="normal"
             fullWidth
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="GitHub URL"
             margin="normal"
             fullWidth
+            onChange={(e) => setGithubUrl(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="LinkedIn URL"
             margin="normal"
             fullWidth
+            onChange={(e) => setLinkedInUrl(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <TextField
+            />
+            <TextField
             label="Position Title"
             margin="normal"
             fullWidth
+            onChange={(e) => setPositionTitle(e.target.value)}
             // Add onChange and value props for controlled component
-          />
-          <FormControlLabel
+            />
+            <FormControlLabel
             control={<Checkbox color="primary" />}
             label="Active"
+            onChange={(e) => setActive(e.target.checked)}
             // Add onChange and value props for controlled component
-          />
-          <Button type="submit" fullWidth variant="contained" color="primary">
+            />
+            <Button type="submit" fullWidth variant="contained" color="primary">
             Save
-          </Button>
+            </Button>
         </form>
-      </div>
+        </div>
     </Container>
   );
 };
 
-export default ProfilePage;
+export default CandidateProfileComponent;

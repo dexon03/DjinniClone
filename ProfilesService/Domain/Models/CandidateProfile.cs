@@ -1,13 +1,14 @@
 ﻿using System.Text.Json.Serialization;
 using ProfilesService.Domain.DTO;
+using ProfilesService.Domain.Enums;
 using ProfilesService.Domain.Models.Common;
 
 namespace ProfilesService.Domain.Models;
 
 public class CandidateProfile : Profile
 {
-    public double WorkExperience { get; set; }
-    public double DesiredSalary { get; set; }
+    public Experience WorkExperience { get; set; }
+    public double DesiredSalary{ get; set; }
     [JsonIgnore]public ICollection<ProfileSkills> ProfileSkills { get; set; }
     [JsonIgnore]public ICollection<LocationProfile> LocationProfiles { get; set; }
 }
@@ -24,6 +25,7 @@ public static class ProfileMapperExtension
             PositionTitle = profileCreateDto.PositionTitle,
             Email = profileCreateDto.Email,
             PhoneNumber = profileCreateDto.PhoneNumber,
+            WorkExperience = Experience.NoExperience
         };
     }
     
