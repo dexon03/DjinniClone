@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
+using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Controllers;
 
@@ -15,11 +17,14 @@ public class ProfileController : BaseController
         _profileService = profileService;
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetProfileById(Guid id)
+    [HttpGet("{role}/{id}")]
+    public async Task<IActionResult> GetProfile(Guid id, ProfileRole role)
     {
-        var result = await _profileService.GetProfileById(id);
-        return Ok(result);
+        if (role == ProfileRole.Candidate)
+        {
+            return Ok(await _profileService.GetProfile<CandidateProfile>(id));
+        }
+        return Ok(await _profileService.GetProfile<RecruiterProfile>(id));
     }
 
     [HttpGet]

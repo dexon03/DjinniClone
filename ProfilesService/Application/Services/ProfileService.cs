@@ -7,6 +7,7 @@ using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
+using Profile = ProfilesService.Domain.Models.Common.Profile;
 
 namespace ProfilesService.Application.Services;
 
@@ -27,9 +28,10 @@ public class ProfileService : IProfileService
         return _repository.GetAll<CandidateProfile>().ToListAsync(cancellationToken);
     }
 
-    public async Task<CandidateProfile> GetProfileById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<T> GetProfile<T>(Guid id, CancellationToken cancellationToken = default) 
+        where T : Profile
     {
-        var profile = await _repository.GetByIdAsync<CandidateProfile>(id);
+        var profile = await _repository.GetByIdAsync<T>(id);
         if (profile == null)
         {
             throw new ExceptionWithStatusCode("Profile not found", HttpStatusCode.BadRequest);

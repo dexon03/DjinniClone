@@ -1,4 +1,4 @@
-import { Role } from "./role.enum.ts";
+import { Role } from "../common/role.enum.ts";
 
 export interface RegisterModel {
     firstName: string;

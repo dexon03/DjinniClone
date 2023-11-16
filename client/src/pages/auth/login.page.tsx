@@ -5,6 +5,7 @@ import { RestClient } from "../../api/rest.client.ts";
 import { TokenResponse } from "../../models/auth/jwt.respone.ts";
 import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
 import { LoginModel } from "../../models/auth/login.model.ts";
+import { Role } from '../../models/common/role.enum.ts';
 
 function LoginPage({ setToken }: { setToken: (token: TokenResponse) => void }) {
     const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ function LoginPage({ setToken }: { setToken: (token: TokenResponse) => void }) {
             password: password
         } as LoginModel);
         setToken(token);
-        if (token.role === 'Candidate'){
+        if (token.role === Role[Role.Candidate]){
             navigate('/vacancy');
         }else{
             navigate('/candidate');

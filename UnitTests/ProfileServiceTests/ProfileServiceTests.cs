@@ -35,7 +35,7 @@ public class ProfileServiceTests
                       .ReturnsAsync(profile);
 
         // Act
-        var result = await profileService.GetProfileById(existingId);
+        var result = await profileService.GetProfile<CandidateProfile>(existingId);
 
         // Assert
         Assert.Equal(profile, result);

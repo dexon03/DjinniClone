@@ -6,10 +6,10 @@ import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
 import { RegisterModel } from "../../models/auth/register.model.ts";
 import useToken from '../../hooks/useToken.ts';
 import { useNavigate } from 'react-router-dom';
-import { Role } from '../../models/auth/role.enum.ts';
+import { Role } from '../../models/common/role.enum.ts';
 
 function RegisterPage() {
-    const [selectedRole, setSelectedRole] = useState<Role>(0);
+    const [selectedRole, setSelectedRole] = useState(0);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -31,7 +31,7 @@ function RegisterPage() {
             firstName: firstName,
             lastName: lastName,
             phoneNumber: phoneNumber,
-            role: selectedRole
+            role: selectedRole === 0 ? Role.Recruiter : Role.Candidate,
         } as RegisterModel);
 
         if (token) {
@@ -95,12 +95,12 @@ function RegisterPage() {
                     onChange={handleRoleChange}
                 >
                     <FormControlLabel
-                        value={Role.recruiter}
+                        value={0}
                         control={<Radio />}
                         label="I am recruiter"
                     />
                     <FormControlLabel
-                        value={Role.candidate}
+                        value={1}
                         control={<Radio />}
                         label="I am candidate"
                     />

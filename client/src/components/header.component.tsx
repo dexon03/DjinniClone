@@ -18,10 +18,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { NavRoute } from "../models/nav.route.ts";
 import { NavLink } from "react-router-dom";
 import useToken from "../hooks/useToken.ts";
+import { Role } from "../models/common/role.enum.ts";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
-    const pages: NavRoute[] = token.role == 'Candidate'
+    const pages: NavRoute[] = token.role == Role[Role.Candidate]
         ? [
             {
                 name: 'Offers',
