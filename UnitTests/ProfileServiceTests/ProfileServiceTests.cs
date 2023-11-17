@@ -3,6 +3,7 @@ using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ProfilesService.Application.Services;
 using ProfilesService.Domain;
 using ProfilesService.Domain.DTO;
@@ -29,16 +30,26 @@ public class ProfileServiceTests
     {
         // Arrange
         var existingId = Guid.NewGuid();
-        var profile = new CandidateProfile { Id = existingId, Name = "John" };
+        var profile = new CandidateProfile
+        {
+            Id = existingId, 
+            Name = "John",
+            Surname = "Doe",
+            DateBirth = new DateOnly(1988,12,14),
+        };
 
         mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(existingId))
                       .ReturnsAsync(profile);
 
         // Act
         var result = await profileService.GetProfile<CandidateProfile>(existingId);
+        var expected = profile.ToDto();
 
+        var expectedStr = JsonConvert.SerializeObject(expected);
+        var resultStr = JsonConvert.SerializeObject(result);
+        Assert.Equal(expectedStr, resultStr);
         // Assert
-        Assert.Equal(profile, result);
+        
     }
 
     [Fact]

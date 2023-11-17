@@ -1,12 +1,11 @@
 ﻿using ProfilesService.Domain.Contracts;
-using ProfilesService.Domain.DTO;
+using ProfilesService.Domain.Models;
 
-namespace ProfilesService.Domain.Models.Common;
+namespace ProfilesService.Domain.DTO;
 
-public abstract class Profile<T>
+public class GetRecruiterProfileDto : IProfileDto<RecruiterProfile>
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public string? Email { get; set; }
@@ -17,10 +16,6 @@ public abstract class Profile<T>
     public string? GitHubUrl { get; set; }
     public string? LinkedInUrl { get; set; }
     public string? PositionTitle { get; set; }
-    public bool IsActive { get; set; } = false;
-
-    public virtual IProfileDto<T> ToDto()
-    {
-        throw new NotImplementedException();
-    }
+    public bool IsActive { get; set; }
+    public Company Company { get; set; }
 }

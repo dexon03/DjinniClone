@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
@@ -7,7 +7,7 @@ using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
-using Profile = ProfilesService.Domain.Models.Common.Profile;
+using ProfilesService.Domain.Models.Common;
 
 namespace ProfilesService.Application.Services;
 
@@ -21,15 +21,14 @@ public class ProfileService : IProfileService
         _repository = repository;
         _mapper = mapper;
     }
-
-
+    
     public Task<List<CandidateProfile>> GetAllProfiles(CancellationToken cancellationToken = default)
     {
         return _repository.GetAll<CandidateProfile>().ToListAsync(cancellationToken);
     }
 
-    public async Task<T> GetProfile<T>(Guid id, CancellationToken cancellationToken = default) 
-        where T : Profile
+    public async Task<IProfileDto<T>> GetProfile<T>(Guid id, CancellationToken cancellationToken = default) 
+        where T : Profile<T>
     {
         var profile = await _repository.GetByIdAsync<T>(id);
         if (profile == null)
