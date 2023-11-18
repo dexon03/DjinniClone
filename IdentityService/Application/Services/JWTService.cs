@@ -68,7 +68,7 @@ public class JWTService : IJWTService
             return null;
 
         var isTokenValid = TryValidateToken(token, out var principal);
-        var userId = principal?.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        var userId = principal?.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
 
         if (!isTokenValid || !IsRefreshTokenExistsForUser(userId, token))
         {

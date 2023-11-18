@@ -12,19 +12,19 @@ public class ProfileController : BaseController
 {
     private readonly IProfileService _profileService;
 
-    public ProfileController(IProfileService profileService, HttpContextAccessor httpContextAccessor)
+    public ProfileController(IProfileService profileService)
     {
         _profileService = profileService;
     }
 
-    [HttpGet("{role}/{id}")]
-    public async Task<IActionResult> GetProfile(Guid id, ProfileRole role)
+    [HttpGet("{role}/{userId}")]
+    public async Task<IActionResult> GetProfile(Guid userId, ProfileRole role)
     {
         if (role == ProfileRole.Candidate)
         {
-            return Ok(await _profileService.GetProfile<CandidateProfile>(id));
+            return Ok(await _profileService.GetProfile<CandidateProfile>(userId));
         }
-        return Ok(await _profileService.GetProfile<RecruiterProfile>(id));
+        return Ok(await _profileService.GetProfile<RecruiterProfile>(userId));
     }
 
     [HttpGet]
@@ -51,14 +51,14 @@ public class ProfileController : BaseController
     [HttpPut]
     public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile)
     {
-        var updatedProfile = await _profileService.UpdateCandidateProfile(profile);
+        var updatedProfile = await _profileService.UpdateProfile(profile);
         return Ok(updatedProfile);
     }
     
     [HttpPut]
     public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile)
     {
-        var updatedProfile = await _profileService.UpdateRecruiterProfile(profile);
+        var updatedProfile = await _profileService.UpdateProfile(profile);
         return Ok(updatedProfile);
     }
 }

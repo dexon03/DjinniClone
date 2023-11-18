@@ -1,8 +1,8 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel } from '@mui/material';
-import { useGetCandidateProfileQuery } from '../app/features/profile/profile.api';
+import { useGetRecruiterProfileQuery } from '../app/features/profile/profile.api';
 
-const CandidateProfileComponent = ({ id }: { id: string }) => {
-  const { data, isError, isLoading, error } = useGetCandidateProfileQuery(id);
+const RecruiterProfileComponent = ({ id }: { id: string }) => {
+  const { data, isError, isLoading, error } = useGetRecruiterProfileQuery(id);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -15,7 +15,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-
+    // Implement your logic to handle the form submission for the recruiter profile.
   };
 
   return (
@@ -60,7 +60,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             margin="normal"
             fullWidth
             value={data.dateOfBirth}
-            // onChange={(e) => { data.dateOfBirth = Date.parse(e.target.value) }}
+            onChange={(e) => { data.dateOfBirth = e.target.value }}
           />
           <TextField
             label="Description"
@@ -101,7 +101,21 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             control={<Checkbox color="primary" />}
             label="Active"
             value={data?.isActive}
-            onChange={(e) => { data.isActive = !data.isActive }}
+            onChange={(e) => { data.isActive = e.target.value }}
+          />
+          <TextField
+            label="Company Name"
+            margin="normal"
+            fullWidth
+            value={data.company.name}
+            onChange={(e) => { data.company.name = e.target.value }}
+          />
+          {/* Add other recruiter-specific fields here */}
+          <FormControlLabel
+            control={<Checkbox color="primary" />}
+            label="Active"
+            value={data?.isActive}
+            onChange={() => { data.isActive = !data.isActive }}
           />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Save
@@ -112,4 +126,4 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   );
 };
 
-export default CandidateProfileComponent;
+export default RecruiterProfileComponent;

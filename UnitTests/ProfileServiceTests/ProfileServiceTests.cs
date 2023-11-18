@@ -30,19 +30,21 @@ public class ProfileServiceTests
     {
         // Arrange
         var existingId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
         var profile = new CandidateProfile
         {
             Id = existingId, 
+            UserId = userId,
             Name = "John",
             Surname = "Doe",
             DateBirth = new DateOnly(1988,12,14),
         };
 
-        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(existingId))
+        mockRepository.Setup(r => r.FirstOrDefaultAsync<CandidateProfile>(It.IsAny<Expression<Func<CandidateProfile, bool>>>()))
                       .ReturnsAsync(profile);
 
         // Act
-        var result = await profileService.GetProfile<CandidateProfile>(existingId);
+        var result = await profileService.GetProfile<CandidateProfile>(userId);
         var expected = profile.ToDto();
 
         var expectedStr = JsonConvert.SerializeObject(expected);
@@ -101,7 +103,7 @@ public class ProfileServiceTests
                       .Returns(existingProfile);
 
         // Act
-        var result = await profileService.UpdateCandidateProfile(candidateProfileUpdateDto);
+        var result = await profileService.UpdateProfile(candidateProfileUpdateDto);
 
         // Assert
         Assert.Equal(existingProfile, result);
@@ -114,15 +116,16 @@ public class ProfileServiceTests
     {
         // Arrange
         var recruiterProfileUpdateDto = new RecruiterProfileUpdateDto();
-        var existingProfile = new RecruiterProfile { Id = Guid.NewGuid() };
+        var userId = Guid.NewGuid();
+        var existingProfile = new RecruiterProfile { Id = Guid.NewGuid(), UserId = userId};
 
-        mockRepository.Setup(r => r.GetByIdAsync<RecruiterProfile>(It.IsAny<Guid>()))
-                      .ReturnsAsync(existingProfile);
+        mockRepository.Setup(r => r.AnyAsync<RecruiterProfile>(It.IsAny<Expression<Func<RecruiterProfile, bool>>>()))
+                      .ReturnsAsync(true);
         mockRepository.Setup(r => r.Update(It.IsAny<RecruiterProfile>()))
                       .Returns(existingProfile);
 
         // Act
-        var result = await profileService.UpdateRecruiterProfile(recruiterProfileUpdateDto);
+        var result = await profileService.UpdateProfile(recruiterProfileUpdateDto);
 
         // Assert
         Assert.Equal(existingProfile, result);
@@ -176,7 +179,7 @@ public class ProfileServiceTests
                       .ReturnsAsync(false);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.UpdateCandidateProfile(candidateProfileUpdateDto));
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.UpdateProfile(candidateProfileUpdateDto));
     }
 
     [Fact]
@@ -189,7 +192,7 @@ public class ProfileServiceTests
                       .ReturnsAsync((RecruiterProfile)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.UpdateRecruiterProfile(recruiterProfileUpdateDto));
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.UpdateProfile(recruiterProfileUpdateDto));
     }
 
     [Fact]

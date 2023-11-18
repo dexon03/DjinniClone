@@ -108,7 +108,8 @@ public class AuthService : IAuthService
         
         var user = await _userManager.FindByIdAsync(Guid.Parse(userId));
         var token = GetNewTokenForUser(user);
-        
+        _repository.Update(user);
+        await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         
         return token;

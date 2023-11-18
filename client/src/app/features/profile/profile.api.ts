@@ -13,4 +13,4 @@ export const profileApi = createApi({
     }),
 });
 
-export const { useGetCandidateProfileQuery } = profileApi;
+export const { useGetCandidateProfileQuery, useGetRecruiterProfileQuery } = profileApi;

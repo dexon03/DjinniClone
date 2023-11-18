@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using Core.Database;
 using FastEndpoints;
@@ -59,6 +60,7 @@ public static class DependencyInjection
                 configurator.ConfigureEndpoints(context);
             });
         });
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         services.AddMassTransitHostedService();
         return services;
     }
