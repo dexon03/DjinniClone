@@ -10,7 +10,6 @@ using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using ValidationException = Core.Exceptions.ValidationException;
 

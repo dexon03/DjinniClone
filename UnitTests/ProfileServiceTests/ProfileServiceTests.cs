@@ -144,7 +144,7 @@ public class ProfileServiceTests
                       .ReturnsAsync(existingProfile);
 
         // Act
-        await profileService.DeleteProfile(existingId);
+        await profileService.DeleteProfile<CandidateProfile>(existingId);
 
         // Assert
         mockRepository.Verify(r => r.Delete(existingProfile), Times.Once);
@@ -162,7 +162,7 @@ public class ProfileServiceTests
                       .ReturnsAsync(profile);
 
         // Act
-        await profileService.ActivateDisactivateProfile(existingId);
+        await profileService.ActivateDisactivateProfile<CandidateProfile>(existingId);
 
         // Assert
         Assert.False(profile.IsActive);
@@ -205,7 +205,7 @@ public class ProfileServiceTests
                       .ReturnsAsync((CandidateProfile)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.DeleteProfile(nonExistingId));
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.DeleteProfile<CandidateProfile>(nonExistingId));
     }
 
     [Fact]
@@ -218,6 +218,6 @@ public class ProfileServiceTests
                       .ReturnsAsync((CandidateProfile)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.ActivateDisactivateProfile(nonExistingId));
+        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => profileService.ActivateDisactivateProfile<CandidateProfile>(nonExistingId));
     }
 }

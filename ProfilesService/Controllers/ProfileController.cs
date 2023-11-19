@@ -34,12 +34,12 @@ public class ProfileController : BaseController
         return Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProfile(Guid id)
-    {
-        await _profileService.DeleteProfile(id);
-        return Ok();
-    }
+    // [HttpDelete("{}{id}")]
+    // public async Task<IActionResult> DeleteProfile(Guid id)
+    // {
+    //     await _profileService.DeleteProfile(id);
+    //     return Ok();
+    // }
 
     // [HttpPost]
     // public async Task<IActionResult> CreateProfile(ProfileCreateDto profile)

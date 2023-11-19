@@ -1,6 +1,7 @@
 ﻿using Core.MessageContract;
 using MassTransit;
 using ProfilesService.Domain.Contracts;
+using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Application.MessageConsumers;
 
@@ -12,9 +13,10 @@ public class UserDeletedConsumer : IConsumer<UserDeletedEvent>
     {
         _profileService = profileService;
     }
-    public Task Consume(ConsumeContext<UserDeletedEvent> context)
+    public async Task Consume(ConsumeContext<UserDeletedEvent> context)
     {
         var message = context.Message;
-        return _profileService.DeleteProfileByUserId(message.UserId);
+        await _profileService.DeleteProfileByUserId<CandidateProfile>(message.UserId);
+        await _profileService.DeleteProfileByUserId<RecruiterProfile>(message.UserId);
     }
 }
