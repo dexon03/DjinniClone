@@ -19,7 +19,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="sm">
       <div>
         <Avatar> {/* Add user avatar here */}</Avatar>
         <Typography component="h1" variant="h5">
@@ -30,28 +30,28 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             label="Name"
             margin="normal"
             fullWidth
-            value={data.name}
+            value={data && data.name}
             onChange={(e) => { data.name = e.target.value }}
           />
           <TextField
             label="Surname"
             margin="normal"
             fullWidth
-            value={data.surname}
+            value={data && data.surname}
             onChange={(e) => { data.surname = e.target.value }}
           />
           <TextField
             label="Email"
             margin="normal"
             fullWidth
-            value={data.email}
+            value={data && data.email}
             onChange={(e) => { data.email = e.target.value }}
           />
           <TextField
             label="Phone Number"
             margin="normal"
             fullWidth
-            value={data.phoneNumber}
+            value={data && data.phoneNumber}
             onChange={(e) => { data.phoneNumber = e.target.value }}
           />
           <TextField
@@ -59,7 +59,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             type="date"
             margin="normal"
             fullWidth
-            value={data.dateOfBirth}
+            value={data && data.dateOfBirth}
             onChange={(e) => { data.dateOfBirth = e.target.value }}
           />
           <TextField
@@ -68,7 +68,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             rows={4}
             margin="normal"
             fullWidth
-            value={data.description}
+            value={data && data.description}
             onChange={(e) => { data.description = e.target.value }}
           />
           <TextField
@@ -80,42 +80,35 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             label="GitHub URL"
             margin="normal"
             fullWidth
-            value={data.gitHubUrl}
+            value={data && data.gitHubUrl}
             onChange={(e) => { data.gitHubUrl = e.target.value }}
           />
           <TextField
             label="LinkedIn URL"
             margin="normal"
             fullWidth
-            value={data.linkedInUrl}
+            value={data && data.linkedInUrl}
             onChange={(e) => { data.linkedInUrl = e.target.value }}
           />
           <TextField
             label="Position Title"
             margin="normal"
             fullWidth
-            value={data.positionTitle}
+            value={data && data.positionTitle}
             onChange={(e) => { data.positionTitle = e.target.value }}
           />
           <FormControlLabel
             control={<Checkbox color="primary" />}
             label="Active"
-            value={data?.isActive}
+            value={data && data.isActive}
             onChange={(e) => { data.isActive = e.target.value }}
           />
           <TextField
             label="Company Name"
             margin="normal"
             fullWidth
-            value={data.company.name}
+            value={data && data.company.name}
             onChange={(e) => { data.company.name = e.target.value }}
-          />
-          {/* Add other recruiter-specific fields here */}
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
-            label="Active"
-            value={data?.isActive}
-            onChange={() => { data.isActive = !data.isActive }}
           />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Save
