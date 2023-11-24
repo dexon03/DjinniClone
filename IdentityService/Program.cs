@@ -8,6 +8,7 @@ using IdentityService.Domain.Models;
 using IdentityService.Setup;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .ReadFrom.Configuration(builder.Configuration)
-    .WriteTo.Console()
+    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
     .CreateLogger();
 
 builder.Services.AddControllers();

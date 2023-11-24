@@ -57,7 +57,7 @@ public class ProfileService : IProfileService
     
     public async Task<T> UpdateProfile<T>(IProfileUpdateDto<T> profile, CancellationToken cancellationToken = default) where T : Profile<T>
     {
-        var profileEntity = _mapper.Map<T>(profile);
+        var profileEntity; // generic mapper here;
         var isExists = await _repository.AnyAsync<T>(x => x.Id == profileEntity.Id);
         if (!isExists)
         {

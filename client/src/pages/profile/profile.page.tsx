@@ -6,15 +6,10 @@ import RecruiterProfileComponent from '../../components/recruiter.profile.compon
 const ProfilePage = () => {
   const { token, setToken } = useToken();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your form submission logic here
-  };
-
   return (
     token?.role == Role[Role.Candidate]
       ? <CandidateProfileComponent id={token.userId} />
-      : <RecruiterProfileComponent id={token.userId} />
+      : <RecruiterProfileComponent id={token!.userId} />
   );
 };
 

@@ -15,7 +15,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Implement your logic to handle the form submission for the recruiter profile.
   };
 
   return (
@@ -59,8 +58,11 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             type="date"
             margin="normal"
             fullWidth
+            InputLabelProps={{
+              shrink: true
+            }}
             value={data && data.dateOfBirth}
-            onChange={(e) => { data.dateOfBirth = e.target.value }}
+            // onChange={(e) => { data.dateOfBirth = e.target.value }}
           />
           <TextField
             label="Description"

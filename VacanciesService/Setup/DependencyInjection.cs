@@ -6,6 +6,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using VacanciesService.Application.Services;
 using VacanciesService.Database;
@@ -22,7 +23,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<VacanciesDbContext>(opt =>
         {
-            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection"));
+            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);

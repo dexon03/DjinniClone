@@ -4,6 +4,7 @@ import { VacancyGetAll } from '../../../models/vacancy/vacancy.getall.dto';
 import { axiosBaseQuery } from '../../../api/axios.baseQuery';
 
 export const vacancyApi = createApi({
+    reducerPath: 'vacancyApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl }),
     endpoints: (builder) => ({
         getVacancies: builder.query<VacancyGetAll[], void>({ query: () => ({ url: '/api/vacancy', method: 'get' }) }),

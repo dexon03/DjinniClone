@@ -17,16 +17,16 @@ public class RecruiterProfile : Profile<RecruiterProfile>
             Id = Id,
             Name = Name,
             Surname = Surname,
-            Email = Email,
-            PhoneNumber = PhoneNumber,
+            Email = Email ?? String.Empty,
+            PhoneNumber = PhoneNumber ?? String.Empty,
             DateBirth = DateBirth,
-            Description = Description,
-            ImageUrl = ImageUrl,
-            GitHubUrl = GitHubUrl,
-            LinkedInUrl = LinkedInUrl,
-            PositionTitle = PositionTitle,
+            Description = Description ?? String.Empty,
+            ImageUrl = ImageUrl ?? String.Empty,
+            GitHubUrl = GitHubUrl ?? String.Empty,
+            LinkedInUrl = LinkedInUrl ?? String.Empty,
+            PositionTitle = PositionTitle ?? String.Empty,
             IsActive = IsActive,
-            Company = Company
+            Company = Company 
         };
     }
 }

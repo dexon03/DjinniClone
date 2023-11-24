@@ -48,14 +48,14 @@ public class ProfileController : BaseController
     //     return Ok(createdProfile);
     // }
 
-    [HttpPut]
+    [HttpPut("updateCandidate")]
     public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile)
     {
         var updatedProfile = await _profileService.UpdateProfile(profile);
         return Ok(updatedProfile);
     }
     
-    [HttpPut]
+    [HttpPut("updateRecruiter")]
     public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile)
     {
         var updatedProfile = await _profileService.UpdateProfile(profile);

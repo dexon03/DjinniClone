@@ -4,7 +4,7 @@ export interface Profile {
     surname? : string;
     email? : string;
     phoneNumber? : string;
-    dateOfBirth? : Date;
+    dateBirth? : Date;
     description: string;
     imageUrl? : string;
     gitHubUrl? : string;

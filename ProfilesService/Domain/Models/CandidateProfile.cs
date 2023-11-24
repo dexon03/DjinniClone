@@ -19,14 +19,14 @@ public class CandidateProfile : Profile<CandidateProfile>
             Id = Id,
             Name = Name,
             Surname = Surname,
-            Email = Email,
-            PhoneNumber = PhoneNumber,
+            Email = Email ?? String.Empty,
+            PhoneNumber = PhoneNumber ?? String.Empty,
             DateBirth = DateBirth,
-            Description = Description,
-            ImageUrl = ImageUrl,
-            GitHubUrl = GitHubUrl,
-            LinkedInUrl = LinkedInUrl,
-            PositionTitle = PositionTitle,
+            Description = Description ?? String.Empty,
+            ImageUrl = ImageUrl ?? String.Empty,
+            GitHubUrl = GitHubUrl ?? String.Empty,
+            LinkedInUrl = LinkedInUrl ?? String.Empty,
+            PositionTitle = PositionTitle ?? String.Empty,
             IsActive = IsActive,
             WorkExperience = WorkExperience,
             DesiredSalary = DesiredSalary,
@@ -47,31 +47,3 @@ public class CandidateProfile : Profile<CandidateProfile>
     }
 }
 
-public static class ProfileMapperExtension
-{
-    public static CandidateProfile MapCreateToCandidateProfile(this CandidateProfile profile, ProfileCreateDto profileCreateDto )
-    {
-        return new CandidateProfile
-        {
-            UserId = profileCreateDto.UserId,
-            Name = profileCreateDto.Name,
-            Surname = profileCreateDto.Surname,
-            PositionTitle = profileCreateDto.PositionTitle,
-            Email = profileCreateDto.Email,
-            PhoneNumber = profileCreateDto.PhoneNumber,
-            WorkExperience = Experience.NoExperience
-        };
-    }
-    
-    public static RecruiterProfile MapCreateToRecruiterProfile(this RecruiterProfile profile, ProfileCreateDto profileCreateDto)
-    {
-        return new RecruiterProfile
-        {
-            UserId = profileCreateDto.UserId,
-            Name = profileCreateDto.Name,
-            Surname = profileCreateDto.Surname,
-            Email = profileCreateDto.Email,
-            PhoneNumber = profileCreateDto.PhoneNumber,
-        };
-    }
-}

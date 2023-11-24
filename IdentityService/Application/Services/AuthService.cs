@@ -11,7 +11,6 @@ using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
 using MassTransit;
 using Microsoft.Extensions.Caching.Distributed;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace IdentityService.Application.Services;
 
@@ -22,31 +21,21 @@ public class AuthService : IAuthService
     private readonly IRepository _repository;
     private readonly IDistributedCache _cache;
     private readonly IPublishEndpoint _publishEndpoint;
-    private readonly IValidator<RegisterRequest> _registerValidator;
-    private readonly IValidator<LoginRequest> _loginValidator;
-    private readonly IValidator<ForgotPasswordRequest> _forgotPasswordValidator;
 
     public AuthService(UserManager userManager, 
         IJWTService jwtService, 
         IRepository repository, 
         IDistributedCache cache,
-        IPublishEndpoint publishEndpoint,
-        IValidator<RegisterRequest> registerValidator,
-        IValidator<LoginRequest> loginValidator,
-        IValidator<ForgotPasswordRequest> forgotPasswordValidator)
+        IPublishEndpoint publishEndpoint)
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _repository = repository;
         _cache = cache;
         _publishEndpoint = publishEndpoint;
-        _registerValidator = registerValidator;
-        _loginValidator = loginValidator;
-        _forgotPasswordValidator = forgotPasswordValidator;
     }
     public async Task<TokenResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {
-        await ValidateRequest(request, _loginValidator, cancellationToken);
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (!await IsLoginRequestValid(user, request.Password))
         {
@@ -63,8 +52,6 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        await ValidateRequest(request, _registerValidator, cancellationToken);
-        
         var user = await CreateUser(request, cancellationToken);
         var token = GetNewTokenForUser(user);
         await _repository.CreateAsync(user);
@@ -84,8 +71,6 @@ public class AuthService : IAuthService
 
     public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
     {
-        await ValidateRequest(request, _forgotPasswordValidator, cancellationToken);
-        
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
@@ -149,14 +134,6 @@ public class AuthService : IAuthService
             Role = role,
         };
         return user;
-    }
-    private async Task ValidateRequest<T>(T request, IValidator<T> validator, CancellationToken cancellationToken)
-    {
-        var result = await validator.ValidateAsync(request, cancellationToken);
-        if (!result.IsValid)
-        {
-            throw new ValidationException(result.Errors);
-        }
     }
     
     private async Task<bool> IsLoginRequestValid(User? user, string password)

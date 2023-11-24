@@ -6,12 +6,12 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ProfilesService.Application.MessageConsumers;
 using ProfilesService.Application.Services;
 using ProfilesService.Database;
 using ProfilesService.Database.AutoMigrations;
 using ProfilesService.Database.Repository;
 using ProfilesService.Domain.Contracts;
+using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace ProfilesService.Setup;
@@ -23,7 +23,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<ProfilesDbContext>(opt =>
         {
-            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection"));
+            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(_applicationAssembly);
