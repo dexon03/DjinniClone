@@ -2,5 +2,5 @@
 
 public interface IProfileUpdateDto<T>
 {
-    
+    public Guid Id { get; set; }
 }

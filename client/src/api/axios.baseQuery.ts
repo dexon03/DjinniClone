@@ -14,7 +14,6 @@ export const axiosBaseQuery = ({ baseUrl }: { baseUrl: string } = { baseUrl: '' 
     unknown
 > =>
     async ({ url, method, data, params, headers }) => {
-        debugger
         try {
             const result = await api({
                 url: baseUrl + url,

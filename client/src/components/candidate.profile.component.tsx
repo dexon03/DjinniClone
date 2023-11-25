@@ -52,7 +52,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
     e.preventDefault();
     try {
       await updateCandidateProfile({
-        id: id,
+        id: profile?.id,
         name: name,
         surname: surname,
         email: email,
@@ -65,7 +65,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
         isActive: isActive,
         desiredSalary: desiredSalary,
         workExperience: workExperience,
-        imageUrl: null,
+        imageUrl: undefined,
       } as CandidateProfile);
 
       if (updatedProfile) {

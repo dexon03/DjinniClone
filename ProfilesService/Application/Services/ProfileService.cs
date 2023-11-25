@@ -55,18 +55,54 @@ public class ProfileService : IProfileService
         await _repository.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task<T> UpdateProfile<T>(IProfileUpdateDto<T> profile, CancellationToken cancellationToken = default) where T : Profile<T>
+    public async Task<T> UpdateProfile<T>(IProfileUpdateDto<T> profileDto, CancellationToken cancellationToken = default) where T : Profile<T>
     {
-        var profileEntity; // generic mapper here;
-        var isExists = await _repository.AnyAsync<T>(x => x.Id == profileEntity.Id);
-        if (!isExists)
+        var profileEntity = await _repository.GetByIdAsync<T>(profileDto.Id);
+
+        if (profileEntity == null)
         {
             throw new ExceptionWithStatusCode("Profile that you trying to update, not exist", HttpStatusCode.BadRequest);
         }
+
+        MapProperties(profileDto, profileEntity);
+
+        _repository.Update(profileEntity);
+        await _repository.SaveChangesAsync(cancellationToken);
+
+        return profileEntity;
+    }
+    
+    public async Task<TProfile> UpdateProfile<TProfile, TUpdateDto>(IProfileUpdateDto<TProfile> profile, CancellationToken cancellationToken = default)
+        where TProfile : Profile<TProfile>
+        where TUpdateDto : IProfileUpdateDto<TProfile>
+    {
+        var profileEntity = await _repository.GetByIdAsync<TProfile>(profile.Id);
+        if (profileEntity == null)
+        {
+            throw new ExceptionWithStatusCode("Profile that you are trying to update does not exist", HttpStatusCode.BadRequest);
+        }
+
+        // Use reflection to copy properties from the update DTO to the profile entity
+        var profileProperties = typeof(TProfile).GetProperties();
+        var updateDtoProperties = typeof(TUpdateDto).GetProperties();
+
+        foreach (var propertyInfo in updateDtoProperties)
+        {
+            var propertyName = propertyInfo.Name;
+            var profileProperty = profileProperties.FirstOrDefault(p => p.Name == propertyName);
+
+            if (profileProperty != null && profileProperty.CanWrite)
+            {
+                var value = propertyInfo.GetValue(profile);
+                profileProperty.SetValue(profileEntity, value);
+            }
+        }
+
         var result = _repository.Update(profileEntity);
         await _repository.SaveChangesAsync(cancellationToken);
         return result;
     }
+
 
     public async Task DeleteProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>
     {
@@ -96,5 +132,23 @@ public class ProfileService : IProfileService
         profile.IsActive = !profile.IsActive;
         _repository.Update(profile);
         await _repository.SaveChangesAsync(cancellationToken);
+    }
+    
+    private void MapProperties<TUpdateDto, TEntity>(TUpdateDto updateDto, TEntity profileEntity) 
+        where TUpdateDto : IProfileUpdateDto<TEntity>
+    {
+        var profileProperties = typeof(TEntity).GetProperties();
+        var updateDtoProperties = typeof(TUpdateDto).GetProperties();
+        foreach (var propertyInfo in updateDtoProperties)
+        {
+            var propertyName = propertyInfo.Name;
+            var profileProperty = profileProperties.FirstOrDefault(p => p.Name == propertyName);
+
+            if (profileProperty != null && profileProperty.CanWrite)
+            {
+                var value = propertyInfo.GetValue(updateDto);
+                profileProperty.SetValue(profileEntity, value);
+            }
+        }
     }
 }
