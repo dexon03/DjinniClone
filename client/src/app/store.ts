@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import { vacancyApi } from './features/vacancy/vacancy.api'
 import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 import { profileApi } from './features/profile/profile.api'
+import { skillApi } from './features/skills/skill.api'
 
 export const store = configureStore({
   reducer: {

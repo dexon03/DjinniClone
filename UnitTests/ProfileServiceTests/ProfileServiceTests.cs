@@ -22,7 +22,7 @@ public class ProfileServiceTests
     {
         mockRepository = new Mock<IRepository>();
         mockMapper = new Mock<IMapper>();
-        profileService = new ProfileService(mockRepository.Object, mockMapper.Object);
+        profileService = new ProfileService(mockRepository.Object);
     }
 
     [Fact]
@@ -94,11 +94,12 @@ public class ProfileServiceTests
     public async Task UpdateCandidateProfile_ExistingProfile_ShouldUpdateProfile()
     {
         // Arrange
-        var candidateProfileUpdateDto = new CandidateProfileUpdateDto();
-        var existingProfile = new CandidateProfile { Id = Guid.NewGuid() };
+        var existingProfileId = Guid.NewGuid();
+        var candidateProfileUpdateDto = new CandidateProfileUpdateDto{ Id = existingProfileId };
+        var existingProfile = new CandidateProfile { Id = existingProfileId };
 
-        mockRepository.Setup(r => r.AnyAsync<CandidateProfile>(It.IsAny<Expression<Func<CandidateProfile, bool>>>()))
-                      .ReturnsAsync(true);
+        mockRepository.Setup(r => r.GetByIdAsync<CandidateProfile>(existingProfileId))
+                      .ReturnsAsync(existingProfile);
         mockRepository.Setup(r => r.Update(It.IsAny<CandidateProfile>()))
                       .Returns(existingProfile);
 
@@ -115,12 +116,13 @@ public class ProfileServiceTests
     public async Task UpdateRecruiterProfile_ExistingProfile_ShouldUpdateProfile()
     {
         // Arrange
-        var recruiterProfileUpdateDto = new RecruiterProfileUpdateDto();
         var userId = Guid.NewGuid();
+        var profileId = Guid.NewGuid();
+        var recruiterProfileUpdateDto = new RecruiterProfileUpdateDto { Id = profileId };
         var existingProfile = new RecruiterProfile { Id = Guid.NewGuid(), UserId = userId};
 
-        mockRepository.Setup(r => r.AnyAsync<RecruiterProfile>(It.IsAny<Expression<Func<RecruiterProfile, bool>>>()))
-                      .ReturnsAsync(true);
+        mockRepository.Setup(r => r.GetByIdAsync<RecruiterProfile>(profileId))
+            .ReturnsAsync(existingProfile);
         mockRepository.Setup(r => r.Update(It.IsAny<RecruiterProfile>()))
                       .Returns(existingProfile);
 

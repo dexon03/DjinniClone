@@ -22,7 +22,8 @@ public class ProfileController : BaseController
     {
         if (role == ProfileRole.Candidate)
         {
-            return Ok(await _profileService.GetProfile<CandidateProfile>(userId));
+            var result = await _profileService.GetProfile<CandidateProfile>(userId);
+            return Ok(result);
         }
         return Ok(await _profileService.GetProfile<RecruiterProfile>(userId));
     }

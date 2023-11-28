@@ -3,6 +3,7 @@ using System.Text;
 using Core.Database;
 using Core.Exceptions;
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -50,6 +51,18 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
                 };
             });
+        // services.AddMassTransit(x =>
+        // {
+        //     x.SetKebabCaseEndpointNameFormatter();
+        //     x.AddConsumers(ApplicationAssembly);
+        //     x.UsingRabbitMq((context, configurator) =>
+        //     {
+        //         configurator.Host("rabbitmq", "/", h => { });
+        //         
+        //         configurator.ConfigureEndpoints(context);
+        //     });
+        // });
+        // services.AddMassTransitHostedService();
         return services;
     }
     

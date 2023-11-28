@@ -8,6 +8,7 @@ using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
 using ProfilesService.Domain.Models.Common;
+using Mapper = ProfilesService.Application.Mappers.Mapper;
 
 namespace ProfilesService.Application.Services;
 
@@ -30,13 +31,44 @@ public class ProfileService : IProfileService
     public async Task<IProfileDto<T>> GetProfile<T>(Guid userId, CancellationToken cancellationToken = default) 
         where T : Profile<T>
     {
-        var profile = await _repository.FirstOrDefaultAsync<T>(p => p.UserId == userId);
-        if (profile == null)
+        // var profileEntity = 
+        //     from profile in  _repository.GetAll<T>().Where(p => p.UserId == userId) 
+        //     join profileSkill in _repository.GetAll<ProfileSkills>() 
+        //         on profile.Id equals profileSkill.ProfileId into profileSkills 
+        //     from profileSkill in profileSkills.DefaultIfEmpty() 
+        //     join skill in _repository.GetAll<Skill>() 
+        //         on profileSkill.SkillId equals skill.Id into skills
+        //     join profileLocation in _repository.GetAll<LocationProfile>() 
+        //         on profile.Id equals profileLocation.ProfileId into profileLocations
+        //     from profileLocation in profileLocations.DefaultIfEmpty()
+        //     join location in _repository.GetAll<Location>() 
+        //         on profileLocation.LocationId equals location.Id into locations
+        //     select new
+        //     {
+        //         profile.Id,
+        //         profile.Name,
+        //         profile.Surname,
+        //         profile.Email,
+        //         profile.PhoneNumber,
+        //         profile.DateBirth,
+        //         profile.Description,
+        //         profile.ImageUrl,
+        //         profile.GitHubUrl,
+        //         profile.LinkedInUrl,
+        //         profile.PositionTitle,
+        //         profile.IsActive,
+        //         profile.,
+        //         
+            // }
+            
+        var profileEntity = await _repository.FirstOrDefaultAsync<T>( p=> p.UserId == userId);
+        
+        if (profileEntity == null)
         {
             throw new ExceptionWithStatusCode("Profile not found", HttpStatusCode.BadRequest);
         }
         
-        return profile.ToDto();
+        return profileEntity.ToDto();
     }
 
     public async Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default)
@@ -64,54 +96,22 @@ public class ProfileService : IProfileService
             throw new ExceptionWithStatusCode("Profile that you trying to update, not exist", HttpStatusCode.BadRequest);
         }
 
-        MapProperties(profileDto, profileEntity);
+        _mapper.Map(profileDto, profileEntity);
 
         _repository.Update(profileEntity);
         await _repository.SaveChangesAsync(cancellationToken);
 
         return profileEntity;
     }
-    
-    public async Task<TProfile> UpdateProfile<TProfile, TUpdateDto>(IProfileUpdateDto<TProfile> profile, CancellationToken cancellationToken = default)
-        where TProfile : Profile<TProfile>
-        where TUpdateDto : IProfileUpdateDto<TProfile>
-    {
-        var profileEntity = await _repository.GetByIdAsync<TProfile>(profile.Id);
-        if (profileEntity == null)
-        {
-            throw new ExceptionWithStatusCode("Profile that you are trying to update does not exist", HttpStatusCode.BadRequest);
-        }
-
-        // Use reflection to copy properties from the update DTO to the profile entity
-        var profileProperties = typeof(TProfile).GetProperties();
-        var updateDtoProperties = typeof(TUpdateDto).GetProperties();
-
-        foreach (var propertyInfo in updateDtoProperties)
-        {
-            var propertyName = propertyInfo.Name;
-            var profileProperty = profileProperties.FirstOrDefault(p => p.Name == propertyName);
-
-            if (profileProperty != null && profileProperty.CanWrite)
-            {
-                var value = propertyInfo.GetValue(profile);
-                profileProperty.SetValue(profileEntity, value);
-            }
-        }
-
-        var result = _repository.Update(profileEntity);
-        await _repository.SaveChangesAsync(cancellationToken);
-        return result;
-    }
-
 
     public async Task DeleteProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>
     {
         var profile = await _repository.GetByIdAsync<T>(id);
         if (profile == null)
         {
-            throw new ExceptionWithStatusCode("Vacancy not found", HttpStatusCode.BadRequest);
+            throw new ExceptionWithStatusCode("Profile not found", HttpStatusCode.BadRequest);
         }
-        _repository.Delete<T>(profile);
+        _repository.Delete(profile);
         await _repository.SaveChangesAsync(cancellationToken);
     }
 
@@ -132,23 +132,5 @@ public class ProfileService : IProfileService
         profile.IsActive = !profile.IsActive;
         _repository.Update(profile);
         await _repository.SaveChangesAsync(cancellationToken);
-    }
-    
-    private void MapProperties<TUpdateDto, TEntity>(TUpdateDto updateDto, TEntity profileEntity) 
-        where TUpdateDto : IProfileUpdateDto<TEntity>
-    {
-        var profileProperties = typeof(TEntity).GetProperties();
-        var updateDtoProperties = typeof(TUpdateDto).GetProperties();
-        foreach (var propertyInfo in updateDtoProperties)
-        {
-            var propertyName = propertyInfo.Name;
-            var profileProperty = profileProperties.FirstOrDefault(p => p.Name == propertyName);
-
-            if (profileProperty != null && profileProperty.CanWrite)
-            {
-                var value = propertyInfo.GetValue(updateDto);
-                profileProperty.SetValue(profileEntity, value);
-            }
-        }
     }
 }

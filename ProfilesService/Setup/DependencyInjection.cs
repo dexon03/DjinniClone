@@ -70,6 +70,7 @@ public static class DependencyInjection
         services.AddScoped<ILocationService, LocationService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<ISkillService, SkillService>();
         
         return services;
     }

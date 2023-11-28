@@ -36,8 +36,14 @@ public class LocationService : ILocationService
     public async Task<Location> CreateLocation(LocationCreateDto location, CancellationToken cancellationToken = default)
     {
         var locationEntity = _mapper.Map<Location>(location);
+        var isExists = await _repository.AnyAsync<Location>(x => x.City == location.City && x.Country == location.Country);
+        if (isExists)
+        {
+            throw new Exception("Location already exists");
+        }
         var result = await _repository.CreateAsync(locationEntity);
         await _repository.SaveChangesAsync(cancellationToken);
+        
         return result;
     }
 

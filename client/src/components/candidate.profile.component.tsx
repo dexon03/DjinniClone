@@ -1,11 +1,13 @@
-import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem } from '@mui/material';
-import { useGetCandidateProfileQuery, useQuerySubscription, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
+import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, OutlinedInput } from '@mui/material';
+import { useGetCandidateProfileQuery, useGetProfileLocationQuery, useGetProfileSkillsQuery, useQuerySubscription, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { Experience } from '../models/profile/experience.enum';
 import { CandidateProfile } from '../models/profile/candidate.profile.model';
 
 const CandidateProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetCandidateProfileQuery(id);
+  const { data: skills } = useGetProfileSkillsQuery();
+  const { data: locations } = useGetProfileLocationQuery();
   const { refetch } = useQuerySubscription(id);
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateCandidateProfileMutation();
 
@@ -21,6 +23,9 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [isActive, setIsActive] = useState(false);
   const [desiredSalary, setDesiredSalary] = useState(0);
   const [workExperience, setWorkExperience] = useState(Experience.NoExperience);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
 
   useEffect(() => {
     if (profile) {
@@ -28,14 +33,16 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
       setSurname(profile.surname || '');
       setEmail(profile.email || '');
       setPhoneNumber(profile.phoneNumber || '');
-      setDateOfBirth(profile.dateOfBirth || new Date());
+      setDateOfBirth(profile.dateBirth || new Date());
       setDescription(profile.description || '');
       setGitHubUrl(profile.gitHubUrl || '');
       setLinkedInUrl(profile.linkedInUrl || '');
       setPositionTitle(profile.positionTitle || '');
-      setIsActive(profile.isActive || false);
+      setIsActive(profile.isActive);
       setDesiredSalary(profile.desiredSalary || 0);
       setWorkExperience(profile.workExperience || Experience.NoExperience);
+      setSelectedLocations(profile.locations ? profile.locations.map(location => location.id) : []);
+      setSelectedSkills(profile.skills ? profile.skills.map(skill => skill.id) : []);
     }
   }, [profile]);
 
@@ -57,7 +64,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
         surname: surname,
         email: email,
         phoneNumber: phoneNumber,
-        dateOfBirth: new Date(dateOfBirth),
+        dateBirth: dateOfBirth,
         description: description,
         gitHubUrl: gitHubUrl,
         linkedInUrl: linkedInUrl,
@@ -66,6 +73,8 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
         desiredSalary: desiredSalary,
         workExperience: workExperience,
         imageUrl: undefined,
+        skills: skills?.filter(skill => selectedSkills.includes(skill.id)),
+        locations: locations?.filter(location => selectedLocations.includes(location.id))
       } as CandidateProfile);
 
       if (updatedProfile) {
@@ -160,6 +169,34 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          <InputLabel>Locations</InputLabel>
+          <Select
+            multiple
+            fullWidth
+            value={selectedLocations}
+            onChange={(e) => setSelectedLocations(e.target.value)}
+            input={<OutlinedInput label="Locations" />}
+          >
+            {locations && locations.map((location) => (
+              <MenuItem key={location.id} value={location.id}>
+                {location.city}, {location.country}
+              </MenuItem>
+            ))}
+          </Select>
+          <InputLabel>Skills</InputLabel>
+          <Select
+            multiple
+            fullWidth
+            value={selectedSkills}
+            onChange={(e) => setSelectedSkills(e.target.value)}
+            input={<OutlinedInput label="Skills" />}
+          >
+            {skills && skills.map((skill) => (
+              <MenuItem key={skill.id} value={skill.id}>
+                {skill.name}
+              </MenuItem>
+            ))}
+          </Select>
           <TextField
             label="Image URL"
             margin="normal"
