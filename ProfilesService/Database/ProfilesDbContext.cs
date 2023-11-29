@@ -40,9 +40,31 @@ public class ProfilesDbContext : DbContext
             new Skill { Id = Guid.NewGuid(), Name = "TypeScript" },
             new Skill { Id = Guid.NewGuid(), Name = "Scala" },
         };
-        
+
         modelBuilder.Entity<Location>().HasData(locations);
         modelBuilder.Entity<Skill>().HasData(skills);
+
+        modelBuilder.Entity<ProfileSkills>().HasKey(ps => new { ps.SkillId, ps.ProfileId });
+        modelBuilder.Entity<LocationProfile>().HasKey(lp => new { lp.LocationId, lp.ProfileId });
+        
+        modelBuilder.Entity<ProfileSkills>()
+            .HasOne(ps => ps.Skill)
+            .WithMany(s => s.ProfileSkills)
+            .HasForeignKey(ps => ps.SkillId);
+        modelBuilder.Entity<ProfileSkills>()
+            .HasOne(ps => ps.Profile)
+            .WithMany(p => p.ProfileSkills)
+            .HasForeignKey(ps => ps.ProfileId);
+        
+        modelBuilder.Entity<LocationProfile>()
+            .HasOne(lp => lp.Location)
+            .WithMany(l => l.LocationProfiles)
+            .HasForeignKey(lp => lp.LocationId);
+        modelBuilder.Entity<LocationProfile>()
+            .HasOne(lp => lp.Profile)
+            .WithMany(p => p.LocationProfiles)
+            .HasForeignKey(lp => lp.ProfileId);
+            
     }
 
     public DbSet<CandidateProfile> CandidateProfile { get; set; }

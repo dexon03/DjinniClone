@@ -10,7 +10,7 @@ public class RecruiterProfile : Profile<RecruiterProfile>
     [ForeignKey("Company")]
     public Guid? CompanyId { get; set; }
     public Company? Company { get; set; }
-    public override IProfileDto<RecruiterProfile> ToDto()
+    public override GetRecruiterProfileDto ToDto()
     {
         return new GetRecruiterProfileDto
         {
@@ -22,7 +22,6 @@ public class RecruiterProfile : Profile<RecruiterProfile>
             DateBirth = DateBirth,
             Description = Description ?? String.Empty,
             ImageUrl = ImageUrl ?? String.Empty,
-            GitHubUrl = GitHubUrl ?? String.Empty,
             LinkedInUrl = LinkedInUrl ?? String.Empty,
             PositionTitle = PositionTitle ?? String.Empty,
             IsActive = IsActive,
@@ -44,7 +43,6 @@ public static class RecruiterProfileExtension
         profile.Email = dto.Email;
         profile.Description = dto.Description;
         profile.ImageUrl = dto.ImageUrl;
-        profile.GitHubUrl = dto.GitHubUrl;
         profile.LinkedInUrl = dto.LinkedInUrl;
         profile.DateBirth = dto.DateBirth;
         return profile;

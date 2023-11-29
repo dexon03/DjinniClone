@@ -2,7 +2,6 @@
 
 public class ProfileSkills
 {
-    public Guid Id { get; set; }
     public Guid ProfileId { get; set; }
     public Guid SkillId { get; set; }
     public virtual CandidateProfile Profile { get; set; }

@@ -18,14 +18,14 @@ public class ProfileController : BaseController
     }
 
     [HttpGet("{role}/{userId}")]
-    public async Task<IActionResult> GetProfile(Guid userId, ProfileRole role)
+    public async Task<IActionResult> GetProfile(Guid userId, ProfileRole role, CancellationToken cancellationToken)
     {
         if (role == ProfileRole.Candidate)
         {
-            var result = await _profileService.GetProfile<CandidateProfile>(userId);
+            var result = await _profileService.GetCandidateProfile(userId,cancellationToken);
             return Ok(result);
         }
-        return Ok(await _profileService.GetProfile<RecruiterProfile>(userId));
+        return Ok(await _profileService.GetRecruiterProfile(userId,cancellationToken));
     }
 
     [HttpGet]

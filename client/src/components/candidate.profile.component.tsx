@@ -198,11 +198,6 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             ))}
           </Select>
           <TextField
-            label="Image URL"
-            margin="normal"
-            fullWidth
-          />
-          <TextField
             label="GitHub URL"
             margin="normal"
             fullWidth

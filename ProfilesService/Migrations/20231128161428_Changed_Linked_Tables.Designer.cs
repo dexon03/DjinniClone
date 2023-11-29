@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProfilesService.Database;
@@ -11,9 +12,11 @@ using ProfilesService.Database;
 namespace ProfilesService.Migrations
 {
     [DbContext(typeof(ProfilesDbContext))]
-    partial class ProfilesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231128161428_Changed_Linked_Tables")]
+    partial class Changed_Linked_Tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

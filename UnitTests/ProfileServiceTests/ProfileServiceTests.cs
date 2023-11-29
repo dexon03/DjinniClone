@@ -22,7 +22,7 @@ public class ProfileServiceTests
     {
         mockRepository = new Mock<IRepository>();
         mockMapper = new Mock<IMapper>();
-        profileService = new ProfileService(mockRepository.Object);
+        profileService = new ProfileService(mockRepository.Object, mockMapper.Object);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class ProfileServiceTests
                       .ReturnsAsync(profile);
 
         // Act
-        var result = await profileService.GetProfile<CandidateProfile>(userId);
+        var result = await profileService.GetCandidateProfile(userId);
         var expected = profile.ToDto();
 
         var expectedStr = JsonConvert.SerializeObject(expected);

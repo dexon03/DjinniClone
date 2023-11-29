@@ -8,11 +8,12 @@ namespace ProfilesService.Domain.Models;
 
 public class CandidateProfile : Profile<CandidateProfile>
 {
+    public string? GitHubUrl { get; set; }
     public Experience WorkExperience { get; set; } = Experience.NoExperience;
     public double DesiredSalary { get; set; } = 0;
     [JsonIgnore]public ICollection<ProfileSkills>? ProfileSkills { get; set; }
     [JsonIgnore]public ICollection<LocationProfile>? LocationProfiles { get; set; }
-    public override IProfileDto<CandidateProfile> ToDto()
+    public override GetCandidateProfileDto ToDto()
     {
         return new GetCandidateProfileDto
         {
