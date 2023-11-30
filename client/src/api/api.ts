@@ -1,5 +1,6 @@
 import { environment } from "../environment/environment";
 import axios from 'axios';
+import { ApiServicesRoutes } from "./api.services.routes";
 
 const api = axios.create({
     baseURL: environment.apiUrl,
@@ -29,7 +30,7 @@ api.interceptors.response.use(
             try {
                 const storageToken = localStorage.getItem('token');
                 const refreshToken = storageToken ? JSON.parse(storageToken)?.refreshToken : null;
-                const response = await axios.post(environment.apiUrl + '/api/auth/refresh', { refreshToken });
+                const response = await axios.post(environment.apiUrl + ApiServicesRoutes.identity + '/auth/refresh', { refreshToken });
                 const token = response.data;
                 const stringToken = JSON.stringify(token);
 

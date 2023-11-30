@@ -6,9 +6,7 @@ using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Controllers;
 
-[ApiController]
-[Route("api/profile/[controller]")]
-public class SkillController : ControllerBase
+public class SkillController : BaseController
 {
     private readonly ISkillService _skillService;
 

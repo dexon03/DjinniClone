@@ -1,9 +1,12 @@
-import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel } from '@mui/material';
-import { useGetRecruiterProfileQuery } from '../app/features/profile/profile.api';
+import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { useGetCompaniesQuery, useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
+import { RecruiterProfile } from '../models/profile/recruiter.profile.model';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetRecruiterProfileQuery(id);
+  const { data: companies } = useGetCompaniesQuery();
+  const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateRecruiterProfileMutation();
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -14,6 +17,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const [positionTitle, setPositionTitle] = useState('');
   const [isActive, setIsActive] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
 
@@ -28,8 +32,9 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
       setLinkedInUrl(profile.linkedInUrl || '');
       setPositionTitle(profile.positionTitle || '');
       setIsActive(profile.isActive);
-      setCompanyName(profile.company.name || '');
-      setCompanyDescription(profile.company.description || '');
+      setSelectedCompany(profile.company ? profile.company.id : '');
+      setCompanyName(profile?.company ? profile.company.name : '');
+      setCompanyDescription(profile?.company ? profile.company.description : '');
     }
   }, [profile])
 
@@ -43,8 +48,30 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
     return <p>Error: {JSON.stringify(error.data)}</p>;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await updateCandidateProfile({
+        id: profile.id,
+        name,
+        surname,
+        email,
+        phoneNumber,
+        dateBirth: dateOfBirth,
+        description,
+        linkedInUrl,
+        positionTitle,
+        isActive,
+        company: {
+          id: profile?.company?.id,
+          name: companyName,
+          description: companyDescription
+        }
+      } as RecruiterProfile)
+
+    } catch (error) {
+      console.error("Error updating profile:", updateError);
+    }
 
   };
 
@@ -118,12 +145,19 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             value={positionTitle}
             onChange={(e) => setPositionTitle(e.target.value)}
           />
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
-            label="Active"
-            value={isActive}
-            onChange={(e) => setIsActive(!isActive)}
-          />
+          <InputLabel>Company</InputLabel>
+          <Select
+            fullWidth
+            value={selectedCompany}
+            onChange={(e) => setSelectedCompany(e.target.value)}
+            input={<OutlinedInput label="Locations" />}
+          >
+            {companies && companies.map((company) => (
+              <MenuItem key={company.id} value={company.id}>
+                {company.name}
+              </MenuItem>
+            ))}
+          </Select>
           <TextField
             label="Company Name"
             margin="normal"
@@ -139,6 +173,12 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             fullWidth
             value={companyDescription}
             onChange={(e) => setCompanyDescription(e.target.value)}
+          />
+          <FormControlLabel
+            control={<Checkbox color="primary" />}
+            label="Active"
+            value={isActive}
+            onChange={(e) => setIsActive(!isActive)}
           />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Save

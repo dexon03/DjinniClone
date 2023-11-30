@@ -8,8 +8,6 @@ using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
 using ProfilesService.Domain.Models.Common;
-using Mapper = ProfilesService.Application.Mappers.Mapper;
-
 namespace ProfilesService.Application.Services;
 
 public class ProfileService : IProfileService
@@ -123,44 +121,32 @@ public class ProfileService : IProfileService
     
     public async Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid userId, CancellationToken cancellationToken = default)
     {
-        // var profileEntity = 
-        //     from profile in  _repository.GetAll<T>().Where(p => p.UserId == userId) 
-        //     join profileSkill in _repository.GetAll<ProfileSkills>() 
-        //         on profile.Id equals profileSkill.ProfileId into profileSkills 
-        //     from profileSkill in profileSkills.DefaultIfEmpty() 
-        //     join skill in _repository.GetAll<Skill>() 
-        //         on profileSkill.SkillId equals skill.Id into skills
-        //     join profileLocation in _repository.GetAll<LocationProfile>() 
-        //         on profile.Id equals profileLocation.ProfileId into profileLocations
-        //     from profileLocation in profileLocations.DefaultIfEmpty()
-        //     join location in _repository.GetAll<Location>() 
-        //         on profileLocation.LocationId equals location.Id into locations
-        //     select new
-        //     {
-        //         profile.Id,
-        //         profile.Name,
-        //         profile.Surname,
-        //         profile.Email,
-        //         profile.PhoneNumber,
-        //         profile.DateBirth,
-        //         profile.Description,
-        //         profile.ImageUrl,
-        //         profile.GitHubUrl,
-        //         profile.LinkedInUrl,
-        //         profile.PositionTitle,
-        //         profile.IsActive,
-        //         profile.,
-        //         
-        // }
-            
-        var profileEntity = await _repository.FirstOrDefaultAsync<RecruiterProfile>( p => p.UserId == userId);
+        var profileEntity = await (
+            from profile in _repository.GetAll<RecruiterProfile>().Where(rp => rp.UserId == userId)
+            join company in _repository.GetAll<Company>() on profile.CompanyId equals company.Id into companies
+            from company in companies.DefaultIfEmpty()
+            select new GetRecruiterProfileDto()
+            {
+                Id = profile.Id,
+                Name = profile.Name,
+                Surname = profile.Surname,
+                Email = profile.Email ?? String.Empty,
+                PhoneNumber = profile.PhoneNumber ?? String.Empty,
+                DateBirth = profile.DateBirth,
+                Description = profile.Description ?? String.Empty,
+                ImageUrl = profile.ImageUrl ?? String.Empty,
+                LinkedInUrl = profile.LinkedInUrl ?? String.Empty,
+                PositionTitle = profile.PositionTitle ?? String.Empty,
+                IsActive = profile.IsActive,
+                Company = company
+            }).FirstOrDefaultAsync(cancellationToken);
         
         if (profileEntity == null)
         {
             throw new ExceptionWithStatusCode("Profile not found", HttpStatusCode.BadRequest);
         }
         
-        return profileEntity.ToDto();
+        return profileEntity;
     }
 
     public async Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default)

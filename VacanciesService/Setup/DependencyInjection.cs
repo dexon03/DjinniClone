@@ -51,18 +51,18 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
                 };
             });
-        // services.AddMassTransit(x =>
-        // {
-        //     x.SetKebabCaseEndpointNameFormatter();
-        //     x.AddConsumers(ApplicationAssembly);
-        //     x.UsingRabbitMq((context, configurator) =>
-        //     {
-        //         configurator.Host("rabbitmq", "/", h => { });
-        //         
-        //         configurator.ConfigureEndpoints(context);
-        //     });
-        // });
-        // services.AddMassTransitHostedService();
+        services.AddMassTransit(x =>
+        {
+            x.SetKebabCaseEndpointNameFormatter();
+            x.AddConsumers(ApplicationAssembly);
+            x.UsingRabbitMq((context, configurator) =>
+            {
+                configurator.Host("rabbitmq", "/", h => { });
+                
+                configurator.ConfigureEndpoints(context);
+            });
+        });
+        services.AddMassTransitHostedService();
         return services;
     }
     

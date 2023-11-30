@@ -30,7 +30,6 @@ public class RecruiterProfile : Profile<RecruiterProfile>
     }
 }
 
-
 public static class RecruiterProfileExtension
 {
     public static RecruiterProfile MapUpdate(this RecruiterProfile profile, RecruiterProfileUpdateDto dto)

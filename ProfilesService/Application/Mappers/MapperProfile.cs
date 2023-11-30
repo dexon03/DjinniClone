@@ -10,5 +10,8 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         CreateMap<CandidateProfileUpdateDto, CandidateProfile>().AfterMap<UpdateCandidateProfileRequest>();
+        CreateMap<RecruiterProfileUpdateDto, RecruiterProfile>();
+        CreateMap<CompanyCreateDto, Company>();
+        CreateMap<CompanyUpdateDto, Company>();
     }
 }

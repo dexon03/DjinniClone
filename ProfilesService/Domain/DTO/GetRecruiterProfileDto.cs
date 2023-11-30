@@ -17,5 +17,5 @@ public class GetRecruiterProfileDto : IProfileDto<RecruiterProfile>
     public string? LinkedInUrl { get; set; }
     public string? PositionTitle { get; set; }
     public bool IsActive { get; set; }
-    public Company Company { get; set; }
+    public Company? Company { get; set; }
 }

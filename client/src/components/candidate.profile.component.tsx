@@ -82,7 +82,6 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
       }
     } catch (error) {
       console.error("Error updating profile:", updateError);
-      // Handle error if necessary
     }
 
   };
