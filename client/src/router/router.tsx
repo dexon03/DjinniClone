@@ -4,6 +4,8 @@ import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
 import RegisterPage from "../pages/auth/register.page.tsx";
 import LoginPage from "../pages/auth/login.page.tsx";
 import ProfilePage from "../pages/profile/profile.page.tsx";
+import { CandidateList } from "../pages/candidates/candidates.list.tsx";
+import { CandidatePage } from "../pages/candidates/candidate.page.tsx";
 
 const routes: RouteObject[] = [
     {
@@ -16,7 +18,11 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/candidate",
-                element: <div>candidate</div>
+                element: <CandidateList />
+            },
+            {
+                path: "/candidate/:id",
+                element: <CandidatePage />
             },
             {
                 path: "/profile",

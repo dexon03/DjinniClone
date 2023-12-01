@@ -1,11 +1,11 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
-import { useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
+import { useGetUserRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
 import { Company } from '../models/common/company.models';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
-  const { data: profile, isError, isLoading, error } = useGetRecruiterProfileQuery(id);
+  const { data: profile, isError, isLoading, error } = useGetUserRecruiterProfileQuery(id);
   const [getCompanyQuery, { data: companies }] = useLazyGetProfileCompaniesQuery();
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateRecruiterProfileMutation();
   const [updateCompany, { data: updatedCompany, error: updateCompanyError }] = useUpdateCompanyMutation();

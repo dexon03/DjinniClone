@@ -1,11 +1,11 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, OutlinedInput } from '@mui/material';
-import { useGetCandidateProfileQuery, useLazyGetProfileLocationQuery, useLazyGetProfileSkillsQuery, useQuerySubscription, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
+import { useGetUserCandidateProfileQuery, useLazyGetProfileLocationQuery, useLazyGetProfileSkillsQuery, useQuerySubscription, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { Experience } from '../models/profile/experience.enum';
 import { CandidateProfile } from '../models/profile/candidate.profile.model';
 
 const CandidateProfileComponent = ({ id }: { id: string }) => {
-  const { data: profile, isError, isLoading, error } = useGetCandidateProfileQuery(id);
+  const { data: profile, isError, isLoading, error } = useGetUserCandidateProfileQuery(id);
   const [getProfileSKills, { data: skills }] = useLazyGetProfileSkillsQuery();
   const [getProfileLocations, { data: locations }] = useLazyGetProfileLocationQuery();
   const { refetch } = useQuerySubscription(id);

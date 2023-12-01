@@ -3,15 +3,22 @@ import { vacancyApi } from './features/vacancy/vacancy.api'
 import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 import { profileApi } from './features/profile/profile.api'
 import { companyApi } from './features/company/company.api'
+import { candidateApi } from './features/candidate/candidate.api'
 
 export const store = configureStore({
   reducer: {
     [vacancyApi.reducerPath]: vacancyApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
     [companyApi.reducerPath]: companyApi.reducer,
+    [candidateApi.reducerPath]: candidateApi.reducer,
   },
   middleware(getDefaultMiddleware) {
-    return getDefaultMiddleware().concat(vacancyApi.middleware, profileApi.middleware, companyApi.middleware)
+    return getDefaultMiddleware().concat(
+      vacancyApi.middleware,
+      profileApi.middleware,
+      companyApi.middleware,
+      candidateApi.middleware
+    )
   },
 })
 

@@ -11,8 +11,9 @@ export const profileApi = createApi({
     reducerPath: 'profileApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.profile }),
     endpoints: (builder) => ({
-        getCandidateProfile: builder.query<CandidateProfile, string>({ query: (id: string) => ({ url: `/profile/${Role.Candidate}/${id}`, method: 'get' }) }),
-        getRecruiterProfile: builder.query<RecruiterProfile, string>({ query: (id: string) => ({ url: `/profile/${Role.Recruiter}/${id}`, method: 'get' }) }),
+        getUserCandidateProfile: builder.query<CandidateProfile, string>({ query: (userId: string) => ({ url: `/profile/${Role.Candidate}/${userId}`, method: 'get' }) }),
+        getUserRecruiterProfile: builder.query<RecruiterProfile, string>({ query: (userId: string) => ({ url: `/profile/${Role.Recruiter}/${userId}`, method: 'get' }) }),
+        getCandidateProfile: builder.query<CandidateProfile, string>({ query: (id: string) => ({ url: `/profile/getCandidate/${id}`, method: 'get' }) }),
         updateCandidateProfile: builder.mutation<CandidateProfile, CandidateProfile>({ query: (profile: CandidateProfile) => ({ url: `/profile/updateCandidate`, method: 'put', data: profile }) }),
         updateRecruiterProfile: builder.mutation<RecruiterProfile, RecruiterProfile>({ query: (profile: RecruiterProfile) => ({ url: `/profile/updateRecruiter`, method: 'put', data: profile }) }),
         getProfileLocation: builder.query<LocationDto[], void>({ query: () => ({ url: '/location', method: 'get' }) }),
@@ -20,6 +21,6 @@ export const profileApi = createApi({
     }),
 });
 
-export const { useGetCandidateProfileQuery, useGetRecruiterProfileQuery, useUpdateCandidateProfileMutation, useUpdateRecruiterProfileMutation, useLazyGetProfileSkillsQuery, useLazyGetProfileLocationQuery } = profileApi;
+export const { useGetUserCandidateProfileQuery, useGetUserRecruiterProfileQuery, useGetCandidateProfileQuery, useUpdateCandidateProfileMutation, useUpdateRecruiterProfileMutation, useLazyGetProfileSkillsQuery, useLazyGetProfileLocationQuery } = profileApi;
 
-export const { useQuerySubscription } = profileApi.endpoints.getCandidateProfile;  
+export const { useQuerySubscription } = profileApi.endpoints.getUserCandidateProfile;  
