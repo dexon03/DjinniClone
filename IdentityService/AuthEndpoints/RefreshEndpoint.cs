@@ -4,7 +4,7 @@ using IdentityService.Domain.Dto;
 
 namespace IdentityService.AuthEndpoints;
 
-public class RefreshEndpoint : Endpoint<RefreshTokenRequest,JwtResponse>
+public class RefreshEndpoint : Endpoint<RefreshTokenRequest,TokenResponse>
 {
     private readonly IAuthService _authService;
 

@@ -69,8 +69,8 @@ namespace ProfilesService.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<double>("WorkExperience")
-                        .HasColumnType("double precision");
+                    b.Property<int>("WorkExperience")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -113,23 +113,67 @@ namespace ProfilesService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Location");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e5f5ccc5-dce9-45b3-8dc1-ea8cc8d5ebd9"),
+                            City = "Kyiv",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3177bb0-8e9d-4f84-9697-1f038ffe3980"),
+                            City = "Lviv",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("dfb6a93e-833a-4da0-a539-73d8906426bf"),
+                            City = "Kharkiv",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("d404270a-5073-4336-9e49-b4b2d3f7309e"),
+                            City = "Dnipro",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("7acc36ad-846b-4cd7-b940-dc439feb1f97"),
+                            City = "Odesa",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("781b9ad4-f59e-4aac-8ec8-ef8ade4aa827"),
+                            City = "Zaporizhzhia",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("029ba782-ef06-448d-b6fc-617fd07ee08f"),
+                            City = "Vinnytsia",
+                            Country = "Ukraine"
+                        },
+                        new
+                        {
+                            Id = new Guid("41d836f2-524c-4a71-945a-5059bb1ca4e7"),
+                            City = "Khmelnytskyi",
+                            Country = "Ukraine"
+                        });
                 });
 
             modelBuilder.Entity("ProfilesService.Domain.Models.LocationProfile", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
+                    b.HasKey("LocationId", "ProfileId");
 
                     b.HasIndex("ProfileId");
 
@@ -138,21 +182,15 @@ namespace ProfilesService.Migrations
 
             modelBuilder.Entity("ProfilesService.Domain.Models.ProfileSkills", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("SkillId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("SkillId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
+                    b.HasKey("SkillId", "ProfileId");
 
                     b.HasIndex("ProfileId");
-
-                    b.HasIndex("SkillId");
 
                     b.ToTable("ProfileSkills");
                 });
@@ -224,6 +262,68 @@ namespace ProfilesService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skill");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8ed1fe43-d2d8-43f6-9d88-2eeddc2651e9"),
+                            Name = "C#"
+                        },
+                        new
+                        {
+                            Id = new Guid("0c33a455-90af-4c61-a26c-c95311e3b75d"),
+                            Name = "Java"
+                        },
+                        new
+                        {
+                            Id = new Guid("b1dc1406-97bf-41aa-965c-1ef5c27e127e"),
+                            Name = "Python"
+                        },
+                        new
+                        {
+                            Id = new Guid("2f3e2580-13af-4cf6-ad0d-eb8de70b7979"),
+                            Name = "JavaScript"
+                        },
+                        new
+                        {
+                            Id = new Guid("e1e89a1a-e699-4d4d-bb2a-7da454b0afe8"),
+                            Name = "C++"
+                        },
+                        new
+                        {
+                            Id = new Guid("d22747b6-990e-4cfb-a8e6-c8041d5647f7"),
+                            Name = "PHP"
+                        },
+                        new
+                        {
+                            Id = new Guid("e5c8379c-c3e7-4b89-b2e7-f03339de4573"),
+                            Name = "Ruby"
+                        },
+                        new
+                        {
+                            Id = new Guid("43c90170-2c8d-4c84-b69d-75e93df15601"),
+                            Name = "Swift"
+                        },
+                        new
+                        {
+                            Id = new Guid("06c84152-dfe1-4271-b160-024196e11b72"),
+                            Name = "Go"
+                        },
+                        new
+                        {
+                            Id = new Guid("d903cce8-111b-4251-8717-998a75ef6e87"),
+                            Name = "Kotlin"
+                        },
+                        new
+                        {
+                            Id = new Guid("cc7e00bd-0ddf-4363-b013-8b56677637e2"),
+                            Name = "TypeScript"
+                        },
+                        new
+                        {
+                            Id = new Guid("d55e867c-686d-4c88-99bb-4a15dbb51ed6"),
+                            Name = "Scala"
+                        });
                 });
 
             modelBuilder.Entity("ProfilesService.Domain.Models.User", b =>

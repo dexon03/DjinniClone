@@ -1,9 +1,9 @@
 ﻿namespace IdentityService.Domain.Dto;
 
-public class JwtResponse
+public class TokenResponse
 {
     public string AccessToken { get; set; }
     public string RefreshToken { get; set; }
-    public string TokenType { get; set; } = "Bearer";
-    public string? Error { get; set; }
+    public string Role { get; set; }
+    public Guid UserId { get; set; }
 }

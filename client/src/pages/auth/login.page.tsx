@@ -2,11 +2,12 @@ import { Button, TextField, Container, Typography } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FormEvent, useState } from "react";
 import { RestClient } from "../../api/rest.client.ts";
-import { JwtResponse } from "../../models/auth/jwt.respone.ts";
+import { TokenResponse } from "../../models/auth/jwt.respone.ts";
 import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
 import { LoginModel } from "../../models/auth/login.model.ts";
+import { Role } from '../../models/common/role.enum.ts';
 
-function LoginPage({ setToken }: { setToken: (token: JwtResponse) => void }) {
+function LoginPage({ setToken }: { setToken: (token: TokenResponse) => void }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -14,12 +15,17 @@ function LoginPage({ setToken }: { setToken: (token: JwtResponse) => void }) {
     const restClient = new RestClient();
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const token = await restClient.post<JwtResponse>(ApiServicesRoutes.auth + '/login', {
+        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.identity + '/auth/login', {
             email: email,
             password: password
         } as LoginModel);
         setToken(token);
-        navigate('/vacancy');
+        if (token.role === Role[Role.Candidate]) {
+            navigate('/vacancy');
+        } else {
+            navigate('/candidate');
+        }
+
     }
     return (
         <Container maxWidth="sm">

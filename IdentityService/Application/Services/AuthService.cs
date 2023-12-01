@@ -10,9 +10,7 @@ using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using ValidationException = Core.Exceptions.ValidationException;
 
 namespace IdentityService.Application.Services;
 
@@ -23,36 +21,26 @@ public class AuthService : IAuthService
     private readonly IRepository _repository;
     private readonly IDistributedCache _cache;
     private readonly IPublishEndpoint _publishEndpoint;
-    private readonly IValidator<RegisterRequest> _registerValidator;
-    private readonly IValidator<LoginRequest> _loginValidator;
-    private readonly IValidator<ForgotPasswordRequest> _forgotPasswordValidator;
 
     public AuthService(UserManager userManager, 
         IJWTService jwtService, 
         IRepository repository, 
         IDistributedCache cache,
-        IPublishEndpoint publishEndpoint,
-        IValidator<RegisterRequest> registerValidator,
-        IValidator<LoginRequest> loginValidator,
-        IValidator<ForgotPasswordRequest> forgotPasswordValidator)
+        IPublishEndpoint publishEndpoint)
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _repository = repository;
         _cache = cache;
         _publishEndpoint = publishEndpoint;
-        _registerValidator = registerValidator;
-        _loginValidator = loginValidator;
-        _forgotPasswordValidator = forgotPasswordValidator;
     }
-    public async Task<JwtResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {
-        await ValidateRequest(request, _loginValidator, cancellationToken);
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (!await IsLoginRequestValid(user, request.Password))
         {
             //TODO: replace all exception by ErrorOr
-            throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.Unauthorized);
+            throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.BadRequest);
         }
         var token = GetNewTokenForUser(user);
         _repository.Update(user);
@@ -62,10 +50,8 @@ public class AuthService : IAuthService
     }
 
 
-    public async Task<JwtResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        await ValidateRequest(request, _registerValidator, cancellationToken);
-        
         var user = await CreateUser(request, cancellationToken);
         var token = GetNewTokenForUser(user);
         await _repository.CreateAsync(user);
@@ -85,8 +71,6 @@ public class AuthService : IAuthService
 
     public async Task ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
     {
-        await ValidateRequest(request, _forgotPasswordValidator, cancellationToken);
-        
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
@@ -98,32 +82,34 @@ public class AuthService : IAuthService
         await _repository.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<JwtResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var userId = _jwtService.ValidateToken(refreshToken);
         if (userId == null)
         {
-            throw new ExceptionWithStatusCode("Invalid refresh token", HttpStatusCode.Unauthorized);
+            throw new ExceptionWithStatusCode("Invalid refresh token", HttpStatusCode.BadRequest);
         }
         
         var user = await _userManager.FindByIdAsync(Guid.Parse(userId));
         var token = GetNewTokenForUser(user);
-        
+        _repository.Update(user);
+        await _repository.SaveChangesAsync(cancellationToken);
         await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         
         return token;
     }
 
-    private JwtResponse GetNewTokenForUser(User user)
+    private TokenResponse GetNewTokenForUser(User user)
     {
         var accessToken = _jwtService.GenerateToken(user);
         var newRefreshToken = _jwtService.GenerateRefreshToken(user);
         user.RefreshToken = newRefreshToken;
-
-        return new JwtResponse
+        return new TokenResponse
         {
             AccessToken = accessToken,
-            RefreshToken = newRefreshToken
+            RefreshToken = newRefreshToken,
+            Role = user.Role.Name,
+            UserId = user.Id
         };
     }
     
@@ -148,14 +134,6 @@ public class AuthService : IAuthService
             Role = role,
         };
         return user;
-    }
-    private async Task ValidateRequest<T>(T request, IValidator<T> validator, CancellationToken cancellationToken)
-    {
-        var result = await validator.ValidateAsync(request, cancellationToken);
-        if (!result.IsValid)
-        {
-            throw new ValidationException(result.Errors);
-        }
     }
     
     private async Task<bool> IsLoginRequestValid(User? user, string password)

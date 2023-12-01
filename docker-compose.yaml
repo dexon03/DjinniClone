@@ -3,7 +3,7 @@
     driver: bridge
   ProfileService: 
     driver: bridge
-  VacanciesProfile:
+  VacanciesService:
     driver: bridge
   AnalyticsService:
     driver: bridge
@@ -22,7 +22,7 @@ services:
     networks:
       - IdentityService
       - ProfileService
-      - VacanciesProfile
+      - VacanciesService
       - AnalyticsService
   redis:
     image: redis
@@ -33,7 +33,7 @@ services:
     networks:
       - IdentityService
       - ProfileService
-      - VacanciesProfile
+      - VacanciesService
       - AnalyticsService
   
   rabbitmq:
@@ -52,9 +52,10 @@ services:
     networks:
         - IdentityService
         - ProfileService
+        - VacanciesService
   
   identity-postgres:
-    image: postgres
+    image: postgres:15.0
     container_name: identity-postgres
     ports:
       - "5431:5432"
@@ -84,7 +85,7 @@ services:
       - IdentityService
     
   profile-postgres:
-    image: postgres
+    image: postgres:15.0
     container_name: profile-postgres
     ports:
       - "5432:5432"
@@ -114,7 +115,7 @@ services:
       - ProfileService
     
   vacancies-postgres:
-    image: postgres
+    image: postgres:15.0
     container_name: vacancies-postgres
     ports:
       - "5433:5432"
@@ -126,7 +127,7 @@ services:
     volumes:
         - ./vacanciesDbDir:/var/lib/postgresql/data
     networks:
-        - VacanciesProfile
+        - VacanciesService
     
   vacancies-service:
     image: vacancies-service
@@ -141,10 +142,10 @@ services:
     depends_on:
       - vacancies-postgres
     networks:
-      - VacanciesProfile
+      - VacanciesService
   
   analytics-postgres:
-    image: postgres
+    image: postgres:15.0
     container_name: analytics-postgres
     ports:
       - "5434:5432"

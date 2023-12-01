@@ -1,4 +1,4 @@
-import { VacancyGetAll } from "../models/vacany/vacancy.getall.dto.ts";
+import { VacancyGetAll } from "../models/vacancy/vacancy.getall.dto.ts";
 import { Card, CardContent } from "@mui/material";
 
 export function VacancyTile({ vacancy }: { vacancy: VacancyGetAll }) {

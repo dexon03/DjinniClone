@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Text;
 using Core.Database;
 using FastEndpoints;
@@ -12,6 +13,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace IdentityService.Setup;
@@ -21,7 +23,10 @@ public static class DependencyInjection
     private static Assembly ApplicationAssembly => Assembly.GetExecutingAssembly();
     public static IServiceCollection RegisterDependencies(this IServiceCollection services, IConfiguration appConfiguration)
     {
-        services.AddDbContext<IdentityDbContext>(opt => opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<IdentityDbContext>(opt =>
+        {
+            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
+        });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);
         services.AddFluentValidationAutoValidation();
@@ -59,6 +64,7 @@ public static class DependencyInjection
                 configurator.ConfigureEndpoints(context);
             });
         });
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         services.AddMassTransitHostedService();
         return services;
     }

@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Button, TextField, Container, Typography, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import { RestClient } from "../../api/rest.client.ts";
-import { JwtResponse } from "../../models/auth/jwt.respone.ts";
+import { TokenResponse } from "../../models/auth/jwt.respone.ts";
 import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
 import { RegisterModel } from "../../models/auth/register.model.ts";
 import useToken from '../../hooks/useToken.ts';
 import { useNavigate } from 'react-router-dom';
+import { Role } from '../../models/common/role.enum.ts';
 
 function RegisterPage() {
     const [selectedRole, setSelectedRole] = useState(0);
@@ -24,13 +25,13 @@ function RegisterPage() {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        const token = await restClient.post<JwtResponse>(ApiServicesRoutes.auth + '/register', {
+        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.identity + '/auth/register', {
             email: email,
             password: password,
             firstName: firstName,
             lastName: lastName,
             phoneNumber: phoneNumber,
-            role: selectedRole
+            role: selectedRole === 0 ? Role.Recruiter : Role.Candidate,
         } as RegisterModel);
 
         if (token) {

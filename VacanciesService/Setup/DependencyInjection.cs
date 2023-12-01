@@ -3,9 +3,11 @@ using System.Text;
 using Core.Database;
 using Core.Exceptions;
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using VacanciesService.Application.Services;
 using VacanciesService.Database;
@@ -22,7 +24,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<VacanciesDbContext>(opt =>
         {
-            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection"));
+            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);
@@ -49,6 +51,18 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
                 };
             });
+        services.AddMassTransit(x =>
+        {
+            x.SetKebabCaseEndpointNameFormatter();
+            x.AddConsumers(ApplicationAssembly);
+            x.UsingRabbitMq((context, configurator) =>
+            {
+                configurator.Host("rabbitmq", "/", h => { });
+                
+                configurator.ConfigureEndpoints(context);
+            });
+        });
+        services.AddMassTransitHostedService();
         return services;
     }
     

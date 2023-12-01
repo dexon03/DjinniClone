@@ -1,4 +1,4 @@
-import { LocationDto } from "./location.dto.ts";
+import { LocationDto } from "../common/location.dto.ts";
 
 export interface VacancyGetAll {
     id: string;

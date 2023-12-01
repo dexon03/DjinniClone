@@ -17,23 +17,45 @@ import AdbIcon from '@mui/icons-material/Adb';
 import 'bootstrap/dist/css/bootstrap.css';
 import { NavRoute } from "../models/nav.route.ts";
 import { NavLink } from "react-router-dom";
+import useToken from "../hooks/useToken.ts";
+import { Role } from "../models/common/role.enum.ts";
 
 export function HeaderComponent() {
-    const pages: NavRoute[] = [
-        {
-            name: 'Offers',
-            route: '/offers'
-        },
-        {
-            name: 'Vacancies',
-            route: '/vacancy',
-        },
-        {
-            name: 'Salaries',
-            route: '/salaries',
-        }
-    ]
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+    const { token, setToken } = useToken();
+    const pages: NavRoute[] = token.role == Role[Role.Candidate]
+        ? [
+            {
+                name: 'Offers',
+                route: '/offers'
+            },
+            {
+                name: 'Vacancies',
+                route: '/vacancy',
+            },
+            {
+                name: 'Salaries',
+                route: '/salaries',
+            }
+        ]
+        : [
+            {
+                name: 'Applicants',
+                route: '/application'
+            },
+            {
+                name: 'Candidates',
+                route: '/candidate',
+            },
+            {
+                name: 'Vacancies',
+                route: '/vacancy',
+            },
+            {
+                name: 'Salaries',
+                route: '/salaries',
+            }
+        ]
+    const settings = ['Profile', 'Logout'];
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -202,9 +224,11 @@ export function HeaderComponent() {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
+                                    <NavLink to={setting} className={'nav-link'}>
+                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Typography textAlign="center">{setting}</Typography>
+                                        </MenuItem>
+                                    </NavLink>
                                 ))}
                             </Menu>
                         </Box>
