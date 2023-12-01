@@ -15,14 +15,14 @@ function LoginPage({ setToken }: { setToken: (token: TokenResponse) => void }) {
     const restClient = new RestClient();
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.auth + '/login', {
+        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.identity + '/auth/login', {
             email: email,
             password: password
         } as LoginModel);
         setToken(token);
-        if (token.role === Role[Role.Candidate]){
+        if (token.role === Role[Role.Candidate]) {
             navigate('/vacancy');
-        }else{
+        } else {
             navigate('/candidate');
         }
 

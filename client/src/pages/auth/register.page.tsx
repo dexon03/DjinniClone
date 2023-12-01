@@ -25,7 +25,7 @@ function RegisterPage() {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.auth + '/register', {
+        const token = await restClient.post<TokenResponse>(ApiServicesRoutes.identity + '/auth/register', {
             email: email,
             password: password,
             firstName: firstName,

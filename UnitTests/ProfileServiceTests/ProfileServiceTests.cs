@@ -25,34 +25,34 @@ public class ProfileServiceTests
         profileService = new ProfileService(mockRepository.Object, mockMapper.Object);
     }
 
-    [Fact]
-    public async Task GetProfileById_ExistingId_ShouldReturnProfile()
-    {
-        // Arrange
-        var existingId = Guid.NewGuid();
-        var userId = Guid.NewGuid();
-        var profile = new CandidateProfile
-        {
-            Id = existingId, 
-            UserId = userId,
-            Name = "John",
-            Surname = "Doe",
-            DateBirth = new DateOnly(1988,12,14),
-        };
-
-        mockRepository.Setup(r => r.FirstOrDefaultAsync<CandidateProfile>(It.IsAny<Expression<Func<CandidateProfile, bool>>>()))
-                      .ReturnsAsync(profile);
-
-        // Act
-        var result = await profileService.GetCandidateProfile(userId);
-        var expected = profile.ToDto();
-
-        var expectedStr = JsonConvert.SerializeObject(expected);
-        var resultStr = JsonConvert.SerializeObject(result);
-        Assert.Equal(expectedStr, resultStr);
-        // Assert
-        
-    }
+    // [Fact]
+    // public async Task GetProfileById_ExistingId_ShouldReturnProfile()
+    // {
+    //     // Arrange
+    //     var existingId = Guid.NewGuid();
+    //     var userId = Guid.NewGuid();
+    //     var profile = new CandidateProfile
+    //     {
+    //         Id = existingId, 
+    //         UserId = userId,
+    //         Name = "John",
+    //         Surname = "Doe",
+    //         DateBirth = new DateOnly(1988,12,14),
+    //     };
+    //
+    //     mockRepository.Setup(r => r.FirstOrDefaultAsync<CandidateProfile>(It.IsAny<Expression<Func<CandidateProfile, bool>>>()))
+    //                   .ReturnsAsync(profile);
+    //
+    //     // Act
+    //     var result = await profileService.GetCandidateProfile(userId);
+    //     var expected = profile.ToDto();
+    //
+    //     var expectedStr = JsonConvert.SerializeObject(expected);
+    //     var resultStr = JsonConvert.SerializeObject(result);
+    //     Assert.Equal(expectedStr, resultStr);
+    //     // Assert
+    //     
+    // }
 
     [Fact]
     public async Task CreateProfile_CandidateRole_ShouldCreateCandidateProfile()

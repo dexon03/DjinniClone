@@ -17,5 +17,5 @@ public class RecruiterProfileUpdateDto : IProfileUpdateDto<RecruiterProfile>
     public string? LinkedInUrl { get; set; }
     public string? PositionTitle { get; set; }
     public bool IsActive { get; set; } = false;
-    public Guid CompanyId { get; set; }
+    public Guid? CompanyId { get; set; }
 };

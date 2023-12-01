@@ -1,12 +1,14 @@
-import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
-import { useGetCompaniesQuery, useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
+import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
+import { useGetRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
-import { RecruiterProfile } from '../models/profile/recruiter.profile.model';
+import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
+import { Company } from '../models/common/company.models';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetRecruiterProfileQuery(id);
-  const { data: companies } = useGetCompaniesQuery();
+  const [getCompanyQuery, { data: companies }] = useLazyGetProfileCompaniesQuery();
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateRecruiterProfileMutation();
+  const [updateCompany, { data: updatedCompany, error: updateCompanyError }] = useUpdateCompanyMutation();
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -23,6 +25,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (profile) {
+      getCompanyQuery();
       setName(profile.name || '');
       setSurname(profile.surname || '');
       setEmail(profile.email || '');
@@ -39,12 +42,26 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   }, [profile])
 
 
+  const onCompanyChanged = (companyId: string) => {
+    try {
+      const company = companies.find(company => company.id === companyId);
+      setCompanyName(company?.name || '');
+      setCompanyDescription(company?.description || '');
+    }
+    catch (error) {
+      console.error("Error getting company:", error);
+    }
+  }
+
+  useEffect(() => {
+    onCompanyChanged(selectedCompany);
+  }, [selectedCompany])
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
 
-  if (isError) {
+  if (isError || updateError || updateCompanyError) {
     return <p>Error: {JSON.stringify(error.data)}</p>;
   }
 
@@ -62,18 +79,21 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
         linkedInUrl,
         positionTitle,
         isActive,
-        company: {
-          id: profile?.company?.id,
-          name: companyName,
-          description: companyDescription
-        }
-      } as RecruiterProfile)
+        companyId: selectedCompany
+      })
 
     } catch (error) {
       console.error("Error updating profile:", updateError);
     }
-
   };
+
+  const handleUpdateCompany = async (e) => {
+    updateCompany({
+      id: selectedCompany,
+      name: companyName,
+      description: companyDescription
+    } as Company);
+  }
 
   return (
     <Container component="main" maxWidth="sm">
@@ -145,35 +165,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             value={positionTitle}
             onChange={(e) => setPositionTitle(e.target.value)}
           />
-          <InputLabel>Company</InputLabel>
-          <Select
-            fullWidth
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
-            input={<OutlinedInput label="Locations" />}
-          >
-            {companies && companies.map((company) => (
-              <MenuItem key={company.id} value={company.id}>
-                {company.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <TextField
-            label="Company Name"
-            margin="normal"
-            fullWidth
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
-          <TextField
-            label="Description"
-            multiline
-            rows={4}
-            margin="normal"
-            fullWidth
-            value={companyDescription}
-            onChange={(e) => setCompanyDescription(e.target.value)}
-          />
           <FormControlLabel
             control={<Checkbox color="primary" />}
             label="Active"
@@ -183,6 +174,44 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
           <Button type="submit" fullWidth variant="contained" color="primary">
             Save
           </Button>
+          <Divider style={{ margin: '20px 0px' }} />
+          <InputLabel>Company</InputLabel>
+          <Select
+            fullWidth
+            value={selectedCompany}
+            onChange={(e) => setSelectedCompany(e.target.value)}
+            input={<OutlinedInput label="Company" />}
+          >
+            {companies && companies.map((company) => (
+              <MenuItem key={company.id} value={company.id}>
+                {company.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {selectedCompany ?
+            <>
+              <TextField
+                label="Company Name"
+                margin="normal"
+                fullWidth
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+              />
+              <TextField
+                label="Description"
+                multiline
+                rows={4}
+                margin="normal"
+                fullWidth
+                value={companyDescription}
+                onChange={(e) => setCompanyDescription(e.target.value)}
+              />
+              <Button onClick={handleUpdateCompany} fullWidth variant="contained" color="secondary">
+                Update Company
+              </Button>
+            </>
+            : null
+          }
         </form>
       </div>
     </Container>

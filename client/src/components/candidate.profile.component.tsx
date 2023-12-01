@@ -1,13 +1,13 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, OutlinedInput } from '@mui/material';
-import { useGetCandidateProfileQuery, useGetProfileLocationQuery, useGetProfileSkillsQuery, useQuerySubscription, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
+import { useGetCandidateProfileQuery, useLazyGetProfileLocationQuery, useLazyGetProfileSkillsQuery, useQuerySubscription, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { Experience } from '../models/profile/experience.enum';
 import { CandidateProfile } from '../models/profile/candidate.profile.model';
 
 const CandidateProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetCandidateProfileQuery(id);
-  const { data: skills } = useGetProfileSkillsQuery();
-  const { data: locations } = useGetProfileLocationQuery();
+  const [getProfileSKills, { data: skills }] = useLazyGetProfileSkillsQuery();
+  const [getProfileLocations, { data: locations }] = useLazyGetProfileLocationQuery();
   const { refetch } = useQuerySubscription(id);
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateCandidateProfileMutation();
 
@@ -29,6 +29,8 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (profile) {
+      getProfileSKills();
+      getProfileLocations();
       setName(profile.name || '');
       setSurname(profile.surname || '');
       setEmail(profile.email || '');

@@ -33,7 +33,7 @@ public class CompanyController : BaseController
         return Ok(await _companyService.CreateCompany(company));
     }
     
-    [Authorize(Roles = "Admin, CompanyOwner")]
+    [Authorize(Roles = "Admin, CompanyOwner, Recruiter")]
     [HttpPut]
     public async Task<IActionResult> Update(CompanyUpdateDto company)
     {
