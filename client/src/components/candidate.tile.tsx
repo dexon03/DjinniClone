@@ -3,7 +3,7 @@ import { CandidateProfile } from "../models/profile/candidate.profile.model";
 import { Experience } from "../models/vacancy/experience.enum";
 import { useNavigate } from "react-router-dom";
 
-export function CandidateTale({ profile }: { profile: CandidateProfile }) {
+export function CandidateTile({ profile }: { profile: CandidateProfile }) {
     const countries = [...new Set(profile?.locations?.map(location => location.country))].join(', ');
     const navigate = useNavigate();
 

@@ -209,17 +209,39 @@ public class ProfileService : IProfileService
                 WorkExperience = gp.Key.WorkExperience,
                 DesiredSalary = gp.Key.DesiredSalary,
                 Attendance = gp.Key.Attendance,
-                Skills = gp.All(_ => _.SkillId != Guid.Empty) ? gp.Select(p => new SkillDto
-                {
-                    Id = p.SkillId,
-                    Name = p.SkillName
-                }) : new List<SkillDto>(),
-                Locations = gp.All(_ => _.LocationId != Guid.Empty) ? gp.Select(p => new LocationGetDto
-                {
-                    Id = p.LocationId,
-                    City = p.LocationCity,
-                    Country = p.LocationCountry
-                }) : new List<LocationGetDto>()
+                Skills = gp.All(_ => _.SkillId != Guid.Empty)
+                    ? gp.Select(p => new
+                    {
+                        Id = p.SkillId,
+                        Name = p.SkillName
+                    }).GroupBy(sd => new
+                    {
+                        sd.Id,
+                        sd.Name
+                    }).Select(gs => new SkillDto
+                    {
+                        Id = gs.Key.Id,
+                        Name = gs.Key.Name
+                    })
+                    : new List<SkillDto>(),
+                Locations = gp.All(_ => _.LocationId != Guid.Empty)
+                    ? gp.Select(p => new
+                    {
+                        Id = p.LocationId,
+                        City = p.LocationCity,
+                        Country = p.LocationCountry
+                    }).GroupBy(l => new
+                    {
+                        l.Id,
+                        l.City,
+                        l.Country
+                    }).Select(gl => new LocationGetDto
+                    {
+                        Id = gl.Key.Id,
+                        City = gl.Key.City,
+                        Country = gl.Key.Country
+                    })
+                    : new List<LocationGetDto>()
             }).FirstOrDefault();
         
         if (profileEntity == null)
@@ -305,17 +327,39 @@ public class ProfileService : IProfileService
                 WorkExperience = gp.Key.WorkExperience,
                 DesiredSalary = gp.Key.DesiredSalary,
                 Attendance = gp.Key.Attendance,
-                Skills = gp.All(_ => _.SkillId != Guid.Empty) ? gp.Select(p => new SkillDto
-                {
-                    Id = p.SkillId,
-                    Name = p.SkillName
-                }) : new List<SkillDto>(),
-                Locations = gp.All(_ => _.LocationId != Guid.Empty) ? gp.Select(p => new LocationGetDto
-                {
-                    Id = p.LocationId,
-                    City = p.LocationCity,
-                    Country = p.LocationCountry
-                }) : new List<LocationGetDto>()
+                Skills = gp.All(_ => _.SkillId != Guid.Empty)
+                    ? gp.Select(p => new
+                    {
+                        Id = p.SkillId,
+                        Name = p.SkillName
+                    }).GroupBy(sd => new
+                    {
+                        sd.Id,
+                        sd.Name
+                    }).Select(gs => new SkillDto
+                    {
+                        Id = gs.Key.Id,
+                        Name = gs.Key.Name
+                    })
+                    : new List<SkillDto>(),
+                Locations = gp.All(_ => _.LocationId != Guid.Empty)
+                    ? gp.Select(p => new
+                    {
+                        Id = p.LocationId,
+                        City = p.LocationCity,
+                        Country = p.LocationCountry
+                    }).GroupBy(l => new
+                    {
+                        l.Id,
+                        l.City,
+                        l.Country
+                    }).Select(gl => new LocationGetDto
+                    {
+                        Id = gl.Key.Id,
+                        City = gl.Key.City,
+                        Country = gl.Key.Country
+                    })
+                    : new List<LocationGetDto>()
             }).FirstOrDefault();
         
         if (profileEntity == null)

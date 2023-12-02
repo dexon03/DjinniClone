@@ -26,20 +26,28 @@ export function CandidatePage() {
             <Card style={{ flex: 1, marginRight: '1rem' }}>
                 <CardContent>
                     <Typography variant="h5">{profile?.positionTitle}</Typography>
-                    <Typography variant="body1">{profile.description}</Typography>
+                    <Typography variant="h6" style={{ marginTop: '1rem' }}>Description</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{profile.description}</Typography>
                     {profile.skills && profile.skills.map((skill) => (
                         <Chip label={skill.name} variant="outlined" style={{ margin: '0.5rem 0' }} />
                     ))}
                 </CardContent>
             </Card>
-            <Card style={{ flex: 1 }}>
+            <Card >
                 <CardContent>
                     <Typography variant="h6">Locations</Typography>
                     <Typography variant="body1">{locationString}</Typography>
                     <Typography variant="h6" style={{ marginTop: '1rem' }}>Attendance Mode</Typography>
                     <Typography variant="body1">{attendanceModes[profile.attendance]}</Typography>
+                    {profile.desiredSalary ?
+                        <>
+                            <Typography variant="h6" style={{ marginTop: '1rem' }}>Desired salary</Typography>
+                            <Typography variant="body1" style={{ color: 'green' }}>{profile.desiredSalary} USD</Typography>
+                        </>
+                        : null
+                    }
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 }

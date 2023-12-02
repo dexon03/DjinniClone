@@ -1,5 +1,5 @@
 import { useGetCandidatesProfileQuery } from "../../app/features/candidate/candidate.api"
-import { CandidateTale } from "../../components/candidate.tile";
+import { CandidateTile } from "../../components/candidate.tile";
 
 export function CandidateList() {
 
@@ -16,7 +16,7 @@ export function CandidateList() {
     return (
         <>
             {candidates && candidates.map(candidate => {
-                return <CandidateTale key={candidate.id} profile={candidate} />
+                return <CandidateTile key={candidate.id} profile={candidate} />
             })}
         </>
     )
