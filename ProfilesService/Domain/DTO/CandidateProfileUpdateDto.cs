@@ -21,6 +21,7 @@ public class CandidateProfileUpdateDto : IProfileUpdateDto<CandidateProfile>
     public bool IsActive { get; set; } = false;
     public Experience WorkExperience { get; set; }
     public double DesiredSalary { get; set; }
+    public AttendanceMode Attendance { get; set; }
     public IEnumerable<SkillDto>? Skills { get; set; }
     public IEnumerable<LocationGetDto>? Locations { get; set; }
 }

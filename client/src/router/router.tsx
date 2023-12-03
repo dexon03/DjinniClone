@@ -1,14 +1,25 @@
-import { createBrowserRouter, RouteObject } from "react-router-dom";
+import { createBrowserRouter, redirect, RouteObject } from "react-router-dom";
 import App from "../App.tsx";
 import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
 import RegisterPage from "../pages/auth/register.page.tsx";
 import LoginPage from "../pages/auth/login.page.tsx";
 import ProfilePage from "../pages/profile/profile.page.tsx";
+import { CandidateList } from "../pages/candidates/candidates.list.tsx";
+import { CandidatePage } from "../pages/candidates/candidate.page.tsx";
+
+const rootLoader = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        return redirect("/login");
+    }
+    return null;
+};
 
 const routes: RouteObject[] = [
     {
         path: "/",
         element: <App />,
+        loader: rootLoader,
         children: [
             {
                 path: "/vacancy",
@@ -16,7 +27,11 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/candidate",
-                element: <div>candidate</div>
+                element: <CandidateList />
+            },
+            {
+                path: "/candidate/:id",
+                element: <CandidatePage />
             },
             {
                 path: "/profile",
