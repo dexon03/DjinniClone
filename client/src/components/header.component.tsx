@@ -22,7 +22,7 @@ import { Role } from "../models/common/role.enum.ts";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
-    const pages: NavRoute[] = token.role == Role[Role.Candidate]
+    const pages: NavRoute[] = token && token.role == Role[Role.Candidate]
         ? [
             {
                 name: 'Offers',
@@ -55,7 +55,6 @@ export function HeaderComponent() {
                 route: '/salaries',
             }
         ]
-    const settings = ['Profile', 'Logout'];
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -87,6 +86,12 @@ export function HeaderComponent() {
         setAnchorElUser(null);
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setAnchorElUser(null);
+
+    }
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -96,8 +101,6 @@ export function HeaderComponent() {
                         <Typography
                             // variant="h6"
                             noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
                             sx={{
                                 mr: 2,
                                 display: { xs: 'none', md: 'flex' },
@@ -223,13 +226,16 @@ export function HeaderComponent() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map((setting) => (
-                                    <NavLink to={setting} className={'nav-link'}>
-                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                            <Typography textAlign="center">{setting}</Typography>
-                                        </MenuItem>
-                                    </NavLink>
-                                ))}
+                                <NavLink to={'/profile'} className={'nav-link'}>
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Typography textAlign="center">Profile</Typography>
+                                    </MenuItem>
+                                </NavLink>
+                                <NavLink to={'/login'} className={'nav-link'}>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Typography textAlign="center">Logout</Typography>
+                                    </MenuItem>
+                                </NavLink>
                             </Menu>
                         </Box>
                     </Toolbar>

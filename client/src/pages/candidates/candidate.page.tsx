@@ -23,11 +23,11 @@ export function CandidatePage() {
     return (
         profile &&
         <div style={{ display: 'flex' }}>
-            <Card style={{ flex: 1, marginRight: '1rem' }}>
+            <Card style={{ flex: 1, marginRight: '1rem', padding: '1em' }}>
                 <CardContent>
                     <Typography variant="h5">{profile?.positionTitle}</Typography>
                     <Typography variant="h6" style={{ marginTop: '1rem' }}>Description</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{profile.description}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{profile.description}</Typography>
                     {profile.skills && profile.skills.map((skill) => (
                         <Chip label={skill.name} variant="outlined" style={{ margin: '0.5rem 0' }} />
                     ))}

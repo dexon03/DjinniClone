@@ -9,7 +9,7 @@ export const companyApi = createApi({
     reducerPath: 'companyApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl }),
     endpoints: (builder) => ({
-        getProfileCompanies: builder.query<Company[], void>({ query: () => ({ url: ApiServicesRoutes.profile + `/profile/company`, method: 'get' }) }),
+        getProfileCompanies: builder.query<Company[], void>({ query: () => ({ url: ApiServicesRoutes.profile + `/company`, method: 'get' }) }),
         updateCompany: builder.mutation<Company, Company>({ query: (company: Company) => ({ url: ApiServicesRoutes.profile + `/company`, method: 'put', data: company }) }),
     }),
 })

@@ -68,6 +68,11 @@ services:
       - ./identityDbDir:/var/lib/postgresql/data
     networks:
       - IdentityService
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres_identity -d IdentityDb" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
         
   identity-service:
     image: identity-service
@@ -80,7 +85,8 @@ services:
     ports:
       - "5242:80"
     depends_on:
-      - identity-postgres
+      identity-postgres:
+        condition: service_healthy
     networks:
       - IdentityService
     
@@ -98,7 +104,12 @@ services:
         - ./profileDbDir:/var/lib/postgresql/data
     networks:
         - ProfileService
-  
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres_profile -d ProfileDb" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    
   profile-service:
     image: profile-service
     container_name: profile-service
@@ -110,7 +121,8 @@ services:
     ports:
       - "5243:80"
     depends_on:
-      - profile-postgres
+      profile-postgres:
+        condition: service_healthy
     networks:
       - ProfileService
     
@@ -128,6 +140,11 @@ services:
         - ./vacanciesDbDir:/var/lib/postgresql/data
     networks:
         - VacanciesService
+    healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres_vacancies -d VacanciesDb" ]
+        interval: 10s
+        timeout: 3s
+        retries: 3
     
   vacancies-service:
     image: vacancies-service
@@ -140,7 +157,8 @@ services:
     ports:
       - "5244:80"
     depends_on:
-      - vacancies-postgres
+      vacancies-postgres:
+        condition: service_healthy
     networks:
       - VacanciesService
   
@@ -158,6 +176,11 @@ services:
         - ./analyticsDbDir:/var/lib/postgresql/data
     networks:
         - AnalyticsService
+    healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres_analytics -d AnalyticsDb" ]
+        interval: 10s
+        timeout: 3s
+        retries: 3
   
   analytics-service:
     image: analytics-service
@@ -170,6 +193,7 @@ services:
     ports:
       - "5245:80"
     depends_on:
-      - analytics-postgres
+      analytics-postgres:
+        condition: service_healthy
     networks:
       - AnalyticsService
