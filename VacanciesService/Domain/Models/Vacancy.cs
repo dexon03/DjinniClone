@@ -11,6 +11,7 @@ public class Vacancy
     public Guid CategoryId { get; set; }
     [ForeignKey("Company")]
     public Guid CompanyId { get; set; }
+    
     public string Title { get; set; }
     public string PositionTitle { get; set; }
     public string Description { get; set; }

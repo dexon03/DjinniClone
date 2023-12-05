@@ -1,6 +1,6 @@
 import { LocationDto } from "../common/location.dto.ts";
 
-export interface VacancyGet {
+export interface VacancyGetAll {
     id: string;
     title: string;
     positionTitle: string;

@@ -118,6 +118,13 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             onChange={(e) => setSurname(e.target.value)}
           />
           <TextField
+            label="Position Title"
+            margin="normal"
+            fullWidth
+            value={positionTitle}
+            onChange={(e) => setPositionTitle(e.target.value)}
+          />
+          <TextField
             label="Email"
             margin="normal"
             fullWidth
@@ -157,13 +164,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             fullWidth
             value={linkedInUrl}
             onChange={(e) => setLinkedInUrl(e.target.value)}
-          />
-          <TextField
-            label="Position Title"
-            margin="normal"
-            fullWidth
-            value={positionTitle}
-            onChange={(e) => setPositionTitle(e.target.value)}
           />
           <FormControlLabel
             control={<Checkbox color="primary" />}
