@@ -87,9 +87,13 @@ public class VacancyService : IVacanciesService
         return vacancy;
     }
 
-    public async Task<Vacancy> CreateVacancy(VacancyCreateDto vacancy, CancellationToken cancellationToken = default)
+    public async Task<Vacancy> CreateVacancy(VacancyCreateDto vacancyDto, CancellationToken cancellationToken = default)
     {
-        var vacancyEntity = new Vacancy().MapCreate(vacancy);
+        var vacancy = new Vacancy
+        {
+            Id = Guid.NewGuid()
+        };
+        var vacancyEntity = _mapper.Map(vacancyDto, vacancy);
         vacancyEntity.CreatedAt = DateTime.Now;
         var result = await _repository.CreateAsync(vacancyEntity);
         await _repository.SaveChangesAsync(cancellationToken);

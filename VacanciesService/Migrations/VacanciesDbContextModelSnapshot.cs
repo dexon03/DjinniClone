@@ -34,7 +34,7 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("VacanciesService.Domain.Models.Company", b =>
@@ -53,7 +53,7 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Company", (string)null);
                 });
 
             modelBuilder.Entity("VacanciesService.Domain.Models.Location", b =>
@@ -72,7 +72,7 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Location");
+                    b.ToTable("Location", (string)null);
 
                     b.HasData(
                         new
@@ -137,7 +137,7 @@ namespace VacanciesService.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("LocationVacancy");
+                    b.ToTable("LocationVacancy", (string)null);
                 });
 
             modelBuilder.Entity("VacanciesService.Domain.Models.Skill", b =>
@@ -152,7 +152,7 @@ namespace VacanciesService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skill");
+                    b.ToTable("Skill", (string)null);
 
                     b.HasData(
                         new
@@ -265,7 +265,7 @@ namespace VacanciesService.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Vacancy");
+                    b.ToTable("Vacancy", (string)null);
                 });
 
             modelBuilder.Entity("VacanciesService.Domain.Models.VacancySkill", b =>
@@ -280,7 +280,7 @@ namespace VacanciesService.Migrations
 
                     b.HasIndex("VacancyId");
 
-                    b.ToTable("VacancySkill");
+                    b.ToTable("VacancySkill", (string)null);
                 });
 
             modelBuilder.Entity("VacanciesService.Domain.Models.LocationVacancy", b =>
