@@ -15,14 +15,14 @@ public class VacancyCreateRequest : IMappingAction<VacancyCreateDto, Vacancy>
     }
     public void Process(VacancyCreateDto source, Vacancy destination, ResolutionContext context)
     {
-        var vacancySkills = source.SkillIds?.Select(s => new VacancySkill
+        var vacancySkills = source.Skills?.Select(s => new VacancySkill
         {
-            SkillId = s,
+            SkillId = s.Id,
             VacancyId = destination.Id
         });
-        var vacancyLocations = source.LocationIds?.Select(l => new LocationVacancy
+        var vacancyLocations = source.Locations?.Select(l => new LocationVacancy
         {
-            LocationId = l,
+            LocationId = l.Id,
             VacancyId = destination.Id
         });
         

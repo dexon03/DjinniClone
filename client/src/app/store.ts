@@ -4,9 +4,11 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 import { profileApi } from './features/profile/profile.api'
 import { companyApi } from './features/company/company.api'
 import { candidateApi } from './features/candidate/candidate.api'
+import recruiterProfileReducer from './slices/recruiter.profile.slice'
 
 export const store = configureStore({
   reducer: {
+    recruiterProfile: recruiterProfileReducer,
     [vacancyApi.reducerPath]: vacancyApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
     [companyApi.reducerPath]: companyApi.reducer,
