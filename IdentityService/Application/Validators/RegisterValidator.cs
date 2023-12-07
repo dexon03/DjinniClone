@@ -28,7 +28,7 @@ public class RegisterValidator : AbstractValidator<RegisterRequest>
                 {
                     context.AddFailure("Email should be unique");
                 }
-            });;
+            });
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Your password cannot be empty")
             .MinimumLength(8).WithMessage("Your password length must be at least 8.")

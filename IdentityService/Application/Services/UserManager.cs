@@ -83,7 +83,7 @@ public class UserManager
             }).AsNoTracking().FirstOrDefaultAsync();
         if (user == null)
         {
-            throw new Exception("User not found by email");
+            throw new Exception("User not found by id");
         }
 
         return user;
