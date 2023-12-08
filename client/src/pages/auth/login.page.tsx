@@ -28,10 +28,9 @@ function LoginPage() {
         if (tokenResponse.role === Role[Role.Candidate]) {
             navigate('/vacancy');
         } else {
-            dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/${Role.Recruiter}/${tokenResponse.userId}`)));
+            dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${tokenResponse.userId}`)));
             navigate('/candidate');
         }
-
     }
     return (
         <Container maxWidth="sm">

@@ -23,4 +23,5 @@ export const profileApi = createApi({
 
 export const { useGetUserCandidateProfileQuery, useGetUserRecruiterProfileQuery, useGetCandidateProfileQuery, useUpdateCandidateProfileMutation, useUpdateRecruiterProfileMutation, useLazyGetProfileSkillsQuery, useLazyGetProfileLocationQuery } = profileApi;
 
-export const { useQuerySubscription } = profileApi.endpoints.getUserCandidateProfile;  
+export const { useQuerySubscription: useQuerySubscriptionCandidate } = profileApi.endpoints.getUserCandidateProfile;
+export const { useQuerySubscription: useQuerySubscriptionRecruiter } = profileApi.endpoints.getUserRecruiterProfile;

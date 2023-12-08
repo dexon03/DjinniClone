@@ -1,5 +1,5 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
-import { useGetUserRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
+import { useGetUserRecruiterProfileQuery, useQuerySubscriptionRecruiter, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
 import { Company } from '../models/common/company.models';
@@ -9,6 +9,8 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [getCompanyQuery, { data: companies }] = useLazyGetProfileCompaniesQuery();
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateRecruiterProfileMutation();
   const [updateCompany, { data: updatedCompany, error: updateCompanyError }] = useUpdateCompanyMutation();
+  const { refetch } = useQuerySubscriptionRecruiter(id);
+
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -81,6 +83,10 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
         isActive,
         companyId: selectedCompany
       })
+
+      if (updatedProfile) {
+        refetch();
+      }
 
     } catch (error) {
       console.error("Error updating profile:", updateError);

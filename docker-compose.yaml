@@ -55,7 +55,7 @@ services:
         - VacanciesService
   
   identity-postgres:
-    image: postgres:15.0
+    image: postgres
     container_name: identity-postgres
     ports:
       - "5431:5432"
@@ -91,7 +91,7 @@ services:
       - IdentityService
     
   profile-postgres:
-    image: postgres:15.0
+    image: postgres
     container_name: profile-postgres
     ports:
       - "5432:5432"
@@ -127,7 +127,7 @@ services:
       - ProfileService
     
   vacancies-postgres:
-    image: postgres:15.0
+    image: postgres
     container_name: vacancies-postgres
     ports:
       - "5433:5432"
@@ -163,7 +163,7 @@ services:
       - VacanciesService
   
   analytics-postgres:
-    image: postgres:15.0
+    image: postgres
     container_name: analytics-postgres
     ports:
       - "5434:5432"

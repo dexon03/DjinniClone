@@ -15,8 +15,11 @@ export function VacancyCreatePage() {
     const [getVacancyCategories, { data: categories, isError: isCategoriesLoadingError }] = useLazyGetVacancyCategoriesQuery();
     const { token } = useToken();
 
+    // const profile = useAppSelector(state => state.recruiterProfile.profile)
 
-    const companyId = useAppSelector(state => state.recruiterProfile.profile?.company?.id)
+    const profile = useAppSelector((state) => {
+        state.recruiterProfile.profile
+    })
 
     const [title, setTitle] = useState('');
     const [positionTitle, setPositionTitle] = useState('');
@@ -50,6 +53,8 @@ export function VacancyCreatePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log(profile)
         createVacancy({
             title,
             positionTitle,
@@ -57,9 +62,10 @@ export function VacancyCreatePage() {
             salary,
             experience,
             attendanceMode,
+            // companyId,
             categoryId: categories && categories.find(category => category.id === selectedCategory)?.id,
-            locations: locations && locations.filter(location => selectedLocations.includes(location.id)),
-            skills: skills && skills.filter(skill => selectedSkills.includes(skill.id))
+            locations: locations.filter(location => selectedLocations.includes(location.id)),
+            skills: skills.filter(skill => selectedSkills.includes(skill.id)),
         } as VacancyCreate)
     }
 
@@ -174,7 +180,7 @@ export function VacancyCreatePage() {
                     name="description"
                     margin="normal"
                     value={description}
-                    onChange={() => setDescription(description)}
+                    onChange={(e) => setDescription(e.target.value)}
                     fullWidth
                     multiline
                     rows={4}

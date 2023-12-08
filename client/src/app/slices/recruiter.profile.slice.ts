@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const RecruiterProfileSlice = createSlice({
     name: 'profile',
     initialState: {
-        profile: null as RecruiterProfile | null,
+        profile: undefined as RecruiterProfile | undefined,
     },
     reducers: {
         setProfile: (state, action) => {
@@ -15,4 +15,4 @@ export const RecruiterProfileSlice = createSlice({
 
 export const { setProfile } = RecruiterProfileSlice.actions;
 
-export default RecruiterProfileSlice.reducer
+export default RecruiterProfileSlice.reducer;

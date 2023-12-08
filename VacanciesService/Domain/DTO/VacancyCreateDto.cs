@@ -16,6 +16,6 @@ public class VacancyCreateDto
     public bool IsActive { get; set; } = true;
     public DateTime? CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public List<Location> Locations { get; set; }
-    public List<Skill> Skills { get; set; }
+    public List<LocationDto> Locations { get; set; }
+    public List<SkillDto> Skills { get; set; }
 }

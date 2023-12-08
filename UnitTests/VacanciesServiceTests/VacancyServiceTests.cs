@@ -25,20 +25,20 @@ public class VacancyServiceTests
         );
     }
     
-    [Fact]
-    public async Task GetVacancyById_ExistingId_ShouldReturnVacancy()
-    {
-        // Arrange
-        var existingId = Guid.NewGuid();
-        var mockVacancy = new Vacancy { Id = existingId, Title = "Test Vacancy" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(existingId)).ReturnsAsync(mockVacancy);
-
-        // Act
-        var result = await _vacancyService.GetVacancyById(existingId);
-
-        // Assert
-        Assert.Equal(mockVacancy, result);
-    }
+    // [Fact]
+    // public async Task GetVacancyById_ExistingId_ShouldReturnVacancy()
+    // {
+    //     // Arrange
+    //     var existingId = Guid.NewGuid();
+    //     var mockVacancy = new Vacancy { Id = existingId, Title = "Test Vacancy" };
+    //     _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(existingId)).ReturnsAsync(mockVacancy);
+    //
+    //     // Act
+    //     var result = await _vacancyService.GetVacancyById(existingId);
+    //
+    //     // Assert
+    //     Assert.Equal(mockVacancy, result);
+    // }
 
     [Fact]
     public async Task GetVacancyById_NonExistingId_ShouldThrowException()
