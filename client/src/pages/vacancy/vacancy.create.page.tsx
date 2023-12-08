@@ -17,9 +17,7 @@ export function VacancyCreatePage() {
 
     // const profile = useAppSelector(state => state.recruiterProfile.profile)
 
-    const profile = useAppSelector((state) => {
-        state.recruiterProfile.profile
-    })
+    const companyId = useAppSelector(state => state.recruiterProfile.profile?.company?.id)
 
     const [title, setTitle] = useState('');
     const [positionTitle, setPositionTitle] = useState('');
@@ -53,8 +51,6 @@ export function VacancyCreatePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        console.log(profile)
         createVacancy({
             title,
             positionTitle,
@@ -62,7 +58,7 @@ export function VacancyCreatePage() {
             salary,
             experience,
             attendanceMode,
-            // companyId,
+            companyId,
             categoryId: categories && categories.find(category => category.id === selectedCategory)?.id,
             locations: locations.filter(location => selectedLocations.includes(location.id)),
             skills: skills.filter(skill => selectedSkills.includes(skill.id)),
