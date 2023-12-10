@@ -9,10 +9,13 @@ export const RecruiterProfileSlice = createSlice({
     reducers: {
         setProfile: (state, action) => {
             state.profile = action.payload;
+        },
+        resetProfile: (state) => {
+            state.profile = undefined;
         }
     }
 });
 
-export const { setProfile } = RecruiterProfileSlice.actions;
+export const { setProfile, resetProfile } = RecruiterProfileSlice.actions;
 
 export default RecruiterProfileSlice.reducer;

@@ -17,6 +17,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   recruiterProfile: recruiterProfileReducer,
+  [vacancyApi.reducerPath]: vacancyApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
   [companyApi.reducerPath]: companyApi.reducer,
   [candidateApi.reducerPath]: candidateApi.reducer,
@@ -25,21 +26,31 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 
-const midleware = [vacancyApi.middleware,
-profileApi.middleware,
-companyApi.middleware,
-candidateApi.middleware]
-
-
 export const store = configureStore({
   reducer: persistedReducer,
-  applyMiddleware(...midleware)
+  middleware(getDefaultMiddleware) {
+    return getDefaultMiddleware().concat(
+      vacancyApi.middleware,
+      profileApi.middleware,
+      companyApi.middleware,
+      candidateApi.middleware
+    )
+  },
 })
+
+
 
 
 setupListeners(store.dispatch)
 
 export const persistor = persistStore(store);
+
+
+export const resetStore = async () => {
+  await persistor.purge();
+  await persistor.flush();
+};
+
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

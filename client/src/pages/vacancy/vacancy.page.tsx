@@ -23,7 +23,7 @@ export function VacancyPage() {
             <Card style={{ flex: 1, marginRight: '1rem', padding: '1em' }}>
                 <CardContent>
                     <Typography variant="h5">{vacancy?.title}</Typography>
-                    <Typography variant="h5">{vacancy?.positionTitle}</Typography>
+                    <Typography variant="h6">{vacancy?.positionTitle}</Typography>
                     <Typography variant="h6" style={{ marginTop: '1rem' }}>Description</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{vacancy.description}</Typography>
                     <Typography variant="h6" style={{ marginTop: '1rem' }}>Skills</Typography>
@@ -34,7 +34,6 @@ export function VacancyPage() {
                     <Typography variant="h6">About company:</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{vacancy.company.description}</Typography>
                 </CardContent>
-
             </Card>
             <Card >
                 <CardContent>

@@ -19,9 +19,14 @@ import { NavRoute } from "../models/nav.route.ts";
 import { NavLink } from "react-router-dom";
 import useToken from "../hooks/useToken.ts";
 import { Role } from "../models/common/role.enum.ts";
+import { resetStore } from "../app/store.ts";
+import { resetProfile } from "../app/slices/recruiter.profile.slice.ts";
+import { useAppDispatch } from "../hooks/redux.hooks.ts";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
+    const dispatch = useAppDispatch();
+
     const pages: NavRoute[] = token && token.role == Role[Role.Candidate]
         ? [
             {
@@ -88,8 +93,8 @@ export function HeaderComponent() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        dispatch(resetProfile());
         setAnchorElUser(null);
-
     }
 
 
