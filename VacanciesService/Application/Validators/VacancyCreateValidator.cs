@@ -30,5 +30,6 @@ public class VacancyCreateValidator : AbstractValidator<VacancyCreateDto>
                 context.AddFailure("Company not found");
             }
         });
+        RuleFor(x => x.RecruiterId).NotEmpty();
     }
 }

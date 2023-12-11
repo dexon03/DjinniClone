@@ -6,6 +6,7 @@ import { Button, Container, InputLabel, MenuItem, OutlinedInput, Select, TextFie
 import { VacancyCreate } from "../../models/vacancy/vacancy.create.dto";
 import { useAppSelector } from "../../hooks/redux.hooks";
 import useToken from "../../hooks/useToken";
+import { RecruiterProfile } from "../../models/profile/recruiter.profile.model";
 
 export function VacancyCreatePage() {
 
@@ -15,9 +16,7 @@ export function VacancyCreatePage() {
     const [getVacancyCategories, { data: categories, isError: isCategoriesLoadingError }] = useLazyGetVacancyCategoriesQuery();
     const { token } = useToken();
 
-    // const profile = useAppSelector(state => state.recruiterProfile.profile)
-
-    const companyId = useAppSelector(state => state.recruiterProfile.profile?.company?.id)
+    const recruiterProfile: RecruiterProfile = useAppSelector(state => state.recruiterProfile.profile)
 
     const [title, setTitle] = useState('');
     const [positionTitle, setPositionTitle] = useState('');
@@ -58,7 +57,8 @@ export function VacancyCreatePage() {
             salary,
             experience,
             attendanceMode,
-            companyId,
+            companyId: recruiterProfile?.company?.id,
+            recruiterId: recruiterProfile.id,
             categoryId: categories && categories.find(category => category.id === selectedCategory)?.id,
             locations: locations.filter(location => selectedLocations.includes(location.id)),
             skills: skills.filter(skill => selectedSkills.includes(skill.id)),
@@ -66,126 +66,128 @@ export function VacancyCreatePage() {
     }
 
     return (
-        <Container component="main" maxWidth="sm">
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Title"
-                    margin="normal"
-                    name="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    fullWidth
-                    required
-                />
-                <TextField
-                    label="Position Title"
-                    margin="normal"
-                    name="positionTitle"
-                    value={positionTitle}
-                    onChange={(e) => setPositionTitle(e.target.value)}
-                    fullWidth
-                    required
-                />
-                <TextField
-                    label="Salary"
-                    margin="normal"
-                    name="salary"
-                    type="number"
-                    value={salary}
-                    onChange={(e) => setSalary(e.target.value)}
-                    fullWidth
-                    required
-                />
-                <TextField
-                    select
-                    label="Work Experience"
-                    margin="normal"
-                    fullWidth
-                    defaultValue={Experience.NoExperience}
-                    value={experience}
-                    onChange={(e) => {
-                        setExperience(Number(e.target.value))
-                    }}
-                >
-                    {Object.values(Experience).filter((v) => isNaN(Number(v))).map((value) => (
-                        <MenuItem key={value} value={Experience[value]}>
-                            {value}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <TextField
-                    select
-                    label="Attendance Mode"
-                    margin="normal"
-                    fullWidth
-                    defaultValue={AttendanceMode.Remote}
-                    value={attendanceMode}
-                    onChange={(e) => {
-                        setAttendanceMode(Number(e.target.value))
-                    }}
-                >
-                    {Object.values(AttendanceMode).filter((v) => isNaN(Number(v))).map((value) => (
-                        <MenuItem key={value} value={AttendanceMode[value]}>
-                            {value}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <InputLabel>Category</InputLabel>
-                <Select
-                    fullWidth
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    input={<OutlinedInput label="Category" />}
-                >
-                    {categories && categories.map((category) => (
-                        <MenuItem key={category.id} value={category.id}>
-                            {category.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <InputLabel>Locations</InputLabel>
-                <Select
-                    multiple
-                    fullWidth
-                    value={selectedLocations}
-                    onChange={(e) => setSelectedLocations(e.target.value)}
-                    input={<OutlinedInput label="Locations" />}
-                >
-                    {locations && locations.map((location) => (
-                        <MenuItem key={location.id} value={location.id}>
-                            {location.city}, {location.country}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <InputLabel>Skills</InputLabel>
-                <Select
-                    multiple
-                    fullWidth
-                    value={selectedSkills}
-                    onChange={(e) => setSelectedSkills(e.target.value)}
-                    input={<OutlinedInput label="Skills" />}
-                >
-                    {skills && skills.map((skill) => (
-                        <MenuItem key={skill.id} value={skill.id}>
-                            {skill.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-                <TextField
-                    label="Description"
-                    name="description"
-                    margin="normal"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    required
-                />
-                <Button type="submit" fullWidth variant="contained" color="primary">
-                    Save
-                </Button>
-            </form>
-        </Container>
+        token.role == 'Candidate'
+            ? <p>Access denied</p>
+            : <Container component="main" maxWidth="sm">
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        label="Title"
+                        margin="normal"
+                        name="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        label="Position Title"
+                        margin="normal"
+                        name="positionTitle"
+                        value={positionTitle}
+                        onChange={(e) => setPositionTitle(e.target.value)}
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        label="Salary"
+                        margin="normal"
+                        name="salary"
+                        type="number"
+                        value={salary}
+                        onChange={(e) => setSalary(e.target.value)}
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        select
+                        label="Work Experience"
+                        margin="normal"
+                        fullWidth
+                        defaultValue={Experience.NoExperience}
+                        value={experience}
+                        onChange={(e) => {
+                            setExperience(Number(e.target.value))
+                        }}
+                    >
+                        {Object.values(Experience).filter((v) => isNaN(Number(v))).map((value) => (
+                            <MenuItem key={value} value={Experience[value]}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        select
+                        label="Attendance Mode"
+                        margin="normal"
+                        fullWidth
+                        defaultValue={AttendanceMode.Remote}
+                        value={attendanceMode}
+                        onChange={(e) => {
+                            setAttendanceMode(Number(e.target.value))
+                        }}
+                    >
+                        {Object.values(AttendanceMode).filter((v) => isNaN(Number(v))).map((value) => (
+                            <MenuItem key={value} value={AttendanceMode[value]}>
+                                {value}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                        fullWidth
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        input={<OutlinedInput label="Category" />}
+                    >
+                        {categories && categories.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                                {category.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <InputLabel>Locations</InputLabel>
+                    <Select
+                        multiple
+                        fullWidth
+                        value={selectedLocations}
+                        onChange={(e) => setSelectedLocations(e.target.value)}
+                        input={<OutlinedInput label="Locations" />}
+                    >
+                        {locations && locations.map((location) => (
+                            <MenuItem key={location.id} value={location.id}>
+                                {location.city}, {location.country}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <InputLabel>Skills</InputLabel>
+                    <Select
+                        multiple
+                        fullWidth
+                        value={selectedSkills}
+                        onChange={(e) => setSelectedSkills(e.target.value)}
+                        input={<OutlinedInput label="Skills" />}
+                    >
+                        {skills && skills.map((skill) => (
+                            <MenuItem key={skill.id} value={skill.id}>
+                                {skill.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <TextField
+                        label="Description"
+                        name="description"
+                        margin="normal"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        fullWidth
+                        multiline
+                        rows={4}
+                        required
+                    />
+                    <Button type="submit" fullWidth variant="contained" color="primary">
+                        Save
+                    </Button>
+                </form>
+            </Container>
     )
 }

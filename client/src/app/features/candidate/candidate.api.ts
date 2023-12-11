@@ -7,6 +7,7 @@ import { CandidateProfile } from "../../../models/profile/candidate.profile.mode
 export const candidateApi = createApi({
     reducerPath: 'candidateApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.profile }),
+    keepUnusedDataFor: 15,
     endpoints: (builder) => ({
         getCandidatesProfile: builder.query<CandidateProfile[], void>({ query: () => ({ url: `/profile/getCandidatesProfile`, method: 'get' }) }),
     })

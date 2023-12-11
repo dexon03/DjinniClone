@@ -5,6 +5,7 @@ namespace VacanciesService.Domain.DTO;
 
 public class VacancyCreateDto
 {
+    public Guid RecruiterId { get; set; }
     public Guid CategoryId { get; set; }
     public Guid CompanyId { get; set; }
     public string Title { get; set; }

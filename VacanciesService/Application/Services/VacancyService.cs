@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq.Expressions;
+using System.Net;
 using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
@@ -20,66 +21,14 @@ public class VacancyService : IVacanciesService
         _mapper = mapper;
     }
 
-    public List<VacancyGetAllDto> GetAllVacancies(CancellationToken cancellationToken = default)
+    public async Task<List<VacancyGetAllDto>> GetAllVacancies(CancellationToken cancellationToken = default)
     {
-        var vacancies = 
-                (from vacancy in _repository.GetAll<Vacancy>().Where(v => v.IsActive) 
-                join locationVacancy in _repository.GetAll<LocationVacancy>() 
-                    on vacancy.Id equals locationVacancy.VacancyId
-                join location in _repository.GetAll<Location>()
-                    on locationVacancy.LocationId equals location.Id
-                join company in _repository.GetAll<Company>()
-                    on vacancy.CompanyId equals company.Id
-                select new
-                {
-                    vacancy.Id,
-                    vacancy.Title,
-                    vacancy.PositionTitle,
-                    vacancy.Salary,
-                    vacancy.CreatedAt,
-                    vacancy.Experience,
-                    vacancy.AttendanceMode,
-                    vacancy.Description,
-                    company.Name,
-                    location.City,
-                    location.Country
-                })
-                .ToList();
-        var groupedVacancies = vacancies
-                .GroupBy(v => new
-                {
-                    v.Id,
-                    v.Title,
-                    v.PositionTitle,
-                    v.Salary,
-                    v.Experience,
-                    v.CreatedAt,
-                    v.AttendanceMode,
-                    v.Description,
-                    v.Name,
-                }).Select(g => new VacancyGetAllDto
-                {
-                    Id = g.Key.Id,
-                    Title = g.Key.Title,
-                    PositionTitle = g.Key.PositionTitle,
-                    Salary = g.Key.Salary,
-                    Experience = g.Key.Experience.ToString(),
-                    CreatedAt = g.Key.CreatedAt,
-                    AttendanceMode = g.Key.AttendanceMode.ToString(),
-                    Description = g.Key.Description,
-                    CompanyName = g.Key.Name,
-                    Locations = g.Select(l => new LocationGetDto
-                    {
-                        City = l.City,
-                        Country = l.Country
-                    })
-                });
-        return groupedVacancies.ToList();
+        var vacancies = await GetAllVacanciesByCondition(v => v.IsActive, cancellationToken);
+        return vacancies;
     }
 
     public async Task<VacancyGetDto> GetVacancyById(Guid id, CancellationToken cancellationToken = default)
     {
-        // var vacancy = await _repository.GetByIdAsync<Vacancy>(id);
         var vacancyEntity = (await
                 (from vacancy in _repository.GetAll<Vacancy>().Where(v => v.Id == id)
                     join category in _repository.GetAll<Category>()
@@ -101,6 +50,7 @@ public class VacancyService : IVacanciesService
                     select new
                     {
                         VacancyId = vacancy.Id,
+                        vacancy.RecruiterId,
                         vacancy.Title,
                         vacancy.PositionTitle,
                         vacancy.Salary,
@@ -123,6 +73,7 @@ public class VacancyService : IVacanciesService
             ).GroupBy(v => new
             {
                 v.VacancyId,
+                v.RecruiterId,
                 v.Title,
                 v.PositionTitle,
                 v.Salary,
@@ -139,6 +90,7 @@ public class VacancyService : IVacanciesService
             }).Select(gv => new VacancyGetDto
             {
                 Id = gv.Key.VacancyId,
+                RecruiterId = gv.Key.RecruiterId,
                 Title = gv.Key.Title,
                 PositionTitle = gv.Key.PositionTitle,
                 Salary = gv.Key.Salary,
@@ -192,6 +144,12 @@ public class VacancyService : IVacanciesService
         return vacancyEntity;
     }
 
+    public async Task<List<VacancyGetAllDto>> GetVacanciesByRecruiterId(Guid recruiterId, CancellationToken cancellationToken = default)
+    {
+        var vacancies = await GetAllVacanciesByCondition(v => v.RecruiterId == recruiterId, cancellationToken);
+        return vacancies;
+    }
+
     public async Task<Vacancy> CreateVacancy(VacancyCreateDto vacancyDto, CancellationToken cancellationToken = default)
     {
         var vacancy = new Vacancy
@@ -242,5 +200,66 @@ public class VacancyService : IVacanciesService
         vacancy.UpdatedAt = DateTime.Now;
         _repository.Update(vacancy);
         await _repository.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<List<VacancyGetAllDto>> GetAllVacanciesByCondition(Expression<Func<Vacancy, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        // TODO: Refactor this query
+        var vacancies = 
+                await (from vacancy in _repository.GetAll<Vacancy>().Where(predicate)
+                join locationVacancy in _repository.GetAll<LocationVacancy>() 
+                    on vacancy.Id equals locationVacancy.VacancyId
+                join location in _repository.GetAll<Location>()
+                    on locationVacancy.LocationId equals location.Id
+                join company in _repository.GetAll<Company>()
+                    on vacancy.CompanyId equals company.Id
+                select new
+                {
+                    vacancy.Id,
+                    vacancy.Title,
+                    vacancy.PositionTitle,
+                    vacancy.Salary,
+                    vacancy.CreatedAt,
+                    vacancy.Experience,
+                    vacancy.AttendanceMode,
+                    vacancy.Description,
+                    vacancy.IsActive,
+                    company.Name,
+                    location.City,
+                    location.Country
+                })
+                .ToListAsync(cancellationToken);
+        var groupedVacancies = vacancies
+                .GroupBy(v => new
+                {
+                    v.Id,
+                    v.Title,
+                    v.PositionTitle,
+                    v.Salary,
+                    v.Experience,
+                    v.CreatedAt,
+                    v.AttendanceMode,
+                    v.Description,
+                    v.Name,
+                    v.IsActive,
+                }).Select(g => new VacancyGetAllDto
+                {
+                    Id = g.Key.Id,
+                    Title = g.Key.Title,
+                    PositionTitle = g.Key.PositionTitle,
+                    Salary = g.Key.Salary,
+                    Experience = g.Key.Experience.ToString(),
+                    CreatedAt = g.Key.CreatedAt,
+                    AttendanceMode = g.Key.AttendanceMode.ToString(),
+                    Description = g.Key.Description,
+                    CompanyName = g.Key.Name,
+                    IsActive = g.Key.IsActive,
+                    Locations = g.Select(l => new LocationGetDto
+                    {
+                        City = l.City,
+                        Country = l.Country
+                    })
+                });
+        return groupedVacancies.ToList();
     }
 }

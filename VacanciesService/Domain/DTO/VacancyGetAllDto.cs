@@ -14,5 +14,6 @@ public class VacancyGetAllDto
     public string AttendanceMode { get; set; }
     public DateTime CreatedAt { get; set; }
     public string CompanyName { get; set; }
+    public bool IsActive { get; set; }
     public IEnumerable<LocationGetDto> Locations { get; set; }
 }

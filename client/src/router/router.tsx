@@ -8,6 +8,7 @@ import { CandidateList } from "../pages/candidates/candidates.list.tsx";
 import { CandidatePage } from "../pages/candidates/candidate.page.tsx";
 import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
 import { VacancyCreatePage } from "../pages/vacancy/vacancy.create.page.tsx";
+import { RecruiterVacanciesList } from "../pages/vacancy/vacancy.recruiter.list.tsx";
 
 const rootLoader = async () => {
     const token = localStorage.getItem("token");
@@ -26,6 +27,10 @@ const routes: RouteObject[] = [
             {
                 path: "/vacancy",
                 element: <VacancyListPage />
+            },
+            {
+                path: "/vacancy/myVacancies",
+                element: <RecruiterVacanciesList />
             },
             {
                 path: "/vacancy/:id",

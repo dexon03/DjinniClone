@@ -23,12 +23,5 @@ public class VacancyUpdateValidator : AbstractValidator<VacancyUpdateDto>
                 context.AddFailure("Category not found");
             }
         });
-        RuleFor(x => x.CompanyId).NotEmpty().WithMessage("Company is required").Custom((id, context) =>
-        {
-            if (!repository.Any<Company>(c => c.Id == id))
-            {
-                context.AddFailure("Company not found");
-            }
-        });
     }
 }

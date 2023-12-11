@@ -21,9 +21,16 @@ public class VacancyController : BaseController
     }
     
     [HttpGet]
-    public IActionResult GetVacancies()
+    public async Task<IActionResult> GetVacancies(CancellationToken cancellationToken)
     {
-        var result = _vacanciesService.GetAllVacancies();
+        var result = await _vacanciesService.GetAllVacancies(cancellationToken);
+        return Ok(result);
+    }
+    
+    [HttpGet("getRecruiterVacancies/{recruiterId}")]
+    public async Task<IActionResult> GetRecruiterVacancies(Guid recruiterId, CancellationToken cancellationToken)
+    {
+        var result = await _vacanciesService.GetVacanciesByRecruiterId(recruiterId,cancellationToken);
         return Ok(result);
     }
     

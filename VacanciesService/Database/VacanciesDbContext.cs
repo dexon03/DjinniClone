@@ -13,6 +13,7 @@ public class VacanciesDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
         var locations = new[]
         {
             new Location { Id = Guid.NewGuid(), Country = "Ukraine", City = "Kyiv" },
@@ -40,7 +41,8 @@ public class VacanciesDbContext : DbContext
             new Skill { Id = Guid.NewGuid(), Name = "TypeScript" },
             new Skill { Id = Guid.NewGuid(), Name = "Scala" },
         };
-        
+
+        modelBuilder.Entity<Vacancy>().HasIndex(v => v.RecruiterId);
         modelBuilder.Entity<Location>().HasData(locations);
         modelBuilder.Entity<Skill>().HasData(skills);
         

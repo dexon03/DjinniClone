@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VacanciesService.Database;
@@ -11,9 +12,11 @@ using VacanciesService.Database;
 namespace VacanciesService.Migrations
 {
     [DbContext(typeof(VacanciesDbContext))]
-    partial class VacanciesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231211160635_Added_Index_To_Rec_Id")]
+    partial class Added_Index_To_Rec_Id
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

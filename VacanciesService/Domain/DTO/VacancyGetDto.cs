@@ -6,6 +6,7 @@ namespace VacanciesService.Domain.DTO;
 public record VacancyGetDto
 {
     public Guid Id { get; set; }
+    public Guid RecruiterId { get; set; }
     public string? Title { get; set; }
     public string? PositionTitle { get; set; }
     public string? Description { get; set; }
