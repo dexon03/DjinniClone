@@ -10,6 +10,7 @@ import { LocationDto } from "../../../models/common/location.dto";
 export const profileApi = createApi({
     reducerPath: 'profileApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.profile }),
+    keepUnusedDataFor: 5,
     endpoints: (builder) => ({
         getUserCandidateProfile: builder.query<CandidateProfile, string>({ query: (userId: string) => ({ url: `/profile/${Role.Candidate}/${userId}`, method: 'get' }) }),
         getUserRecruiterProfile: builder.query<RecruiterProfile, string>({ query: (userId: string) => ({ url: `/profile/${Role.Recruiter}/${userId}`, method: 'get' }) }),

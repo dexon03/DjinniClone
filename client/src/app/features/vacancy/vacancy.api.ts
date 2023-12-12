@@ -12,7 +12,7 @@ import { Category } from '../../../models/vacancy/category.model';
 export const vacancyApi = createApi({
     reducerPath: 'vacancyApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.vacancy }),
-    keepUnusedDataFor: 15,
+    keepUnusedDataFor: 5,
     endpoints: (builder) => ({
         getVacancies: builder.query<VacancyGetAll[], void>({ query: () => ({ url: '/vacancy', method: 'get' }) }),
         getRecruiterVacancies: builder.query<VacancyGetAll[], string>({ query: (recruiterId: string) => ({ url: '/vacancy/getRecruiterVacancies/' + recruiterId, method: 'get' }) }),
@@ -25,4 +25,4 @@ export const vacancyApi = createApi({
     }),
 });
 
-export const { useGetVacanciesQuery, useGetRecruiterVacanciesQuery ,useGetVacancyQuery, useCreateVacancyMutation, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, useLazyGetVacancyCategoriesQuery, useActivateDisactivateVacancyMutation } = vacancyApi;
+export const { useGetVacanciesQuery, useGetRecruiterVacanciesQuery, useGetVacancyQuery, useCreateVacancyMutation, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, useLazyGetVacancyCategoriesQuery, useActivateDisactivateVacancyMutation } = vacancyApi;

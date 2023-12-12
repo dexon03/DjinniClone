@@ -23,7 +23,7 @@ public class VacancyService : IVacanciesService
 
     public async Task<List<VacancyGetAllDto>> GetAllVacancies(CancellationToken cancellationToken = default)
     {
-        var vacancies = await GetAllVacanciesByCondition(v => v.IsActive, cancellationToken);
+        var vacancies = await GetAllVacanciesByCondition(v => v.IsActive == true, cancellationToken);
         return vacancies;
     }
 

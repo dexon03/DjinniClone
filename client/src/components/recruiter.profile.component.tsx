@@ -3,14 +3,16 @@ import { useGetUserRecruiterProfileQuery, useQuerySubscriptionRecruiter, useUpda
 import { useEffect, useState } from 'react';
 import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
 import { Company } from '../models/common/company.models';
+import { useAppDispatch } from '../hooks/redux.hooks';
+import { setProfile } from '../app/slices/recruiter.profile.slice';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
-  const { data: profile, isError, isLoading, error } = useGetUserRecruiterProfileQuery(id);
+  const { data: profile, isError, isLoading, error, refetch } = useGetUserRecruiterProfileQuery(id);
   const [getCompanyQuery, { data: companies }] = useLazyGetProfileCompaniesQuery();
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateRecruiterProfileMutation();
   const [updateCompany, { data: updatedCompany, error: updateCompanyError }] = useUpdateCompanyMutation();
-  const { refetch } = useQuerySubscriptionRecruiter(id);
-
+  // const { refetch } = useQuerySubscriptionRecruiter(id);
+  const dispatch = useAppDispatch();
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -46,7 +48,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
 
   const onCompanyChanged = (companyId: string) => {
     try {
-      const company = companies.find(company => company.id === companyId);
+      const company = companies?.find(company => company.id === companyId);
       setCompanyName(company?.name || '');
       setCompanyDescription(company?.description || '');
     }
@@ -82,15 +84,15 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
         positionTitle,
         isActive,
         companyId: selectedCompany
-      })
-
-      if (updatedProfile) {
-        refetch();
+      });
+      var refetchedProfile = await refetch();
+      if (!refetchedProfile.isError && !refetchedProfile.isLoading) {
+        dispatch(setProfile(refetchedProfile.data));
       }
-
     } catch (error) {
       console.error("Error updating profile:", updateError);
     }
+
   };
 
   const handleUpdateCompany = async (e) => {

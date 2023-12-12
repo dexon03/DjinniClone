@@ -2,6 +2,8 @@ using System.Net;
 using AutoMapper;
 using Core.Database;
 using Core.Exceptions;
+using Core.MessageContract;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
@@ -14,11 +16,13 @@ public class ProfileService : IProfileService
 {
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public ProfileService(IRepository repository, IMapper mapper)
+    public ProfileService(IRepository repository, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _repository = repository;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
     
     public async Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CancellationToken cancellationToken = default)
@@ -444,11 +448,18 @@ public class ProfileService : IProfileService
         await _repository.SaveChangesAsync(cancellationToken);
     }
 
-    public Task DeleteProfileByUserId<T>(Guid userId, CancellationToken cancellationToken = default) where T : Profile<T>
+    public async Task DeleteProfileByUserId<T>(Guid userId, CancellationToken cancellationToken = default) where T : Profile<T>
     {
         var profile = _repository.GetAll<T>().FirstOrDefault(p => p.UserId == userId);
-        _repository.Delete<T>(profile);
-        return _repository.SaveChangesAsync(cancellationToken);
+        if (profile is not null)
+        {
+            await _publishEndpoint.Publish(new RecruiterProfileDeletedEvent
+            {
+                ProfileId = profile.Id
+            }, cancellationToken);
+            _repository.Delete<T>(profile);
+            await _repository.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public async Task ActivateDisactivateProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>

@@ -14,7 +14,7 @@ export function VacancyTile({ vacancy, isRecruiterList, refetch }: { vacancy: Va
         setIsActivated(!isActivated);
         refetch();
     };
-    a
+
     const handleViewClick = () => {
         navigate(`/vacancy/${vacancy.id}`);
     };

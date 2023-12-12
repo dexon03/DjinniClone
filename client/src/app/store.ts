@@ -38,18 +38,9 @@ export const store = configureStore({
   },
 })
 
-
-
-
 setupListeners(store.dispatch)
 
 export const persistor = persistStore(store);
-
-
-export const resetStore = async () => {
-  await persistor.purge();
-  await persistor.flush();
-};
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
