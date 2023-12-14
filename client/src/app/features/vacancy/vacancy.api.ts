@@ -5,9 +5,10 @@ import { axiosBaseQuery } from '../../../api/axios.baseQuery';
 import { ApiServicesRoutes } from '../../../api/api.services.routes';
 import { VacancyGet } from '../../../models/vacancy/vacany.get.dto';
 import { VacancyCreate } from '../../../models/vacancy/vacancy.create.dto';
-import { SkillGetAllDto } from '../../../models/common/SkillGetAllDto.model';
+import { SkillDto } from '../../../models/common/SkillGetAllDto.model';
 import { LocationDto } from '../../../models/common/location.dto';
 import { Category } from '../../../models/vacancy/category.model';
+import { VacancyUpdateModel } from '../../../models/vacancy/vacancy.update.dto';
 
 export const vacancyApi = createApi({
     reducerPath: 'vacancyApi',
@@ -39,7 +40,7 @@ export const vacancyApi = createApi({
             invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
         }),
         getVacancyLocation: builder.query<LocationDto[], void>({ query: () => ({ url: '/location', method: 'get' }) }),
-        getVacancySkills: builder.query<SkillGetAllDto[], void>({ query: () => ({ url: `/skill`, method: 'get' }) }),
+        getVacancySkills: builder.query<SkillDto[], void>({ query: () => ({ url: `/skill`, method: 'get' }) }),
         getVacancyCategories: builder.query<Category[], void>({ query: () => ({ url: `/category`, method: 'get' }) }),
         activateDisactivateVacancy: builder.mutation<void, string>({
             query: (id: string) => ({
@@ -48,9 +49,35 @@ export const vacancyApi = createApi({
             }),
             invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
         }),
+        updateVacancy: builder.mutation<VacancyGet, VacancyUpdateModel>({
+            query: (body: VacancyUpdateModel) => ({
+                url: `/vacancy`,
+                method: 'put',
+                data: body
+            }),
+            invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
+        }),
+        deleteVacancy: builder.mutation<void, string>({
+            query: (id: string) => ({
+                url: `/vacancy/${id}`,
+                method: 'delete'
+            }),
+            invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
+        }),
     }),
 });
 
-export const { useGetVacanciesQuery, useGetRecruiterVacanciesQuery, useGetVacancyQuery, useCreateVacancyMutation, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, useLazyGetVacancyCategoriesQuery, useActivateDisactivateVacancyMutation } = vacancyApi;
+export const {
+    useGetVacanciesQuery,
+    useGetRecruiterVacanciesQuery,
+    useGetVacancyQuery,
+    useCreateVacancyMutation,
+    useLazyGetVacancyLocationQuery,
+    useLazyGetVacancySkillsQuery,
+    useLazyGetVacancyCategoriesQuery,
+    useActivateDisactivateVacancyMutation,
+    useUpdateVacancyMutation,
+    useDeleteVacancyMutation,
+} = vacancyApi;
 
 export const { useQuerySubscription: useQuerySubscriptionGetAllVacancies } = vacancyApi.endpoints.getVacancies;

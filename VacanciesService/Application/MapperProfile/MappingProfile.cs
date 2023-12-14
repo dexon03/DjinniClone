@@ -9,7 +9,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<VacancyUpdateDto, Vacancy>();
+        CreateMap<VacancyUpdateDto, Vacancy>().AfterMap<VacancyUpdateRequest>();
         CreateMap<VacancyCreateDto, Vacancy>().AfterMap<VacancyCreateRequest>();
         CreateMap<CompanyCreateDto, Company>();
         CreateMap<CompanyUpdateDto, Company>();

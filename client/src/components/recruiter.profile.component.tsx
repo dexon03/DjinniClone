@@ -1,10 +1,12 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
-import { useGetUserRecruiterProfileQuery, useQuerySubscriptionRecruiter, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
+import { useGetUserRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
 import { Company } from '../models/common/company.models';
 import { useAppDispatch } from '../hooks/redux.hooks';
 import { setProfile } from '../app/slices/recruiter.profile.slice';
+import { useNavigate } from 'react-router-dom';
+import useToken from '../hooks/useToken';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error, refetch } = useGetUserRecruiterProfileQuery(id);
@@ -26,9 +28,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
-  const [getVacancySkills, { data: skills, isError: isSkillsLoadingError }] = useLazyGetVacancySkillsQuery();
-  const [getVacancyLocations, { data: locations, isError: isErrorLoadingError }] = useLazyGetVacancyLocationQuery();
-  const [getVacancyCategories, { data: categories, isError: isCategoriesLoadingError }] = useLazyGetVacancyCategoriesQuery();
   const { token } = useToken();
   const navigate = useNavigate();
   useEffect(() => {

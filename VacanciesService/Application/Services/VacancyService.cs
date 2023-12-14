@@ -166,12 +166,13 @@ public class VacancyService : IVacanciesService
 
     public async Task<Vacancy> UpdateVacancy(VacancyUpdateDto vacancy, CancellationToken cancellationToken = default)
     {
-        var vacancyEntity = _mapper.Map<Vacancy>(vacancy);
-        var isExists = await _repository.AnyAsync<Vacancy>(x => x.Id == vacancyEntity.Id);
-        if (!isExists)
+
+        var vacancyEntity = _repository.GetById<Vacancy>(vacancy.Id);
+        if (vacancyEntity is null)
         {
             throw new ExceptionWithStatusCode("Vacancy that you trying to update, not exist", HttpStatusCode.BadRequest);
         }
+        vacancyEntity = _mapper.Map(vacancy, vacancyEntity);
         vacancyEntity.UpdatedAt = DateTime.Now;
         var result = _repository.Update(vacancyEntity);
         await _repository.SaveChangesAsync(cancellationToken);

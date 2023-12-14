@@ -5,7 +5,7 @@ import { CandidateProfile } from "../../../models/profile/candidate.profile.mode
 import { Role } from "../../../models/common/role.enum";
 import { RecruiterProfile } from "../../../models/profile/recruiter.profile.model";
 import { ApiServicesRoutes } from "../../../api/api.services.routes";
-import { SkillGetAllDto } from "../../../models/common/SkillGetAllDto.model";
+import { SkillDto } from "../../../models/common/SkillGetAllDto.model";
 import { LocationDto } from "../../../models/common/location.dto";
 export const profileApi = createApi({
     reducerPath: 'profileApi',
@@ -18,7 +18,7 @@ export const profileApi = createApi({
         updateCandidateProfile: builder.mutation<CandidateProfile, CandidateProfile>({ query: (profile: CandidateProfile) => ({ url: `/profile/updateCandidate`, method: 'put', data: profile }) }),
         updateRecruiterProfile: builder.mutation<RecruiterProfile, RecruiterProfile>({ query: (profile: RecruiterProfile) => ({ url: `/profile/updateRecruiter`, method: 'put', data: profile }) }),
         getProfileLocation: builder.query<LocationDto[], void>({ query: () => ({ url: '/location', method: 'get' }) }),
-        getProfileSkills: builder.query<SkillGetAllDto[], void>({ query: () => ({ url: `/skill`, method: 'get' }) }),
+        getProfileSkills: builder.query<SkillDto[], void>({ query: () => ({ url: `/skill`, method: 'get' }) }),
     }),
 });
 

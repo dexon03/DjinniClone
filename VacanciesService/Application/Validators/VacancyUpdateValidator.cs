@@ -15,7 +15,6 @@ public class VacancyUpdateValidator : AbstractValidator<VacancyUpdateDto>
         RuleFor(x => x.PositionTitle).NotEmpty().WithMessage("PositionTitle is required");
         RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required");
         RuleFor(x => x.Salary).NotEmpty().GreaterThan(0).WithMessage("Salary is required");
-        RuleFor(x => x.IsActive).NotEmpty().WithMessage("IsActive is required");
         RuleFor(x => x.CategoryId).NotEmpty().WithMessage("Category is required").Custom((id, context) =>
         {
             if (!repository.Any<Category>(c => c.Id == id))
