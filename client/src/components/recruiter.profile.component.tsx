@@ -29,7 +29,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
   const { token } = useToken();
-  const navigate = useNavigate();
   useEffect(() => {
     if (profile) {
       getCompanyQuery();
