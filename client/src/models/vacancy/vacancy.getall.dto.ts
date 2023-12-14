@@ -11,4 +11,5 @@ export interface VacancyGetAll {
     createdAt: Date;
     companyName: string;
     locations: LocationDto[];
+    isActive : boolean;
 }

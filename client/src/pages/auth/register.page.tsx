@@ -7,6 +7,8 @@ import { RegisterModel } from "../../models/auth/register.model.ts";
 import useToken from '../../hooks/useToken.ts';
 import { useNavigate } from 'react-router-dom';
 import { Role } from '../../models/common/role.enum.ts';
+import { useAppDispatch } from '../../hooks/redux.hooks.ts';
+import { setProfile } from '../../app/slices/recruiter.profile.slice.ts';
 
 function RegisterPage() {
     const [selectedRole, setSelectedRole] = useState(0);
@@ -20,6 +22,7 @@ function RegisterPage() {
     };
     const { _, setToken } = useToken();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const restClient: RestClient = new RestClient();
 
@@ -34,9 +37,12 @@ function RegisterPage() {
             role: selectedRole === 0 ? Role.Recruiter : Role.Candidate,
         } as RegisterModel);
 
-        if (token) {
-            setToken(token);
-            return navigate('/vacancy');
+        setToken(token);
+        if (token.role === Role[Role.Candidate]) {
+            navigate('/vacancy');
+        } else {
+            navigate('/candidate');
+            dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${token.userId}`)));
         }
     }
 

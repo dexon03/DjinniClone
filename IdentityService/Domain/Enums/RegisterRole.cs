@@ -5,5 +5,6 @@ namespace IdentityService.Domain.Enums;
 public enum RegisterRole
 {
     Candidate,
-    Recruiter
+    Recruiter,
+    Admin,
 }

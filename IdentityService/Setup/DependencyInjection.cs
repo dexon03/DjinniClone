@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Text;
 using Core.Database;
-using FastEndpoints;
 using FluentValidation;
 using IdentityService.Application.Services;
 using IdentityService.Database;
@@ -34,7 +33,6 @@ public static class DependencyInjection
         services.AddScoped<IRepository, Repository>();
         services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IAuthService, AuthService>();
-        services.AddFastEndpoints();
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = appConfiguration.GetConnectionString("Redis");

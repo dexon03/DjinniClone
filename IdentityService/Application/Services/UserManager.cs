@@ -65,25 +65,27 @@ public class UserManager
     
     public async Task<User?> FindByIdAsync(Guid id)
     {
-        var user = await (from u in _repository.GetAll<User>()
-            where u.Id == id
-            join r in _repository.GetAll<Role>() on u.RoleId equals r.Id
-            select new User
+        var user = await 
+            _repository.GetAll<User>()
+                .Where(u => u.Id == id)
+                .AsSplitQuery()
+            .Include(u => u.Role)
+            .Select(u => new User
             {
                 Id = u.Id,
                 Email = u.Email,
                 PasswordHash = u.PasswordHash,
                 PasswordSalt = u.PasswordSalt,
-                Role = r,
-                RoleId = r.Id,
+                Role = u.Role,
+                RoleId = u.RoleId,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 PhoneNumber = u.PhoneNumber,
                 RefreshToken = u.RefreshToken,
-            }).AsNoTracking().FirstOrDefaultAsync();
+            }).FirstOrDefaultAsync();
         if (user == null)
         {
-            throw new Exception("User not found by email");
+            throw new Exception("User not found by id");
         }
 
         return user;

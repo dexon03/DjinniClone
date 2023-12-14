@@ -215,9 +215,9 @@ public abstract class BaseRepository
         }
     }
 
-    public virtual void DeleteRange<T>(Expression<Func<T, bool>> condition) where T : class
+    public virtual async Task DeleteRange<T>(Expression<Func<T, bool>> condition) where T : class
     {
-        var entities = DbContext.Set<T>().Where(condition);
+        var entities = await DbContext.Set<T>().Where(condition).ToListAsync();
         DbContext.Set<T>().RemoveRange(entities);
     }
     

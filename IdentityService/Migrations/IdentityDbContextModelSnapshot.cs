@@ -42,25 +42,25 @@ namespace IdentityService.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("397e34fc-8a3a-4f56-9bdd-5e71429884a3"),
+                            Id = new Guid("59a441cf-0b9d-416b-b94a-73bd1e28cf86"),
                             IsActive = true,
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("ccb0ad8f-5080-410a-bf1e-19e97fcd9cbf"),
+                            Id = new Guid("a3ea1b0e-ca72-491c-954f-4426769a983b"),
                             IsActive = true,
                             Name = "Recruiter"
                         },
                         new
                         {
-                            Id = new Guid("280fc4c3-9bf1-4799-98ed-2b776ab1929a"),
+                            Id = new Guid("dee05964-e869-4e9b-80c1-c149ffff2baa"),
                             IsActive = true,
-                            Name = "Applicant"
+                            Name = "Candidate"
                         },
                         new
                         {
-                            Id = new Guid("7c365820-3447-4147-a839-2d1768a3ae23"),
+                            Id = new Guid("dd8bf902-d9d4-4179-8356-689380a6cdf8"),
                             IsActive = true,
                             Name = "CompanyOwner"
                         });

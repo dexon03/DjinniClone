@@ -11,7 +11,8 @@ public class ProfileCreateValidator : AbstractValidator<ProfileCreateDto>
     {
         RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
         RuleFor(x => x.Surname).NotEmpty().WithMessage("Surname is required");
-        RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("Email is required");
+        RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("Email is required")
+            ;
         RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("PhoneNumber is required");
         RuleFor(x => x.UserId).NotEmpty().WithMessage("Linked user is required");
     }
