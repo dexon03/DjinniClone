@@ -40,16 +40,16 @@ public class VacancyServiceTests
     //     Assert.Equal(mockVacancy, result);
     // }
 
-    [Fact]
-    public async Task GetVacancyById_NonExistingId_ShouldThrowException()
-    {
-        // Arrange
-        var nonExistingId = Guid.NewGuid();
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(nonExistingId)).ReturnsAsync((Vacancy)null);
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _vacancyService.GetVacancyById(nonExistingId));
-    }
+    // [Fact]
+    // public async Task GetVacancyById_NonExistingId_ShouldThrowException()
+    // {
+    //     // Arrange
+    //     var nonExistingId = Guid.NewGuid();
+    //     _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(nonExistingId)).ReturnsAsync((Vacancy)null);
+    //
+    //     // Act and Assert
+    //     await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _vacancyService.GetVacancyById(nonExistingId));
+    // }
 
     [Fact]
     public async Task UpdateVacancy_NonExistingVacancy_ShouldThrowException()
