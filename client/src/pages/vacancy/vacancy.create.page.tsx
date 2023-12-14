@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useCreateVacancyMutation, useLazyGetVacancyCategoriesQuery, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, vacancyApi } from "../../app/features/vacancy/vacancy.api"
+import { useCreateVacancyMutation, useLazyGetVacancyCategoriesQuery, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, vacancyApi, useQuerySubscriptionGetAllVacancies } from "../../app/features/vacancy/vacancy.api"
 import { Experience } from "../../models/vacancy/experience.enum";
 import { AttendanceMode } from "../../models/common/attendance.enum";
 import { Button, Container, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import { VacancyCreate } from "../../models/vacancy/vacancy.create.dto";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux.hooks";
+import { useAppSelector } from "../../hooks/redux.hooks";
 import useToken from "../../hooks/useToken";
 import { RecruiterProfile } from "../../models/profile/recruiter.profile.model";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,6 @@ export function VacancyCreatePage() {
     const [getVacancyLocations, { data: locations, isError: isErrorLoadingError }] = useLazyGetVacancyLocationQuery();
     const [getVacancyCategories, { data: categories, isError: isCategoriesLoadingError }] = useLazyGetVacancyCategoriesQuery();
     const { token } = useToken();
-    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const recruiterProfile: RecruiterProfile = useAppSelector(state => state.recruiterProfile.profile)
@@ -33,30 +32,15 @@ export function VacancyCreatePage() {
 
     useEffect(() => {
         if (!skills) {
-            getVacancySkills()
-                .then(
-                    () => {
-                        setSelectedSkills(skills?.map(skill => skill.id) || []);
-                        getVacancyLocations().then(
-                            () => {
-                                setSelectedLocations(locations?.map(location => location.id) || []);
-                                getVacancyCategories().then(
-                                    () => {
-                                        setSelectedCategory(categories?.map(category => category.id)[0] || '');
-                                    }
-                                )
-                            }
-                        )
-                    }
-
-                );
+            getVacancySkills();
         }
-        // if (!locations) {
-        //     getVacancyLocations();
-        // }
-        // if (!categories) {
-        //     getVacancyCategories();
-        // }
+        if (!locations) {
+            getVacancyLocations();
+        }
+
+        if (!categories) {
+            getVacancyCategories();
+        }
     }, [skills, locations, categories])
 
     if (token?.role == 'Candidate') {
@@ -82,9 +66,7 @@ export function VacancyCreatePage() {
             locations: locations.filter(location => selectedLocations.includes(location.id)),
             skills: skills.filter(skill => selectedSkills.includes(skill.id)),
         } as VacancyCreate)
-        debugger;
         if (result) {
-            dispatch(vacancyApi.util.resetApiState())
             navigate('/vacancy')
         }
     }

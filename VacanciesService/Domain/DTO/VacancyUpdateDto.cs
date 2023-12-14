@@ -1,4 +1,6 @@
-﻿namespace VacanciesService.Domain.DTO;
+﻿using VacanciesService.Domain.Enums;
+
+namespace VacanciesService.Domain.DTO;
 
 public class VacancyUpdateDto
 {
@@ -9,6 +11,8 @@ public class VacancyUpdateDto
     public string Description { get; set; }
     public double Salary { get; set; }
     public bool IsActive { get; set; }
+    public Experience Experience { get; set; }
+    public AttendanceMode AttendanceMode { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public List<Guid> LocationIds { get; set; }

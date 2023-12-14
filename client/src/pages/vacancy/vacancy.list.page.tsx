@@ -40,7 +40,7 @@ export function VacancyListPage() {
                     : null
                 }
             </div>
-            {data && data.map((vacancy) => <VacancyTile key={vacancy.id} vacancy={vacancy} isRecruiterList={false} refetch={null} />)}
+            {data && data.map((vacancy) => <VacancyTile key={vacancy.id} vacancy={vacancy} isRecruiterList={false}/>)}
         </>
     )
 }

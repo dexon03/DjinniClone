@@ -26,7 +26,11 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
-
+  const [getVacancySkills, { data: skills, isError: isSkillsLoadingError }] = useLazyGetVacancySkillsQuery();
+  const [getVacancyLocations, { data: locations, isError: isErrorLoadingError }] = useLazyGetVacancyLocationQuery();
+  const [getVacancyCategories, { data: categories, isError: isCategoriesLoadingError }] = useLazyGetVacancyCategoriesQuery();
+  const { token } = useToken();
+  const navigate = useNavigate();
   useEffect(() => {
     if (profile) {
       getCompanyQuery();

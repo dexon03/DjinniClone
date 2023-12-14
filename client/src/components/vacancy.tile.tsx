@@ -4,7 +4,7 @@ import { Button, Card, CardContent } from "@mui/material";
 import { useActivateDisactivateVacancyMutation } from "../app/features/vacancy/vacancy.api.ts";
 import { useState } from "react";
 
-export function VacancyTile({ vacancy, isRecruiterList, refetch }: { vacancy: VacancyGetAll, isRecruiterList: boolean, refetch: any }) {
+export function VacancyTile({ vacancy, isRecruiterList }: { vacancy: VacancyGetAll, isRecruiterList: boolean}) {
     const navigate = useNavigate();
     const [activateDisactivateVacancy] = useActivateDisactivateVacancyMutation();
     const [isActivated, setIsActivated] = useState<boolean>(vacancy.isActive);
@@ -12,12 +12,15 @@ export function VacancyTile({ vacancy, isRecruiterList, refetch }: { vacancy: Va
     const handleActivateDeactivateClick = () => {
         activateDisactivateVacancy(vacancy.id)
         setIsActivated(!isActivated);
-        refetch();
     };
 
     const handleViewClick = () => {
         navigate(`/vacancy/${vacancy.id}`);
     };
+
+    const handlerEditClick = () => {
+        navigate(`/vacancy/edit/${vacancy.id}`);
+    }
 
     const cardClassName = isActivated ? 'm-2' : 'm-2 bg-light';
 
@@ -34,6 +37,13 @@ export function VacancyTile({ vacancy, isRecruiterList, refetch }: { vacancy: Va
                 <p className="text-success">{vacancy.salary}$</p>
                 <p>{vacancy.description}</p>
                 {isRecruiterList ? <>
+                    <Button
+                        variant="contained"
+                        onClick={handlerEditClick}
+                        color="primary"
+                        style={{ alignSelf: 'flex-end' }}>
+                        Edit
+                    </Button>
                     <Button
                         variant="contained"
                         color="primary"
