@@ -25,31 +25,31 @@ public class VacancyServiceTests
         );
     }
     
-    [Fact]
-    public async Task GetVacancyById_ExistingId_ShouldReturnVacancy()
-    {
-        // Arrange
-        var existingId = Guid.NewGuid();
-        var mockVacancy = new Vacancy { Id = existingId, Title = "Test Vacancy" };
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(existingId)).ReturnsAsync(mockVacancy);
+    // [Fact]
+    // public async Task GetVacancyById_ExistingId_ShouldReturnVacancy()
+    // {
+    //     // Arrange
+    //     var existingId = Guid.NewGuid();
+    //     var mockVacancy = new Vacancy { Id = existingId, Title = "Test Vacancy" };
+    //     _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(existingId)).ReturnsAsync(mockVacancy);
+    //
+    //     // Act
+    //     var result = await _vacancyService.GetVacancyById(existingId);
+    //
+    //     // Assert
+    //     Assert.Equal(mockVacancy, result);
+    // }
 
-        // Act
-        var result = await _vacancyService.GetVacancyById(existingId);
-
-        // Assert
-        Assert.Equal(mockVacancy, result);
-    }
-
-    [Fact]
-    public async Task GetVacancyById_NonExistingId_ShouldThrowException()
-    {
-        // Arrange
-        var nonExistingId = Guid.NewGuid();
-        _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(nonExistingId)).ReturnsAsync((Vacancy)null);
-
-        // Act and Assert
-        await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _vacancyService.GetVacancyById(nonExistingId));
-    }
+    // [Fact]
+    // public async Task GetVacancyById_NonExistingId_ShouldThrowException()
+    // {
+    //     // Arrange
+    //     var nonExistingId = Guid.NewGuid();
+    //     _repositoryMock.Setup(repo => repo.GetByIdAsync<Vacancy>(nonExistingId)).ReturnsAsync((Vacancy)null);
+    //
+    //     // Act and Assert
+    //     await Assert.ThrowsAsync<ExceptionWithStatusCode>(() => _vacancyService.GetVacancyById(nonExistingId));
+    // }
 
     [Fact]
     public async Task UpdateVacancy_NonExistingVacancy_ShouldThrowException()

@@ -1,11 +1,15 @@
 import { createBrowserRouter, redirect, RouteObject } from "react-router-dom";
 import App from "../App.tsx";
-import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
+import { VacancyListPage } from "../pages/vacancy/vacancy.list.page.tsx";
 import RegisterPage from "../pages/auth/register.page.tsx";
 import LoginPage from "../pages/auth/login.page.tsx";
 import ProfilePage from "../pages/profile/profile.page.tsx";
 import { CandidateList } from "../pages/candidates/candidates.list.tsx";
 import { CandidatePage } from "../pages/candidates/candidate.page.tsx";
+import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
+import { VacancyCreatePage } from "../pages/vacancy/vacancy.create.page.tsx";
+import { RecruiterVacanciesList } from "../pages/vacancy/vacancy.recruiter.list.tsx";
+import { VacancyUpdatePage } from "../pages/vacancy/vacancy.update.page.tsx";
 
 const rootLoader = async () => {
     const token = localStorage.getItem("token");
@@ -23,7 +27,23 @@ const routes: RouteObject[] = [
         children: [
             {
                 path: "/vacancy",
+                element: <VacancyListPage />
+            },
+            {
+                path: "/vacancy/myVacancies",
+                element: <RecruiterVacanciesList />
+            },
+            {
+                path: "/vacancy/:id",
                 element: <VacancyPage />
+            },
+            {
+                path: "/vacancy/create",
+                element: <VacancyCreatePage />
+            },
+            {
+                path: "/vacancy/edit/:id",
+                element: <VacancyUpdatePage />
             },
             {
                 path: "/candidate",

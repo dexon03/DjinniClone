@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Enums;
 
 namespace VacanciesService.Domain.Models;
@@ -11,6 +13,7 @@ public class Vacancy
     public Guid CategoryId { get; set; }
     [ForeignKey("Company")]
     public Guid CompanyId { get; set; }
+    public Guid RecruiterId { get; set; }
     public string Title { get; set; }
     public string PositionTitle { get; set; }
     public string Description { get; set; }

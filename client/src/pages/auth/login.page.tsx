@@ -1,5 +1,5 @@
 import { Button, TextField, Container, Typography } from '@mui/material';
-import { NavLink, redirect, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FormEvent, useState } from "react";
 import { RestClient } from "../../api/rest.client.ts";
 import { TokenResponse } from "../../models/auth/jwt.respone.ts";
@@ -7,12 +7,15 @@ import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
 import { LoginModel } from "../../models/auth/login.model.ts";
 import { Role } from '../../models/common/role.enum.ts';
 import useToken from '../../hooks/useToken.ts';
+import { useAppDispatch } from '../../hooks/redux.hooks.ts';
+import { setProfile } from '../../app/slices/recruiter.profile.slice.ts';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const { token, setToken } = useToken();
+    const dispatch = useAppDispatch();
 
     const restClient = new RestClient();
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -25,9 +28,9 @@ function LoginPage() {
         if (tokenResponse.role === Role[Role.Candidate]) {
             navigate('/vacancy');
         } else {
+            dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${tokenResponse.userId}`)));
             navigate('/candidate');
         }
-
     }
     return (
         <Container maxWidth="sm">

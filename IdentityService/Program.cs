@@ -1,12 +1,7 @@
 using Core.Database;
 using Core.ExceptionHandler;
 using Core.Logging;
-using FastEndpoints;
-using IdentityService.Database;
-using IdentityService.Database.AutoMigrations;
-using IdentityService.Domain.Models;
 using IdentityService.Setup;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -57,7 +52,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseFastEndpoints();
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();

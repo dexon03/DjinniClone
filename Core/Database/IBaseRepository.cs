@@ -28,7 +28,7 @@ public interface IBaseRepository
     void CreateRange<T>(params T[] entities) where T : class;
     T Update<T>(T entity) where T : class;
     void Delete<T>(T entity) where T : class;
-    void DeleteRange<T>(Expression<Func<T, bool>> condition) where T : class;
+    Task DeleteRange<T>(Expression<Func<T, bool>> condition) where T : class;
     void DeleteRange<T>(IEnumerable<T> entities) where T : class;
     T First<T>(Expression<Func<T, bool>>? predicate = null) where T : class;
     Task<T> FirstAsync<T>(Expression<Func<T, bool>>? predicate = null) where T : class;

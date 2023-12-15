@@ -24,11 +24,11 @@ public class RegisterValidator : AbstractValidator<RegisterRequest>
             .EmailAddress()
             .Custom((email, context) =>
             {
-                if (repository.FirstOrDefault<User>( x => x.Email == email) != null)
+                if (repository.Any<User>( x => x.Email == email))
                 {
                     context.AddFailure("Email should be unique");
                 }
-            });;
+            });
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Your password cannot be empty")
             .MinimumLength(8).WithMessage("Your password length must be at least 8.")

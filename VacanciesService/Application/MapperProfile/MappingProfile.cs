@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using VacanciesService.Application.MapperProfile.AfterMap;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
 
@@ -8,8 +9,8 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<VacancyUpdateDto, Vacancy>();
-        CreateMap<VacancyCreateDto, Vacancy>();
+        CreateMap<VacancyUpdateDto, Vacancy>().AfterMap<VacancyUpdateRequest>();
+        CreateMap<VacancyCreateDto, Vacancy>().AfterMap<VacancyCreateRequest>();
         CreateMap<CompanyCreateDto, Company>();
         CreateMap<CompanyUpdateDto, Company>();
         CreateMap<CategoryCreateDto, Category>();

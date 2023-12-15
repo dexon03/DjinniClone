@@ -77,49 +77,49 @@ namespace VacanciesService.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fa9d8524-3eb0-4e6f-9af8-00d3dc1910aa"),
+                            Id = new Guid("34220b83-9b28-4a76-997a-dd2e49785cf0"),
                             City = "Kyiv",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("22e3774e-5a3d-47e8-ae0b-189daecf826c"),
+                            Id = new Guid("a389d4e0-9972-4691-8cdd-8532ea50d780"),
                             City = "Lviv",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("c880c605-981e-46eb-a410-f0ccb5b4fb12"),
+                            Id = new Guid("d79e993d-6f88-4849-b3f4-6873193f44c2"),
                             City = "Kharkiv",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("1b85f311-d2c4-4d0c-b832-3192e55499b6"),
+                            Id = new Guid("9b970b6d-58bf-4c9f-b981-a3dea199fc84"),
                             City = "Dnipro",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("e31affbd-8bfd-4528-aa93-b7ed6ee72f7f"),
+                            Id = new Guid("a8568044-4ba2-4e3c-a92b-4f147480ef12"),
                             City = "Odesa",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("53c9f6c5-7746-4eb5-99fb-8292293b803e"),
+                            Id = new Guid("94b1f01d-4f73-425f-9b9a-d8b6e80f07f7"),
                             City = "Zaporizhzhia",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("921c4b14-65ea-46c0-bf15-9512458946ab"),
+                            Id = new Guid("fbcdd586-418c-4753-b517-d658f9975452"),
                             City = "Vinnytsia",
                             Country = "Ukraine"
                         },
                         new
                         {
-                            Id = new Guid("9eb1f622-e6f4-4dc4-a4d4-24fecdfd56e7"),
+                            Id = new Guid("812238ec-d562-467e-a7f5-1c7443f9885e"),
                             City = "Khmelnytskyi",
                             Country = "Ukraine"
                         });
@@ -157,62 +157,62 @@ namespace VacanciesService.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("23371813-5fa7-4be4-9a88-6f9222c2e1ef"),
+                            Id = new Guid("49bbab77-1424-473f-94aa-40079102a2d3"),
                             Name = "C#"
                         },
                         new
                         {
-                            Id = new Guid("a53aa54d-1f3c-4ddc-b9d7-6da58881183d"),
+                            Id = new Guid("b261cf52-dc0a-4257-aab0-aa740d625d16"),
                             Name = "Java"
                         },
                         new
                         {
-                            Id = new Guid("8841e9c4-00b0-499b-8a7b-bb609ce4951e"),
+                            Id = new Guid("55802add-009f-4d7f-a374-10366dcdae03"),
                             Name = "Python"
                         },
                         new
                         {
-                            Id = new Guid("2c5c8af6-a697-4f6d-9fe7-20d223ae3756"),
+                            Id = new Guid("17ed2572-d21b-4828-a23b-a7e5a045fb6c"),
                             Name = "JavaScript"
                         },
                         new
                         {
-                            Id = new Guid("cefca230-956d-42ae-bf8f-65bb39c25562"),
+                            Id = new Guid("b0e5ec0d-35d3-4f3f-99e0-6037024fa46c"),
                             Name = "C++"
                         },
                         new
                         {
-                            Id = new Guid("3a126c43-065e-429b-a808-ec81e956ec38"),
+                            Id = new Guid("6c0c5870-39ff-4306-82bb-7a671ddcf4ec"),
                             Name = "PHP"
                         },
                         new
                         {
-                            Id = new Guid("640eb86f-ecfd-4917-8dfa-cb6f48066f06"),
+                            Id = new Guid("99cd5a5c-1001-4c84-9901-6dc93c6958da"),
                             Name = "Ruby"
                         },
                         new
                         {
-                            Id = new Guid("ee7cd2f6-fc59-4c03-a5f1-ecd45d54f45d"),
+                            Id = new Guid("f7c461f9-5781-45d4-b6cc-054e501c4e83"),
                             Name = "Swift"
                         },
                         new
                         {
-                            Id = new Guid("57d76ee3-6837-4137-93df-9089f0e74a39"),
+                            Id = new Guid("2a694ee3-7759-48af-a4d6-faee01f8d4f0"),
                             Name = "Go"
                         },
                         new
                         {
-                            Id = new Guid("14ae68eb-5d01-4dbf-bd27-af55653055e4"),
+                            Id = new Guid("ab05729e-1c6c-4a42-b4a1-29ad16a80dfd"),
                             Name = "Kotlin"
                         },
                         new
                         {
-                            Id = new Guid("45cfaa73-c324-4104-8212-5c36c33cd504"),
+                            Id = new Guid("d62e1084-bc24-4a05-9a20-a7cbe792efac"),
                             Name = "TypeScript"
                         },
                         new
                         {
-                            Id = new Guid("b4b26b30-1de6-4cb9-9092-7fb26ffe6cb6"),
+                            Id = new Guid("16384ec8-5d01-402d-985d-868fc7bb29ec"),
                             Name = "Scala"
                         });
                 });
@@ -249,6 +249,9 @@ namespace VacanciesService.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("RecruiterId")
+                        .HasColumnType("uuid");
+
                     b.Property<double>("Salary")
                         .HasColumnType("double precision");
 
@@ -264,6 +267,8 @@ namespace VacanciesService.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("RecruiterId");
 
                     b.ToTable("Vacancy");
                 });

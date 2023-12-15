@@ -18,17 +18,18 @@ public class VacancyCreateValidator : AbstractValidator<VacancyCreateDto>
         RuleFor(x => x.IsActive).NotEmpty().WithMessage("IsActive is required");
         RuleFor(x => x.CategoryId).NotEmpty().WithMessage("Category is required").Custom((id, context) =>
         {
-            if (repository.GetById<Category>(id) == null)
+            if (!repository.Any<Category>(c => c.Id == id))
             {
                 context.AddFailure("Category not found");
             }
         });
         RuleFor(x => x.CompanyId).NotEmpty().WithMessage("Company is required").Custom((id, context) =>
         {
-            if (repository.GetById<Company>(id) == null)
+            if (!repository.Any<Company>(c => c.Id == id))
             {
                 context.AddFailure("Company not found");
             }
         });
+        RuleFor(x => x.RecruiterId).NotEmpty();
     }
 }
