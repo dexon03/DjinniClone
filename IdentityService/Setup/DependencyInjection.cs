@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Validation;
 using FluentValidation;
 using IdentityService.Application.Services;
 using IdentityService.Database;
@@ -28,7 +29,10 @@ public static class DependencyInjection
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);
-        services.AddFluentValidationAutoValidation();
+        services.AddFluentValidationAutoValidation(opt =>
+        {
+            opt.OverrideDefaultResultFactoryWith<FluentValidationAutoValidationCustomResultFactory>();
+        });
         services.AddScoped<UserManager>();
         services.AddScoped<IRepository, Repository>();
         services.AddScoped<IJWTService, JWTService>();

@@ -46,6 +46,8 @@ export function CandidatePage() {
                         </>
                         : null
                     }
+                    <Typography variant="h6" style={{ marginTop: '1rem' }}>Email: </Typography>
+                    <Typography variant="body1">{profile.email}</Typography>
                 </CardContent>
             </Card>
         </div >

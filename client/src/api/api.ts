@@ -1,6 +1,7 @@
 import { environment } from "../environment/environment";
 import axios from 'axios';
 import { ApiServicesRoutes } from "./api.services.routes";
+import { showErrorToast } from "../app/features/common/common.funcs";
 
 const api = axios.create({
     baseURL: environment.apiUrl,
@@ -31,7 +32,7 @@ api.interceptors.response.use(
                 const storageToken = localStorage.getItem('token');
                 const refreshToken = storageToken ? JSON.parse(storageToken)?.refreshToken : null;
                 var response = await axios.post(environment.apiUrl + ApiServicesRoutes.identity + '/auth/refresh', { refreshToken })
-                    
+
                 const token = response.data;
                 const stringToken = JSON.stringify(token);
 
@@ -43,6 +44,12 @@ api.interceptors.response.use(
                 console.log(error);
             }
         }
+        if (error.response.status == 422) {
+            debugger;
+            showErrorToast(Object.values(error.response.data).join('\n'));
+        }
+
+        showErrorToast(error.response.data.message);
 
         return Promise.reject(error);
     }

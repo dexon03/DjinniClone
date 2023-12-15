@@ -5,15 +5,12 @@ import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../ap
 import { Company } from '../models/common/company.models';
 import { useAppDispatch } from '../hooks/redux.hooks';
 import { setProfile } from '../app/slices/recruiter.profile.slice';
-import { useNavigate } from 'react-router-dom';
-import useToken from '../hooks/useToken';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
-  const { data: profile, isError, isLoading, error, refetch } = useGetUserRecruiterProfileQuery(id);
+  const { data: profile, isLoading, refetch } = useGetUserRecruiterProfileQuery(id);
   const [getCompanyQuery, { data: companies }] = useLazyGetProfileCompaniesQuery();
-  const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateRecruiterProfileMutation();
-  const [updateCompany, { data: updatedCompany, error: updateCompanyError }] = useUpdateCompanyMutation();
-  // const { refetch } = useQuerySubscriptionRecruiter(id);
+  const [updateCandidateProfile, { error: updateError }] = useUpdateRecruiterProfileMutation();
+  const [updateCompany] = useUpdateCompanyMutation();
   const dispatch = useAppDispatch();
 
   const [name, setName] = useState('');
@@ -28,7 +25,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
-  const { token } = useToken();
   useEffect(() => {
     if (profile) {
       getCompanyQuery();
@@ -67,10 +63,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
     return <p>Loading...</p>;
   }
 
-  if (isError || updateError || updateCompanyError) {
-    return <p>Error: {JSON.stringify(error.data)}</p>;
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -98,6 +90,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   };
 
   const handleUpdateCompany = async (e) => {
+
     updateCompany({
       id: selectedCompany,
       name: companyName,
@@ -114,6 +107,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
+            required
             label="Name"
             margin="normal"
             fullWidth
@@ -121,6 +115,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
+            required
             label="Surname"
             margin="normal"
             fullWidth
@@ -137,6 +132,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
           <TextField
             label="Email"
             margin="normal"
+            required
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}

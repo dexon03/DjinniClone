@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Validation;
 using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,7 +28,10 @@ public static class DependencyInjection
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(_applicationAssembly);
-        services.AddFluentValidationAutoValidation();
+        services.AddFluentValidationAutoValidation(opt =>
+        {
+            opt.OverrideDefaultResultFactoryWith<FluentValidationAutoValidationCustomResultFactory>();
+        });
         services.AddAutoMapper(_applicationAssembly);
         services.AddScoped<IRepository, Repository>();
         services.AddStackExchangeRedisCache(options =>
