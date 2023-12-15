@@ -1,28 +1,26 @@
-import { Button, TextField, Container, Typography } from '@mui/material';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { FormEvent, useState } from "react";
-import { RestClient } from "../../api/rest.client.ts";
-import { TokenResponse } from "../../models/auth/jwt.respone.ts";
-import { ApiServicesRoutes } from "../../api/api.services.routes.ts";
-import { LoginModel } from "../../models/auth/login.model.ts";
-import { Role } from '../../models/common/role.enum.ts';
-import useToken from '../../hooks/useToken.ts';
-import { useAppDispatch } from '../../hooks/redux.hooks.ts';
-import { setProfile } from '../../app/slices/recruiter.profile.slice.ts';
+import { Container, Typography, TextField, Button } from '@mui/material';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { useNavigate, NavLink } from 'react-router-dom';
+import * as Yup from 'yup';
+import { ApiServicesRoutes } from '../../api/api.services.routes';
+import { RestClient } from '../../api/rest.client';
+import useToken from '../../hooks/useToken';
+import { TokenResponse } from '../../models/auth/jwt.respone';
+import { LoginModel } from '../../models/auth/login.model';
+import { Role } from '../../models/common/role.enum';
+import { useAppDispatch } from '../../hooks/redux.hooks';
+import { setProfile } from '../../app/slices/recruiter.profile.slice';
 
 function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const { token, setToken } = useToken();
+    const restClient = new RestClient();
     const dispatch = useAppDispatch();
 
-    const restClient = new RestClient();
-    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const onSubmit = async (values) => {
         const tokenResponse = await restClient.post<TokenResponse>(ApiServicesRoutes.identity + '/auth/login', {
-            email: email,
-            password: password
+            email: values.email,
+            password: values.password
         } as LoginModel);
         setToken(tokenResponse);
         if (tokenResponse.role === Role[Role.Candidate]) {
@@ -32,38 +30,42 @@ function LoginPage() {
             navigate('/candidate');
         }
     }
+
+    const validationSchema = Yup.object().shape({
+        email: Yup.string().email('Invalid email').required('Required'),
+        password: Yup.string().required('Required')
+    });
+
     return (
         <Container maxWidth="sm">
             <Typography variant="h4" align="center" gutterBottom>
                 Login
             </Typography>
-            <form onSubmit={onSubmit}>
-                <TextField
-                    label="Email"
-                    fullWidth
-                    onChange={(event) => setEmail(event.target.value)}
-                    variant="outlined"
-                    margin="normal"
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    onChange={(event) => setPassword(event.target.value)}
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    type="submit"
-                    fullWidth
-                    size="large"
-                    style={{ marginTop: 16 }}
-                >
-                    Sign In
-                </Button>
-            </form>
+            <Formik
+                enableReinitialize={true}
+                initialValues={{ email: '', password: '' }}
+                validationSchema={validationSchema}
+                onSubmit={onSubmit}
+            >
+                {() => (
+                    <Form>
+                        <Field name="email" type="email" label="Email" fullWidth variant="outlined" margin="normal" as={TextField} />
+                        <ErrorMessage name="email" />
+                        <Field name="password" type="password" label="Password" fullWidth variant="outlined" margin="normal" as={TextField} />
+                        <ErrorMessage name="password" />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            fullWidth
+                            size="large"
+                            style={{ marginTop: 16 }}
+                        >
+                            Sign In
+                        </Button>
+                    </Form>
+                )}
+            </Formik>
             <Button
                 variant="text"
                 color="primary"

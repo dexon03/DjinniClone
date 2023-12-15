@@ -52,6 +52,5 @@ public class ExceptionHandlerMiddleware
         _logger.Error(exception, exception.Message);
         var result = JsonConvert.SerializeObject(new { message = exception?.Message });
         return response.WriteAsync(result);
-        
     }
 }

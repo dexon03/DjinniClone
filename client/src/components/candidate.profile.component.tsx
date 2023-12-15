@@ -101,6 +101,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             label="Name"
             margin="normal"
             fullWidth
+            required
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -108,6 +109,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             label="Surname"
             margin="normal"
             fullWidth
+            required
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
           />
@@ -122,6 +124,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             label="Email"
             margin="normal"
             fullWidth
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
