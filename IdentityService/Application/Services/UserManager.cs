@@ -18,9 +18,9 @@ public class UserManager
         _publishEndpoint = publishEndpoint;
     }
 
-    public async Task<List<User>> GetUsers()
+    public  Task<List<User>> GetUsers()
     {
-        return await (from u in _repository.GetAll<User>()
+        return (from u in _repository.GetAll<User>()
             join r in _repository.GetAll<Role>() on u.RoleId equals r.Id
             select new User
             {
