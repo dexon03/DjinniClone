@@ -5,7 +5,7 @@ import { axiosBaseQuery } from '../../../api/axios.baseQuery';
 import { ApiServicesRoutes } from '../../../api/api.services.routes';
 import { VacancyGet } from '../../../models/vacancy/vacany.get.dto';
 import { VacancyCreate } from '../../../models/vacancy/vacancy.create.dto';
-import { SkillDto } from '../../../models/common/SkillGetAllDto.model';
+import { SkillDto } from '../../../models/common/skill.dto';
 import { LocationDto } from '../../../models/common/location.dto';
 import { Category } from '../../../models/vacancy/category.model';
 import { VacancyUpdateModel } from '../../../models/vacancy/vacancy.update.dto';

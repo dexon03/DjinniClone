@@ -15,9 +15,11 @@ export function CandidateList() {
 
     return (
         <>
-            {candidates && candidates.map(candidate => {
-                return <CandidateTile key={candidate.id} profile={candidate} />
-            })}
+            {candidates && candidates?.length > 0
+                ? candidates.map(candidate => {
+                    return <CandidateTile key={candidate.id} profile={candidate} />
+                })
+                : <p>No candidates found</p>}
         </>
     )
 }

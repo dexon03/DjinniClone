@@ -1,6 +1,7 @@
 using System.Net;
 using AutoMapper;
 using Core.Database;
+using Core.Enums;
 using Core.Exceptions;
 using Core.MessageContract;
 using MassTransit;
@@ -255,7 +256,7 @@ public class ProfileService : IProfileService
         return profileEntity;
     }
 
-    public async Task<GetCandidateProfileDto> GetUserCandidateProfile(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<GetCandidateProfileDto> GetCandidateProfileByUserId(Guid userId, CancellationToken cancellationToken = default)
     {
         var profileEntity =
             (await (from profile in _repository.GetAll<CandidateProfile>().Where(p => p.UserId == userId)
@@ -406,7 +407,7 @@ public class ProfileService : IProfileService
 
     public async Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default)
     {
-        if (profile.Role == ProfileRole.Candidate)
+        if (profile.Role == Role.Candidate)
         {
             var profileEntity = new CandidateProfile().MapCreateToCandidateProfile(profile);
             var result = await _repository.CreateAsync(profileEntity);

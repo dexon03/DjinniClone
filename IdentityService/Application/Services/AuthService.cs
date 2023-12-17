@@ -52,7 +52,7 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        var user = await CreateUser(request, cancellationToken);
+        var user = await _userManager.CreateUser(request, cancellationToken);
         var token = GetNewTokenForUser(user);
         await _repository.CreateAsync(user);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -113,28 +113,7 @@ public class AuthService : IAuthService
         };
     }
     
-    private async Task<User> CreateUser(RegisterRequest request, CancellationToken cancellationToken)
-    {
-        var role = await _repository.GetAsync<Role>(r => r.Name == request.Role.ToString() && r.IsActive);
-        if (role == null)
-        {
-            throw new ExceptionWithStatusCode("Role does not exist or no active", HttpStatusCode.BadRequest);
-        }
-        var passwordSalt = PasswordUtility.CreatePasswordSalt();
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
-            PasswordSalt = passwordSalt,
-            PasswordHash = PasswordUtility.GetHashedPassword(request.Password, passwordSalt),
-            RoleId = role.Id,
-            Role = role,
-        };
-        return user;
-    }
+     
     
     private async Task<bool> IsLoginRequestValid(User? user, string password)
     {

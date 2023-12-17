@@ -1,3 +1,4 @@
+using Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProfilesService.Domain;
@@ -18,14 +19,19 @@ public class ProfileController : BaseController
     }
 
     [HttpGet("{role}/{userId}")]
-    public async Task<IActionResult> GetUserProfile(Guid userId, ProfileRole role, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUserProfile(Guid userId, Role role, CancellationToken cancellationToken)
     {
-        if (role == ProfileRole.Candidate)
+        if (role == Role.Candidate)
         {
-            var result = await _profileService.GetUserCandidateProfile(userId,cancellationToken);
+            var result = await _profileService.GetCandidateProfileByUserId(userId,cancellationToken);
             return Ok(result);
         }
-        return Ok(await _profileService.GetRecruiterProfile(userId,cancellationToken));
+        if (role == Role.Recruiter)
+        {
+            var result = await _profileService.GetRecruiterProfile(userId,cancellationToken);
+            return Ok(result);
+        }
+        return BadRequest();
     }
     
     [HttpGet("getCandidate/{profileId}")]

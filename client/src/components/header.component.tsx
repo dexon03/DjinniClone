@@ -15,51 +15,19 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import 'bootstrap/dist/css/bootstrap.css';
-import { NavRoute } from "../models/nav.route.ts";
 import { NavLink } from "react-router-dom";
 import useToken from "../hooks/useToken.ts";
 import { Role } from "../models/common/role.enum.ts";
-import { resetStore } from "../app/store.ts";
 import { resetProfile } from "../app/slices/recruiter.profile.slice.ts";
 import { useAppDispatch } from "../hooks/redux.hooks.ts";
+import { RoleRoute } from "../models/role_routes/role.routes.model.ts";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
     const dispatch = useAppDispatch();
 
-    const pages: NavRoute[] = token && token.role == Role[Role.Candidate]
-        ? [
-            {
-                name: 'Offers',
-                route: '/offers'
-            },
-            {
-                name: 'Vacancies',
-                route: '/vacancy',
-            },
-            {
-                name: 'Salaries',
-                route: '/salaries',
-            }
-        ]
-        : [
-            {
-                name: 'Applicants',
-                route: '/application'
-            },
-            {
-                name: 'Candidates',
-                route: '/candidate',
-            },
-            {
-                name: 'Vacancies',
-                route: '/vacancy',
-            },
-            {
-                name: 'Salaries',
-                route: '/salaries',
-            }
-        ]
+    const authRole = Role[token?.role as keyof typeof Role];
+    const pages = RoleRoute[authRole];
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
