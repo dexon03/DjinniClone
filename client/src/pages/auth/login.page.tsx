@@ -25,9 +25,11 @@ function LoginPage() {
         setToken(tokenResponse);
         if (tokenResponse.role === Role[Role.Candidate]) {
             navigate('/vacancy');
-        } else {
+        } else if (tokenResponse.role === Role[Role.Recruiter]) {
             dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${tokenResponse.userId}`)));
             navigate('/candidate');
+        } else {
+            navigate('/users')
         }
     }
 

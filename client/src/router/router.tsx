@@ -10,6 +10,8 @@ import { VacancyPage } from "../pages/vacancy/vacancy.page.tsx";
 import { VacancyCreatePage } from "../pages/vacancy/vacancy.create.page.tsx";
 import { RecruiterVacanciesList } from "../pages/vacancy/vacancy.recruiter.list.tsx";
 import { VacancyUpdatePage } from "../pages/vacancy/vacancy.update.page.tsx";
+import { UserList } from "../pages/users/user.list.tsx";
+import { UserEdit } from "../pages/users/user.edit.tsx";
 
 const rootLoader = async () => {
     const token = localStorage.getItem("token");
@@ -67,7 +69,11 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/users",
-                element: <div>users</div>
+                element: <UserList />
+            },
+            {
+                path: "/users/:id",
+                element: <UserEdit />
             }
         ]
     },

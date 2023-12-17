@@ -1,7 +1,7 @@
 import { environment } from "../environment/environment";
 import axios from 'axios';
 import { ApiServicesRoutes } from "./api.services.routes";
-import { showErrorToast } from "../app/features/common/common.funcs";
+import { showErrorToast } from "../app/features/common/popup";
 
 const api = axios.create({
     baseURL: environment.apiUrl,
@@ -45,7 +45,6 @@ api.interceptors.response.use(
             }
         }
         if (error.response.status == 422) {
-            debugger;
             showErrorToast(Object.values(error.response.data).join('\n'));
         }
 

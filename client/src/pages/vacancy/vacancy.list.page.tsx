@@ -7,15 +7,11 @@ import { Role } from "../../models/common/role.enum.ts";
 
 export function VacancyListPage() {
     const { token } = useToken();
-    const { data, isError, isLoading, error } = useGetVacanciesQuery();
+    const { data, isLoading } = useGetVacanciesQuery();
     const navigate = useNavigate();
 
     if (isLoading) {
         return <p>Loading...</p>;
-    }
-
-    if (isError) {
-        return <p>Error: {error}</p>;
     }
 
     const handleCreateVacancy = () => {
@@ -40,7 +36,7 @@ export function VacancyListPage() {
                     : null
                 }
             </div>
-            {data && data.map((vacancy) => <VacancyTile key={vacancy.id} vacancy={vacancy} isRecruiterList={false}/>)}
+            {data && data.map((vacancy) => <VacancyTile key={vacancy.id} vacancy={vacancy} isRecruiterList={false} />)}
         </>
     )
 }

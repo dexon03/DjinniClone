@@ -50,6 +50,13 @@ public class UserController : ControllerBase
         return Ok(result);
     }
     
+    [HttpPut]
+    public async Task<IActionResult> UpdateUser(UpdateUserRequest request)
+    {
+        await _userManager.UpdateUser(request);
+        return Ok();
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {

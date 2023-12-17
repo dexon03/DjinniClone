@@ -1,6 +1,9 @@
-﻿using Core.Database;
+﻿using System.Net;
+using Core.Database;
+using Core.Exceptions;
 using Core.MessageContract;
 using IdentityService.Application.Utilities;
+using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -90,7 +93,57 @@ public class UserManager
 
         return user;
     }
+
+    public async Task<User> CreateUser(RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var role = await _repository.GetAsync<Role>(r => r.Name == request.Role.ToString() && r.IsActive);
+        if (role == null)
+        {
+            throw new ExceptionWithStatusCode("Role does not exist or no active", HttpStatusCode.BadRequest);
+        }
+
+        var passwordSalt = PasswordUtility.CreatePasswordSalt();
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            PasswordSalt = passwordSalt,
+            PasswordHash = PasswordUtility.GetHashedPassword(request.Password, passwordSalt),
+            RoleId = role.Id,
+            Role = role,
+        };
+        return user;
+    }
     
+    public async Task<User> UpdateUser(UpdateUserRequest request)
+    {
+        var user = await FindByIdAsync(request.Id);
+        if(user is null)
+        {
+            throw new ExceptionWithStatusCode("User not found", HttpStatusCode.BadRequest);
+        }
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.Email = request.Email;
+        user.PhoneNumber = request.PhoneNumber;
+        _repository.Update(user);
+        await _repository.SaveChangesAsync();
+        await _publishEndpoint.Publish(new UserUpdatedEvent
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
+            Role = request.Role
+        });
+        return user;
+    }
+
+
     public Task<bool> CheckPasswordAsync(User user, string password)
     {
         var hashedPassword = PasswordUtility.GetHashedPassword(password, user.PasswordSalt);

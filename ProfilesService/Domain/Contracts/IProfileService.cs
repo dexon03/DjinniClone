@@ -8,7 +8,7 @@ public interface IProfileService
 {
     Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CancellationToken cancellationToken = default);
     Task<GetCandidateProfileDto> GetCandidateProfile(Guid profileId, CancellationToken cancellationToken = default);
-    Task<GetCandidateProfileDto> GetUserCandidateProfile(Guid userId, CancellationToken cancellationToken = default);
+    Task<GetCandidateProfileDto> GetCandidateProfileByUserId(Guid userId, CancellationToken cancellationToken = default);
     Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid userId, CancellationToken cancellationToken = default);
     Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default);
     Task<T> UpdateProfile<T>(IProfileUpdateDto<T> profileDto, CancellationToken cancellationToken = default)

@@ -8,6 +8,7 @@ import { useAppSelector } from "../../hooks/redux.hooks";
 import useToken from "../../hooks/useToken";
 import { RecruiterProfile } from "../../models/profile/recruiter.profile.model";
 import { useNavigate } from "react-router-dom";
+import { showWarningToast } from "../../app/features/common/popup";
 
 export function VacancyCreatePage() {
 
@@ -53,6 +54,10 @@ export function VacancyCreatePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (recruiterProfile.company == null) {
+            showWarningToast('You must be registered in company')
+            return;
+        }
         const result = await createVacancy({
             title,
             positionTitle,

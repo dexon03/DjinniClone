@@ -1,6 +1,6 @@
-import { Role } from "../common/role.model";
+import { Role } from "../common/role.enum";
 
-export interface UserDto {
+export interface UserUpdate {
     id: string;
     firstName: string;
     lastName: string;

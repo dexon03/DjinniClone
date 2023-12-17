@@ -1,4 +1,5 @@
-﻿using Core.MessageContract;
+﻿using Core.Enums;
+using Core.MessageContract;
 using MassTransit;
 using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
@@ -24,7 +25,7 @@ public sealed class UserCreatedConsumer : IConsumer<UserCreatedEvent>
             Surname = message.LastName,
             Email = message.Email,
             PhoneNumber = message.PhoneNumber,
-            Role = Enum.Parse<ProfileRole>(message.Role)
+            Role = Enum.Parse<Role>(message.Role)
         };
         
         await _profileService.CreateProfile(profile);

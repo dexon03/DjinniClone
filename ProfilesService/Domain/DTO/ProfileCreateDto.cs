@@ -1,4 +1,6 @@
-﻿namespace ProfilesService.Domain.DTO;
+﻿using Core.Enums;
+
+namespace ProfilesService.Domain.DTO;
 
 public class ProfileCreateDto
 {
@@ -8,5 +10,5 @@ public class ProfileCreateDto
     public string PositionTitle { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public ProfileRole Role { get; set; }
+    public Role Role { get; set; }
 }
