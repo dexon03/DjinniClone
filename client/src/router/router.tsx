@@ -12,6 +12,7 @@ import { RecruiterVacanciesList } from "../pages/vacancy/vacancy.recruiter.list.
 import { VacancyUpdatePage } from "../pages/vacancy/vacancy.update.page.tsx";
 import { UserList } from "../pages/users/user.list.tsx";
 import { UserEdit } from "../pages/users/user.edit.tsx";
+import { StatisticPage } from "../pages/statistics/statistic.page.tsx";
 
 const rootLoader = async () => {
     const token = localStorage.getItem("token");
@@ -61,7 +62,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/salaries",
-                element: <div>salaries</div>
+                element: <StatisticPage />
             },
             {
                 path: "/offers",

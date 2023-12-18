@@ -42,9 +42,46 @@ public class VacanciesDbContext : DbContext
             new Skill { Id = Guid.NewGuid(), Name = "Scala" },
         };
 
+        var categories = new[]
+        {
+            new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "Software Development",
+            },
+            new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "Design",
+            },
+            new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "Management",
+            },
+            new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "Marketing",
+            },
+            new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "Sales",
+            },
+            new Category
+            {
+                Id = Guid.NewGuid(),
+                Name = "Finance",
+            }
+        };
+        
+        
+
         modelBuilder.Entity<Vacancy>().HasIndex(v => v.RecruiterId);
         modelBuilder.Entity<Location>().HasData(locations);
         modelBuilder.Entity<Skill>().HasData(skills);
+        modelBuilder.Entity<Category>().HasData(categories);
         
         modelBuilder.Entity<VacancySkill>()
             .HasKey(vs => new { vs.SkillId, vs.VacancyId });  

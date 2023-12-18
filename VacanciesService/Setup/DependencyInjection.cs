@@ -77,6 +77,7 @@ public static class DependencyInjection
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ILocationService, LocationService>();
         services.AddScoped<ISkillService, SkillService>();
+        services.AddScoped<IStatisticService, StatisticService>();
         return services;
     }
 }

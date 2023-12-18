@@ -9,10 +9,11 @@ import { SkillDto } from '../../../models/common/skill.dto';
 import { LocationDto } from '../../../models/common/location.dto';
 import { Category } from '../../../models/vacancy/category.model';
 import { VacancyUpdateModel } from '../../../models/vacancy/vacancy.update.dto';
+import { StatisticNode } from '../../../models/statistic/statistic.node';
 
 export const vacancyApi = createApi({
     reducerPath: 'vacancyApi',
-    tagTypes: ['VacancyAll', 'RecruiterVacancy'],
+    tagTypes: ['VacancyAll', 'RecruiterVacancy', 'Statistic'],
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.vacancy }),
     keepUnusedDataFor: 5,
     endpoints: (builder) => ({
@@ -37,7 +38,7 @@ export const vacancyApi = createApi({
                 method: 'post',
                 data: body
             }),
-            invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
+            invalidatesTags: ['VacancyAll', 'RecruiterVacancy', 'Statistic']
         }),
         getVacancyLocation: builder.query<LocationDto[], void>({ query: () => ({ url: '/location', method: 'get' }) }),
         getVacancySkills: builder.query<SkillDto[], void>({ query: () => ({ url: `/skill`, method: 'get' }) }),
@@ -47,7 +48,7 @@ export const vacancyApi = createApi({
                 url: `/vacancy/${id}/activate-deactivate`,
                 method: 'put'
             }),
-            invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
+            invalidatesTags: ['VacancyAll', 'RecruiterVacancy', 'Statistic']
         }),
         updateVacancy: builder.mutation<VacancyGet, VacancyUpdateModel>({
             query: (body: VacancyUpdateModel) => ({
@@ -55,14 +56,28 @@ export const vacancyApi = createApi({
                 method: 'put',
                 data: body
             }),
-            invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
+            invalidatesTags: ['VacancyAll', 'RecruiterVacancy', 'Statistic']
         }),
         deleteVacancy: builder.mutation<void, string>({
             query: (id: string) => ({
                 url: `/vacancy/${id}`,
                 method: 'delete'
             }),
-            invalidatesTags: ['VacancyAll', 'RecruiterVacancy']
+            invalidatesTags: ['VacancyAll', 'RecruiterVacancy', 'Statistic']
+        }),
+        getStatistic: builder.query<StatisticNode[], string | null>({
+            query: (skillName?: string | null) => ({
+                url: '/statistic' + '?skillName=' + skillName,
+                method: 'get'
+            }),
+            providesTags: ['Statistic']
+        }),
+        getMockedStatistic: builder.query<StatisticNode[], void>({
+            query: () => ({
+                url: '/statistic/mocked',
+                method: 'get'
+            }),
+            providesTags: ['Statistic']
         }),
     }),
 });
@@ -73,11 +88,14 @@ export const {
     useGetVacancyQuery,
     useCreateVacancyMutation,
     useLazyGetVacancyLocationQuery,
+    useGetVacancySkillsQuery,
     useLazyGetVacancySkillsQuery,
     useLazyGetVacancyCategoriesQuery,
     useActivateDisactivateVacancyMutation,
     useUpdateVacancyMutation,
     useDeleteVacancyMutation,
+    useLazyGetStatisticQuery,
+    useGetMockedStatisticQuery
 } = vacancyApi;
 
 export const { useQuerySubscription: useQuerySubscriptionGetAllVacancies } = vacancyApi.endpoints.getVacancies;
