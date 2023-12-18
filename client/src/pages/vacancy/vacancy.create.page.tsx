@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { showWarningToast } from "../../app/features/common/popup";
 
 export function VacancyCreatePage() {
-
     const [createVacancy, { data: createdProfile, isError: isCreateError }] = useCreateVacancyMutation();
     const [getVacancySkills, { data: skills, isError: isSkillsLoadingError }] = useLazyGetVacancySkillsQuery();
     const [getVacancyLocations, { data: locations, isError: isErrorLoadingError }] = useLazyGetVacancyLocationQuery();

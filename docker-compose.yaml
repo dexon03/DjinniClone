@@ -5,8 +5,6 @@
     driver: bridge
   VacanciesService:
     driver: bridge
-  AnalyticsService:
-    driver: bridge
   
   
 services:
@@ -23,7 +21,6 @@ services:
       - IdentityService
       - ProfileService
       - VacanciesService
-      - AnalyticsService
   redis:
     image: redis
     container_name: redis
@@ -34,7 +31,6 @@ services:
       - IdentityService
       - ProfileService
       - VacanciesService
-      - AnalyticsService
   
   rabbitmq:
     image: "rabbitmq:management"
@@ -161,39 +157,3 @@ services:
         condition: service_healthy
     networks:
       - VacanciesService
-  
-  analytics-postgres:
-    image: postgres
-    container_name: analytics-postgres
-    ports:
-      - "5434:5432"
-    environment:
-      POSTGRES_USER: postgres_analytics
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: AnalyticsDb
-    # restart: always
-    volumes:
-        - ./analyticsDbDir:/var/lib/postgresql/data
-    networks:
-        - AnalyticsService
-    healthcheck:
-        test: [ "CMD-SHELL", "pg_isready -U postgres_analytics -d AnalyticsDb" ]
-        interval: 10s
-        timeout: 3s
-        retries: 3
-  
-  analytics-service:
-    image: analytics-service
-    container_name: analytics-service
-    build:
-      context: .
-      dockerfile: ./AnalyticsService/Dockerfile
-    # restart: always
-    working_dir: "/app"
-    ports:
-      - "5245:80"
-    depends_on:
-      analytics-postgres:
-        condition: service_healthy
-    networks:
-      - AnalyticsService
