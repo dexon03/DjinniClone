@@ -43,7 +43,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
     }
   }, [profile])
 
-
   const onCompanyChanged = (companyId: string) => {
     try {
       const company = companies?.find(company => company.id === companyId);
@@ -86,7 +85,6 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
     } catch (error) {
       console.error("Error updating profile:", updateError);
     }
-
   };
 
   const handleUpdateCompany = async (e) => {

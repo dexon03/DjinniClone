@@ -69,7 +69,7 @@ public class ProfileController : BaseController
         return Ok(updatedProfile);
     }
     
-    [HttpPut]
+    [HttpPut("uploadResume")]
     public async Task<IActionResult> UploadResume([FromForm] ResumeUploadDto resume, CancellationToken cancellationToken)
     {
         await _profileService.UploadResume(resume, cancellationToken);

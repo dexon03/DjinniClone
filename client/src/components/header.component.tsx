@@ -21,6 +21,7 @@ import { Role } from "../models/common/role.enum.ts";
 import { resetProfile } from "../app/slices/recruiter.profile.slice.ts";
 import { useAppDispatch } from "../hooks/redux.hooks.ts";
 import { RoleRoute } from "../models/role_routes/role.routes.model.ts";
+import { persistStore } from "redux-persist";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
@@ -61,7 +62,8 @@ export function HeaderComponent() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        dispatch(resetProfile());
+        dispatch({ type: 'SIGNOUT_REQUEST' });
+
         setAnchorElUser(null);
     }
 

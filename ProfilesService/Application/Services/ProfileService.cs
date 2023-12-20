@@ -478,8 +478,12 @@ public class ProfileService : IProfileService
         var profile = _repository.GetAll<T>().FirstOrDefault(p => p.UserId == userId);
         if (profile is not null)
         {
-            _repository.Delete<T>(profile);
+            _repository.Delete(profile);
             await _repository.SaveChangesAsync(cancellationToken);
+            if (typeof(T) == typeof(CandidateProfile))
+            {
+                await _pdfService.DeletePdf(profile.Id, cancellationToken);
+            }
             if (typeof(T) == typeof(RecruiterProfile))
             {
                 await _publishEndpoint.Publish(new RecruiterProfileDeletedEvent
@@ -515,7 +519,7 @@ public class ProfileService : IProfileService
     
     private async Task UploadPdf(Guid profileId, IFormFile formFile, CancellationToken cancellationToken = default)
     {
-        if (Path.GetExtension(formFile.Name) != ".pdf")
+        if (Path.GetExtension(formFile.FileName) != ".pdf")
         {
             throw new ExceptionWithStatusCode("File must be pdf", HttpStatusCode.BadRequest);
         }

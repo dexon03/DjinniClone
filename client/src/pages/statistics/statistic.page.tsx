@@ -2,7 +2,6 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "r
 import { useGetMockedStatisticQuery, useGetStatisticQuery, useGetVacancySkillsQuery, useLazyGetStatisticQuery } from "../../app/features/vacancy/vacancy.api";
 import { Container, Grid, Paper, Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
-import { StatisticNode } from "../../models/statistic/statistic.node";
 import { StatisticDataModeEnum } from "../../models/statistic/data.mode.enum";
 import { SkillDto } from "../../models/common/skill.dto";
 

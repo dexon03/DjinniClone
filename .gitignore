@@ -381,3 +381,5 @@ profileDbDir
 analyticsDbDir
 rabbitmq-data
 rabbitmq-logs
+
+ProfilesService/PdfResumesFiles

@@ -62,8 +62,8 @@ export const profileApi = createApi({
                 method: 'get'
             }),
         }),
-        uploadResume: builder.mutation<void, UploadResumeDto>({
-            query: (data: UploadResumeDto) => ({
+        uploadResume: builder.mutation<void, FormData>({
+            query: (data: FormData) => ({
                 url: `/profile/uploadResume`,
                 method: 'put',
                 data: data

@@ -109,10 +109,10 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
 
   const handleUploadFile = async () => {
     if (profile && selectedFile) {
-      await uploadResume({
-        candidateId: profile.id,
-        resume: selectedFile
-      } as UploadResumeDto);
+      const formData = new FormData();
+      formData.append('candidateId', profile.id);
+      formData.append('resume', selectedFile);
+      await uploadResume(formData);
     }
   }
 

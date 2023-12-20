@@ -6,15 +6,20 @@ public class PdfService : IPdfService
 {
     private readonly string fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "PdfResumesFiles");
     
-    public async Task UploadPdf(IFormFile file, Guid profileId, CancellationToken cancellationToken = default)
+    public async Task UploadPdf(IFormFile formFile, Guid profileId, CancellationToken cancellationToken = default)
     {
         var filePath = Path.Combine(fileStoragePath, profileId.ToString());
         if (!Directory.Exists(filePath))
         {
             Directory.CreateDirectory(filePath);
         }
-        await using var fileStream = new FileStream(Path.Combine(filePath, file.FileName), FileMode.Create);
-        await file.CopyToAsync(fileStream, cancellationToken);
+        DirectoryInfo di = new DirectoryInfo(filePath);
+        foreach (FileInfo file in di.GetFiles())
+        {
+            file.Delete(); 
+        }
+        await using var fileStream = new FileStream(Path.Combine(filePath, formFile.FileName), FileMode.Create);
+        await formFile.CopyToAsync(fileStream, cancellationToken);
     }
 
     public async Task<bool> CheckIfPdfExistsAndEqual(Guid profileId, IFormFile? formFile = null, CancellationToken cancellationToken = default)

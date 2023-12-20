@@ -16,7 +16,7 @@ const persistConfig = {
   storage,
 };
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   recruiterProfile: recruiterProfileReducer,
   [usersApi.reducerPath]: usersApi.reducer,
   [vacancyApi.reducerPath]: vacancyApi.reducer,
@@ -24,6 +24,14 @@ const rootReducer = combineReducers({
   [companyApi.reducerPath]: companyApi.reducer,
   [candidateApi.reducerPath]: candidateApi.reducer,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'SIGNOUT_REQUEST') {
+    storage.removeItem('persist:root')
+    return appReducer(undefined, action);
+  }
+  return appReducer(state, action);
+}
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
