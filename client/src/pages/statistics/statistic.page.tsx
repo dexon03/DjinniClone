@@ -12,7 +12,6 @@ export function StatisticPage() {
     const { data: skills, isLoading: isSkillLoading } = useGetVacancySkillsQuery();
     const [selectedSkill, setSelectedSkill] = useState<string>('');
     const [mode, setMode] = useState<StatisticDataModeEnum>(StatisticDataModeEnum.Mocked);
-    const [selectedData, setSelectedData] = useState<StatisticNode[]>([]);
 
     useEffect(() => {
         if (mode === StatisticDataModeEnum.Real && !realVacancies) {
@@ -23,9 +22,18 @@ export function StatisticPage() {
     const handleSkillClick = (skill: SkillDto) => {
         setSelectedSkill(skill.id);
         if (mode === StatisticDataModeEnum.Real) {
-            getStatistic(skill.id);
+            let skillName: string;
+            switch (skill.name) {
+                case "C#": skillName = "C%23";
+                    break;
+                case "C++": skillName = "C%2B%2B";
+                    break;
+                default: skillName = skill.name;
+                    break;
+            };
+            getStatistic(skill.name);
         }
-    };
+    }
 
     const handleModeSwitch = () => {
         setMode(mode === StatisticDataModeEnum.Mocked ? StatisticDataModeEnum.Real : StatisticDataModeEnum.Mocked);

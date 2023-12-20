@@ -1,8 +1,11 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, OutlinedInput } from '@mui/material';
-import { useGetUserCandidateProfileQuery, useLazyGetProfileLocationQuery, useLazyGetProfileSkillsQuery, useQuerySubscriptionCandidate, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
+import { Input } from "reactstrap";
+import { useGetUserCandidateProfileQuery, useLazyGetProfileLocationQuery, useLazyGetProfileSkillsQuery, useQuerySubscriptionCandidate, useUpdateCandidateProfileMutation, useUploadResumeMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { Experience } from '../models/profile/experience.enum';
 import { CandidateProfile } from '../models/profile/candidate.profile.model';
+import { showErrorToast } from '../app/features/common/popup';
+import { UploadResumeDto } from '../models/profile/upload.resume.dto';
 
 const CandidateProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetUserCandidateProfileQuery(id);
@@ -10,6 +13,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [getProfileLocations, { data: locations }] = useLazyGetProfileLocationQuery();
   const { refetch } = useQuerySubscriptionCandidate(id);
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateCandidateProfileMutation();
+  const [uploadResume] = useUploadResumeMutation();
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -25,6 +29,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [workExperience, setWorkExperience] = useState(Experience.NoExperience);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 
   useEffect(() => {
@@ -87,6 +92,29 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
     }
 
   };
+
+  const handleFileChange = (e) => {
+    const fileInput = e.target as HTMLInputElement;
+    const selectedFile = fileInput.files && fileInput.files[0];
+    const extension = selectedFile.name.split('.').pop().toLowerCase();
+
+    if (extension !== 'pdf') {
+      showErrorToast("File must be pdf");
+      e.target.value = null;
+    }
+    else {
+      setSelectedFile(selectedFile);
+    }
+  }
+
+  const handleUploadFile = async () => {
+    if (profile && selectedFile) {
+      await uploadResume({
+        candidateId: profile.id,
+        resume: selectedFile
+      } as UploadResumeDto);
+    }
+  }
 
   return (
     profile &&
@@ -222,6 +250,17 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             value={linkedInUrl}
             onChange={(e) => setLinkedInUrl(e.target.value)}
           />
+          <InputLabel htmlFor="resume">Upload Resume (PDF)</InputLabel>
+          <Input
+            id="handleFileChange"
+            name="handleFileChange"
+            type="file"
+            accept=".pdf"
+            onChange={handleFileChange}
+          />
+          <Button variant="contained" color="primary" onClick={handleUploadFile}>
+            Upload Resume
+          </Button>
           <FormControlLabel
             control={<Checkbox color="primary" />}
             label="Active"
@@ -235,6 +274,6 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
       </div>
     </Container>
   );
-};
+}
 
 export default CandidateProfileComponent;

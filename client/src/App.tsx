@@ -6,7 +6,7 @@ function App() {
   return (
     <ErrorBoundary>
       <HeaderComponent />
-      <Container className="mt-5">
+      <Container className="mt-5 pb-5">
         <Outlet />
       </Container>
     </ErrorBoundary>

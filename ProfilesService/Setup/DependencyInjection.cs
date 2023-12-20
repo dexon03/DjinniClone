@@ -76,6 +76,7 @@ public static class DependencyInjection
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<ISkillService, SkillService>();
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IPdfService, PdfService>();
         
         return services;
     }

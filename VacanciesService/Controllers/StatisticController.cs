@@ -1,3 +1,4 @@
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using VacanciesService.Domain.Contacts;
 
@@ -15,7 +16,8 @@ public class StatisticController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetStatistic([FromQuery]string? skillName)
     {
-        var statistic = await _statisticService.GetStatisticAsync(skillName);
+        var encode = HttpUtility.UrlEncode(skillName);
+        var statistic = await _statisticService.GetStatisticAsync(encode);
         return Ok(statistic);
     }
     

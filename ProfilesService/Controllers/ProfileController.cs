@@ -63,16 +63,23 @@ public class ProfileController : BaseController
     // }
 
     [HttpPut("updateCandidate")]
-    public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile)
+    public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken)
     {
-        var updatedProfile = await _profileService.UpdateProfile(profile);
+        var updatedProfile = await _profileService.UpdateCandidateProfile(profile, cancellationToken);
         return Ok(updatedProfile);
     }
     
-    [HttpPut("updateRecruiter")]
-    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile)
+    [HttpPut]
+    public async Task<IActionResult> UploadResume([FromForm] ResumeUploadDto resume, CancellationToken cancellationToken)
     {
-        var updatedProfile = await _profileService.UpdateProfile(profile);
+        await _profileService.UploadResume(resume, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpPut("updateRecruiter")]
+    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
+    {
+        var updatedProfile = await _profileService.UpdateRecruiterProfile(profile, cancellationToken);
         return Ok(updatedProfile);
     }
 }
