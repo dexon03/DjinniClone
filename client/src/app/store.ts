@@ -8,16 +8,19 @@ import recruiterProfileReducer from './slices/recruiter.profile.slice'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore } from 'redux-persist'
 import { usersApi } from './features/users/usersApi'
+import { candidateResumeApi } from './features/profile/candidateResume.api'
 
 
 
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['candidateResumeApi']
 };
 
 const appReducer = combineReducers({
   recruiterProfile: recruiterProfileReducer,
+  [candidateResumeApi.reducerPath]: candidateResumeApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
   [vacancyApi.reducerPath]: vacancyApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
@@ -40,6 +43,7 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware().concat(
+      candidateResumeApi.middleware,
       usersApi.middleware,
       vacancyApi.middleware,
       profileApi.middleware,

@@ -5,13 +5,12 @@ import { CandidateProfile } from "../../../models/profile/candidate.profile.mode
 import { Role } from "../../../models/common/role.enum";
 import { RecruiterProfile } from "../../../models/profile/recruiter.profile.model";
 import { ApiServicesRoutes } from "../../../api/api.services.routes";
-import { SkillDto } from "../../../models/common/SkillGetAllDto.model";
 import { LocationDto } from "../../../models/common/location.dto";
-import { UploadResumeDto } from "../../../models/profile/upload.resume.dto";
+import { SkillDto } from "../../../models/common/skill.dto";
 export const profileApi = createApi({
     reducerPath: 'profileApi',
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.profile }),
-    tagTypes: ['CandidateProfile', 'RecruiterProfile'],
+    tagTypes: ['CandidateProfile', 'RecruiterProfile', 'PdfResume'],
     endpoints: (builder) => ({
         getUserCandidateProfile: builder.query<CandidateProfile, string>({
             query: (userId: string) => ({
@@ -62,14 +61,6 @@ export const profileApi = createApi({
                 method: 'get'
             }),
         }),
-        uploadResume: builder.mutation<void, FormData>({
-            query: (data: FormData) => ({
-                url: `/profile/uploadResume`,
-                method: 'put',
-                data: data
-            }),
-            invalidatesTags: ['CandidateProfile']
-        }),
     }),
 });
 
@@ -81,8 +72,7 @@ export const
         useUpdateCandidateProfileMutation,
         useUpdateRecruiterProfileMutation,
         useLazyGetProfileSkillsQuery,
-        useLazyGetProfileLocationQuery,
-        useUploadResumeMutation
+        useLazyGetProfileLocationQuery
     } = profileApi;
 
 export const { useQuerySubscription: useQuerySubscriptionCandidate } = profileApi.endpoints.getUserCandidateProfile;

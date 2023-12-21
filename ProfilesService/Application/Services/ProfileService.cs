@@ -461,6 +461,22 @@ public class ProfileService : IProfileService
         }
         await UploadPdf(resumeDto.CandidateId, resumeDto.Resume, cancellationToken);
     }
+    
+    public async Task<byte[]?> DownloadResume(Guid candidateId, CancellationToken cancellationToken = default)
+    {
+        var candidateProfile = await _repository.GetByIdAsync<CandidateProfile>(candidateId);
+        if (candidateProfile == null)
+        {
+            throw new ExceptionWithStatusCode("Candidate profile not found", HttpStatusCode.BadRequest);
+        }
+
+        if (await _pdfService.CheckIfPdfExistsAndEqual(candidateId, cancellationToken:cancellationToken))
+        {
+            var result = await _pdfService.DownloadPdf(candidateId, cancellationToken);
+            return result;
+        }
+        return null;
+    }
 
     public async Task DeleteProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>
     {

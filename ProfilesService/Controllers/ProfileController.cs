@@ -76,6 +76,18 @@ public class ProfileController : BaseController
         return Ok();
     }
     
+    [HttpGet("downloadResume/{profileId}")]
+    public async Task<IActionResult> DownloadResume(Guid profileId, CancellationToken cancellationToken)
+    {
+        var result = await _profileService.DownloadResume(profileId, cancellationToken);
+        if (result is null)
+        {
+            return Ok();
+        }
+        string contentType = "application/pdf";
+        return File(result, contentType);
+    }
+    
     [HttpPut("updateRecruiter")]
     public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
     {
