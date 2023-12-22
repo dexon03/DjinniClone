@@ -470,7 +470,7 @@ public class ProfileService : IProfileService
             throw new ExceptionWithStatusCode("Candidate profile not found", HttpStatusCode.BadRequest);
         }
 
-        if (await _pdfService.CheckIfPdfExistsAndEqual(candidateId, cancellationToken:cancellationToken))
+        if (_pdfService.CheckIfResumeFolderInitialised(candidateId))
         {
             var result = await _pdfService.DownloadPdf(candidateId, cancellationToken);
             return result;

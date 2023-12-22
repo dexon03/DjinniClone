@@ -33,8 +33,6 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number>();
-  const [pageNumber, setPageNumber] = useState<number>();
-
 
   useEffect(() => {
     if (profile) {
@@ -105,7 +103,11 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const handleFileChange = (e) => {
     const fileInput = e.target as HTMLInputElement;
     const selectedFile = fileInput.files && fileInput.files[0];
+    if (!selectedFile) {
+      showErrorToast("Please upload a file")
+    }
     const extension = selectedFile.name.split('.').pop().toLowerCase();
+
 
     if (extension !== 'pdf') {
       showErrorToast("File must be pdf");
@@ -273,7 +275,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             Save
           </Button>
           <Box marginTop={'2em'}>
-            <InputLabel htmlFor="resume">Upload Resume (PDF)</InputLabel>
+            <InputLabel htmlFor="resume">Upload Resume (PDF, with non-latin characters)</InputLabel>
             <Input
               id="handleFileChange"
               name="handleFileChange"

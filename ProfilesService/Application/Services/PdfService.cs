@@ -22,23 +22,45 @@ public class PdfService : IPdfService
         await formFile.CopyToAsync(fileStream, cancellationToken);
     }
 
+    public bool CheckIfResumeFolderInitialised(Guid profileId)
+    {
+        var filePath = Path.Combine(fileStoragePath, profileId.ToString());
+
+        if (Directory.Exists(filePath))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public async Task<bool> CheckIfPdfExistsAndEqual(Guid profileId, IFormFile? formFile = null, CancellationToken cancellationToken = default)
     {
         var filePath = Path.Combine(fileStoragePath, profileId.ToString());
+
         if (!Directory.Exists(filePath))
         {
             return false;
         }
+
         if (formFile != null)
         {
             filePath = Path.Combine(filePath, formFile.FileName);
-            if (File.Exists(filePath) 
-                && (await File.ReadAllBytesAsync(filePath, cancellationToken)).Length == formFile.Length)
+
+            if (File.Exists(filePath) && await AreFilesEqualAsync(filePath, formFile, cancellationToken))
             {
                 return true;
             }
         }
+
         return false;
+    }
+
+    private async Task<bool> AreFilesEqualAsync(string filePath, IFormFile formFile, CancellationToken cancellationToken)
+    {
+        byte[] existingFileBytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
+    
+        return existingFileBytes.Length == formFile.Length;
     }
 
     public Task DeletePdf(Guid profileId, CancellationToken cancellationToken = default)
@@ -63,6 +85,7 @@ public class PdfService : IPdfService
         {
             throw new FileNotFoundException();
         }
+        
         return File.ReadAllBytesAsync(file, cancellationToken);
     }
 }

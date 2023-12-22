@@ -18,7 +18,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { NavLink } from "react-router-dom";
 import useToken from "../hooks/useToken.ts";
 import { Role } from "../models/common/role.enum.ts";
-import { resetProfile } from "../app/slices/recruiter.profile.slice.ts";
 import { useAppDispatch } from "../hooks/redux.hooks.ts";
 import { RoleRoute } from "../models/role_routes/role.routes.model.ts";
 import { persistStore } from "redux-persist";
