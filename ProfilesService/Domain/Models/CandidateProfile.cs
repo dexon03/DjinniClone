@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using AutoMapper.Configuration.Annotations;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Enums;
@@ -14,6 +15,9 @@ public class CandidateProfile : Profile<CandidateProfile>
     public AttendanceMode Attendance { get; set; } = AttendanceMode.Remote;
     [JsonIgnore]public ICollection<ProfileSkills>? ProfileSkills { get; set; }
     [JsonIgnore]public ICollection<LocationProfile>? LocationProfiles { get; set; }
+    // [JsonIgnore]
+    // [Ignore]
+    // public string LastResumeName { get; set; }
     public override GetCandidateProfileDto ToDto()
     {
         return new GetCandidateProfileDto

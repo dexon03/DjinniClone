@@ -63,16 +63,35 @@ public class ProfileController : BaseController
     // }
 
     [HttpPut("updateCandidate")]
-    public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile)
+    public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken)
     {
-        var updatedProfile = await _profileService.UpdateProfile(profile);
+        var updatedProfile = await _profileService.UpdateCandidateProfile(profile, cancellationToken);
         return Ok(updatedProfile);
     }
     
-    [HttpPut("updateRecruiter")]
-    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile)
+    [HttpPut("uploadResume")]
+    public async Task<IActionResult> UploadResume([FromForm] ResumeUploadDto resume, CancellationToken cancellationToken)
     {
-        var updatedProfile = await _profileService.UpdateProfile(profile);
+        await _profileService.UploadResume(resume, cancellationToken);
+        return Ok();
+    }
+    
+    [HttpGet("downloadResume/{profileId}")]
+    public async Task<IActionResult> DownloadResume(Guid profileId, CancellationToken cancellationToken)
+    {
+        var result = await _profileService.DownloadResume(profileId, cancellationToken);
+        if (result is null)
+        {
+            return Ok();
+        }
+        string contentType = "application/pdf";
+        return File(result, contentType);
+    }
+    
+    [HttpPut("updateRecruiter")]
+    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
+    {
+        var updatedProfile = await _profileService.UpdateRecruiterProfile(profile, cancellationToken);
         return Ok(updatedProfile);
     }
 }

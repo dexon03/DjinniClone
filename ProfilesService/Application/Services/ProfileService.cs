@@ -18,12 +18,18 @@ public class ProfileService : IProfileService
     private readonly IRepository _repository;
     private readonly IMapper _mapper;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IPdfService _pdfService;
 
-    public ProfileService(IRepository repository, IMapper mapper, IPublishEndpoint publishEndpoint)
+    public ProfileService(
+        IRepository repository, 
+        IMapper mapper, 
+        IPublishEndpoint publishEndpoint,
+        IPdfService pdfService)
     {
         _repository = repository;
         _mapper = mapper;
         _publishEndpoint = publishEndpoint;
+        _pdfService = pdfService;
     }
     
     public async Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CancellationToken cancellationToken = default)
@@ -410,32 +416,66 @@ public class ProfileService : IProfileService
         if (profile.Role == Role.Candidate)
         {
             var profileEntity = new CandidateProfile().MapCreateToCandidateProfile(profile);
-            var result = await _repository.CreateAsync(profileEntity);
+            await _repository.CreateAsync(profileEntity);
         }
         else
         {
             var profileEntity = new RecruiterProfile().MapCreateToRecruiterProfile(profile);
-            var result = await _repository.CreateAsync(profileEntity);
+            await _repository.CreateAsync(profileEntity);
         }
         
         await _repository.SaveChangesAsync(cancellationToken);
     }
-    
-    public async Task<T> UpdateProfile<T>(IProfileUpdateDto<T> profileDto, CancellationToken cancellationToken = default) where T : Profile<T>
-    {
-        var profileEntity = await _repository.GetByIdAsync<T>(profileDto.Id);
 
-        if (profileEntity == null)
+    public async Task<CandidateProfile> UpdateCandidateProfile(CandidateProfileUpdateDto profileDto, CancellationToken cancellationToken = default)
+    {
+        var profile = await GetProfile(profileDto);
+
+        if (profileDto.PdfResume is not null)
         {
-            throw new ExceptionWithStatusCode("Profile that you trying to update, not exist", HttpStatusCode.BadRequest);
+            await UploadPdf(profile.Id, profileDto.PdfResume, cancellationToken);
+        }
+        
+        _repository.Update(profile);
+        await _repository.SaveChangesAsync(cancellationToken);
+        
+        return profile;
+    }
+
+    public async Task<RecruiterProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profileDto, CancellationToken cancellationToken = default)
+    {
+        var profile = await GetProfile(profileDto);
+        
+        _repository.Update(profile);
+        await _repository.SaveChangesAsync(cancellationToken);
+        
+        return profile;
+    }
+
+    public async Task UploadResume(ResumeUploadDto resumeDto, CancellationToken cancellationToken = default)
+    {
+        var isCandidateExists = await _repository.AnyAsync<CandidateProfile>(cp => cp.Id == resumeDto.CandidateId);
+        if (!isCandidateExists)
+        {
+            throw new ExceptionWithStatusCode("Candidate profile not found", HttpStatusCode.BadRequest);
+        }
+        await UploadPdf(resumeDto.CandidateId, resumeDto.Resume, cancellationToken);
+    }
+    
+    public async Task<byte[]?> DownloadResume(Guid candidateId, CancellationToken cancellationToken = default)
+    {
+        var candidateProfile = await _repository.GetByIdAsync<CandidateProfile>(candidateId);
+        if (candidateProfile == null)
+        {
+            throw new ExceptionWithStatusCode("Candidate profile not found", HttpStatusCode.BadRequest);
         }
 
-        _mapper.Map(profileDto, profileEntity);
-
-        _repository.Update(profileEntity);
-        await _repository.SaveChangesAsync(cancellationToken);
-
-        return profileEntity;
+        if (_pdfService.CheckIfResumeFolderInitialised(candidateId))
+        {
+            var result = await _pdfService.DownloadPdf(candidateId, cancellationToken);
+            return result;
+        }
+        return null;
     }
 
     public async Task DeleteProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>
@@ -454,8 +494,12 @@ public class ProfileService : IProfileService
         var profile = _repository.GetAll<T>().FirstOrDefault(p => p.UserId == userId);
         if (profile is not null)
         {
-            _repository.Delete<T>(profile);
+            _repository.Delete(profile);
             await _repository.SaveChangesAsync(cancellationToken);
+            if (typeof(T) == typeof(CandidateProfile))
+            {
+                await _pdfService.DeletePdf(profile.Id, cancellationToken);
+            }
             if (typeof(T) == typeof(RecruiterProfile))
             {
                 await _publishEndpoint.Publish(new RecruiterProfileDeletedEvent
@@ -476,5 +520,29 @@ public class ProfileService : IProfileService
         profile.IsActive = !profile.IsActive;
         _repository.Update(profile);
         await _repository.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<T> GetProfile<T>(IProfileUpdateDto<T> profileDto) where T : Profile<T>
+    {
+        var profileEntity = await _repository.GetByIdAsync<T>(profileDto.Id);
+        if (profileEntity == null)
+        {
+            throw new ExceptionWithStatusCode("Profile that you trying to update, not exist", HttpStatusCode.BadRequest);
+        }
+        _mapper.Map(profileDto, profileEntity);
+        return profileEntity;
+    }
+    
+    private async Task UploadPdf(Guid profileId, IFormFile formFile, CancellationToken cancellationToken = default)
+    {
+        if (Path.GetExtension(formFile.FileName) != ".pdf")
+        {
+            throw new ExceptionWithStatusCode("File must be pdf", HttpStatusCode.BadRequest);
+        }
+
+        if (!await _pdfService.CheckIfPdfExistsAndEqual(profileId, formFile, cancellationToken))
+        {
+            await _pdfService.UploadPdf(formFile, profileId, cancellationToken);
+        }
     }
 }

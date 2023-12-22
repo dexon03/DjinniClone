@@ -1,8 +1,12 @@
-import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, OutlinedInput } from '@mui/material';
+import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, OutlinedInput, Box } from '@mui/material';
+import { Input, Label } from "reactstrap";
 import { useGetUserCandidateProfileQuery, useLazyGetProfileLocationQuery, useLazyGetProfileSkillsQuery, useQuerySubscriptionCandidate, useUpdateCandidateProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
 import { Experience } from '../models/profile/experience.enum';
 import { CandidateProfile } from '../models/profile/candidate.profile.model';
+import { showErrorToast } from '../app/features/common/popup';
+import { useLazyDownloadResumeQuery, useUploadResumeMutation } from '../app/features/profile/candidateResume.api';
+import { Document, Page } from 'react-pdf';
 
 const CandidateProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetUserCandidateProfileQuery(id);
@@ -10,6 +14,8 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [getProfileLocations, { data: locations }] = useLazyGetProfileLocationQuery();
   const { refetch } = useQuerySubscriptionCandidate(id);
   const [updateCandidateProfile, { data: updatedProfile, error: updateError }] = useUpdateCandidateProfileMutation();
+  const [uploadResume] = useUploadResumeMutation();
+  const [downloadResume] = useLazyDownloadResumeQuery();
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -25,7 +31,8 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [workExperience, setWorkExperience] = useState(Experience.NoExperience);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [numPages, setNumPages] = useState<number>();
 
   useEffect(() => {
     if (profile) {
@@ -45,6 +52,11 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
       setWorkExperience(profile.workExperience || Experience.NoExperience);
       setSelectedLocations(profile.locations ? profile.locations.map(location => location.id) : []);
       setSelectedSkills(profile.skills ? profile.skills.map(skill => skill.id) : []);
+      downloadResume(profile.id).then((response) => {
+        const data = response.data;
+        const file = new Blob([data], { type: 'application/pdf' });
+        setSelectedFile(file)
+      });
     }
   }, [profile]);
 
@@ -87,6 +99,37 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
     }
 
   };
+
+  const handleFileChange = (e) => {
+    const fileInput = e.target as HTMLInputElement;
+    const selectedFile = fileInput.files && fileInput.files[0];
+    if (!selectedFile) {
+      showErrorToast("Please upload a file")
+    }
+    const extension = selectedFile.name.split('.').pop().toLowerCase();
+
+
+    if (extension !== 'pdf') {
+      showErrorToast("File must be pdf");
+      e.target.value = null;
+    }
+    else {
+      setSelectedFile(selectedFile);
+    }
+  }
+
+  const handleUploadFile = async () => {
+    if (profile && selectedFile) {
+      const formData = new FormData();
+      formData.append('candidateId', profile.id);
+      formData.append('resume', selectedFile);
+      await uploadResume(formData);
+    }
+  }
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
 
   return (
     profile &&
@@ -231,10 +274,33 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
           <Button type="submit" fullWidth variant="contained" color="primary">
             Save
           </Button>
+          <Box marginTop={'2em'}>
+            <InputLabel htmlFor="resume">Upload Resume (PDF, with non-latin characters)</InputLabel>
+            <Input
+              id="handleFileChange"
+              name="handleFileChange"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+            />
+            <Button className="my-1" variant="contained" fullWidth color="primary" onClick={handleUploadFile}>
+              Upload Resume
+            </Button>
+            {selectedFile !== null && selectedFile.size > 0 ?
+              <div className='mt-2' style={{ height: '700px', overflowY: 'scroll', border: '1px solid #ccc', marginBottom: '20px', borderRadius: '7px' }}>
+                <Document file={selectedFile} onLoadSuccess={onDocumentLoadSuccess}>
+                  {Array.apply(null, Array(numPages)).map((x, i) => i + 1).map(page => (
+                    <Page key={page} pageNumber={page} renderTextLayer={false} renderAnnotationLayer={false} />
+                  ))}
+                </Document>
+              </div>
+              : null
+            }
+          </Box>
         </form>
       </div>
     </Container>
   );
-};
+}
 
 export default CandidateProfileComponent;

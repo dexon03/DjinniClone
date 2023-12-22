@@ -11,10 +11,10 @@ public interface IProfileService
     Task<GetCandidateProfileDto> GetCandidateProfileByUserId(Guid userId, CancellationToken cancellationToken = default);
     Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid userId, CancellationToken cancellationToken = default);
     Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default);
-    Task<T> UpdateProfile<T>(IProfileUpdateDto<T> profileDto, CancellationToken cancellationToken = default)
-        where T : Profile<T>;
-    // Task<CandidateProfile> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken = default);
-    // Task<RecruiterProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken = default);
+    Task<CandidateProfile> UpdateCandidateProfile(CandidateProfileUpdateDto profileDto, CancellationToken cancellationToken = default);
+    Task<RecruiterProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profileDto, CancellationToken cancellationToken = default);
+    Task UploadResume(ResumeUploadDto resumeDto, CancellationToken cancellationToken = default);
+    Task<byte[]?> DownloadResume(Guid candidateId, CancellationToken cancellationToken = default);
     Task DeleteProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>;
     Task DeleteProfileByUserId<T>(Guid userId, CancellationToken cancellationToken = default) where T : Profile<T>;
     Task ActivateDisactivateProfile<T>(Guid id, CancellationToken cancellationToken = default) where T : Profile<T>;

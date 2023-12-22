@@ -1,4 +1,5 @@
-﻿using ProfilesService.Domain.Contracts;
+﻿using AutoMapper.Configuration.Annotations;
+using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.Enums;
 using ProfilesService.Domain.Models;
 using ProfilesService.Domain.Models.Common;
@@ -22,6 +23,8 @@ public class CandidateProfileUpdateDto : IProfileUpdateDto<CandidateProfile>
     public Experience WorkExperience { get; set; }
     public double DesiredSalary { get; set; }
     public AttendanceMode Attendance { get; set; }
+    [Ignore]
+    public IFormFile? PdfResume { get; set; }
     public IEnumerable<SkillDto>? Skills { get; set; }
     public IEnumerable<LocationGetDto>? Locations { get; set; }
 }

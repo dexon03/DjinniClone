@@ -112,9 +112,7 @@ public class AuthService : IAuthService
             UserId = user.Id
         };
     }
-    
-     
-    
+
     private async Task<bool> IsLoginRequestValid(User? user, string password)
     {
         if (user == null)
