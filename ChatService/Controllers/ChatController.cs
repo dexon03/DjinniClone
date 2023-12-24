@@ -1,3 +1,4 @@
+using ChatService.Domain.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatService.Controllers;
@@ -6,14 +7,17 @@ namespace ChatService.Controllers;
 [Route("api/[controller]")]
 public class ChatController : ControllerBase
 {
-    public ChatController()
+    private readonly IChatService _chatService;
+
+    public ChatController(IChatService chatService)
     {
-        
+        _chatService = chatService;
     }
     
-    [HttpGet("chats/{userId}")]
+    [HttpGet("list/{userId}")]
     public async Task<IActionResult> GetChats(Guid userId)
     {
-        return Ok();
+        var chats = await _chatService.GetChatList(userId);
+        return Ok(chats);
     }
 }

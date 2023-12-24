@@ -20,7 +20,6 @@ import useToken from "../hooks/useToken.ts";
 import { Role } from "../models/common/role.enum.ts";
 import { useAppDispatch } from "../hooks/redux.hooks.ts";
 import { RoleRoute } from "../models/role_routes/role.routes.model.ts";
-import { persistStore } from "redux-persist";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
@@ -65,7 +64,6 @@ export function HeaderComponent() {
 
         setAnchorElUser(null);
     }
-
 
     return (
         <ThemeProvider theme={theme}>

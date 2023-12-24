@@ -9,6 +9,7 @@ import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore } from 'redux-persist'
 import { usersApi } from './features/users/usersApi'
 import { candidateResumeApi } from './features/profile/candidateResume.api'
+import { chatApi } from './features/chat/chat.api'
 
 
 
@@ -20,6 +21,7 @@ const persistConfig = {
 
 const appReducer = combineReducers({
   recruiterProfile: recruiterProfileReducer,
+  [chatApi.reducerPath]: chatApi.reducer,
   [candidateResumeApi.reducerPath]: candidateResumeApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
   [vacancyApi.reducerPath]: vacancyApi.reducer,
@@ -43,6 +45,7 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware().concat(
+      chatApi.middleware,
       candidateResumeApi.middleware,
       usersApi.middleware,
       vacancyApi.middleware,

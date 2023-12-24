@@ -11,8 +11,11 @@ public class Message
     public Guid SenderId { get; set; }
     [ForeignKey("Receiver")]
     public Guid ReceiverId { get; set; }
+    [ForeignKey("Chat")]
+    public Guid ChatId { get; set; }
     public bool IsRead { get; set; }
     
     public User Receiver { get; set; }
     public User Sender { get; set; }
+    public Chat Chat { get; set; }
 }

@@ -1,5 +1,7 @@
 using ChatService.Database;
 using ChatService.Database.AutoMigrations;
+using ChatService.Database.Repository;
+using ChatService.Domain.Contracts;
 using ChatService.Hubs;
 using Core.Database;
 using Core.Logging;
@@ -32,6 +34,8 @@ builder.Services.AddDbContext<ChatDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
 });
 builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
+builder.Services.AddScoped<IChatService, ChatService.Application.Services.ChatService>();
+builder.Services.AddScoped<IRepository,Repository>();
 
 
 var app = builder.Build();

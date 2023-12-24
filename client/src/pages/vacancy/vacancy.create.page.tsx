@@ -70,7 +70,7 @@ export function VacancyCreatePage() {
             locations: locations.filter(location => selectedLocations.includes(location.id)),
             skills: skills.filter(skill => selectedSkills.includes(skill.id)),
         } as VacancyCreate)
-        if (result) {
+        if (result.error == null) {
             navigate('/vacancy')
         }
     }

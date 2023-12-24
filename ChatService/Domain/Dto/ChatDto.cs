@@ -1,8 +1,10 @@
 namespace ChatService.Domain.Dto;
 
-public class ChatDto
+public record ChatDto
 {
-    public Guid SenderId { get; set; }
-    public Guid ReceiverId { get; set; }
-    public string Content { get; set; } = null!;
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string SenderOfLastMessage { get; set; }
+    public string LastMessage { get; set; }
+    public bool IsLastMessageRead { get; set; }
 }
