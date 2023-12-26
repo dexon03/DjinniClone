@@ -14,7 +14,7 @@ public class ChatService : IChatService
     {
         _repository = repository;
     }
-    public async Task<List<ChatDto>> GetChatList(Guid userId)
+    public async Task<List<ChatDto>> GetChatList(Guid userId, CancellationToken cancellationToken = default)
     {
         var chats = await _repository.GetAll<Message>()
             .Include(m => m.Chat)
@@ -28,7 +28,7 @@ public class ChatService : IChatService
                 LastMessage = g.OrderByDescending(m => m.TimeStamp).First().Content,
                 IsLastMessageRead = g.OrderByDescending(m => m.TimeStamp).First().IsRead
             })
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
         var temp = new List<ChatDto>
         {
             new ChatDto
@@ -55,6 +55,49 @@ public class ChatService : IChatService
                 LastMessage = "Test",
                 IsLastMessageRead = true
             },
+        };
+        return temp;
+    }
+
+    public async Task<List<MessageDto>> GetChatMessages(Guid chatId, CancellationToken cancellationToken = default)
+    {
+        var messages = await  _repository.GetAll<Message>()
+            .Include(m => m.Sender)
+            .Include(m => m.Receiver)
+            .Where(m => m.ChatId == chatId)
+            .Select(m => new MessageDto
+            {
+                Id = m.Id,
+                ChatId = m.ChatId,
+                Content = m.Content,
+                TimeStamp = m.TimeStamp,
+                Sender = m.Sender,
+                Receiver = m.Receiver,
+                IsRead = m.IsRead
+            })
+            .OrderBy(m => m.TimeStamp)
+            .ToListAsync(cancellationToken);
+
+        var temp = new List<MessageDto>()
+        {
+            new MessageDto
+            {
+                Id = Guid.NewGuid(),
+                ChatId = Guid.NewGuid(),
+                Content = "Test Message",
+                TimeStamp = DateTime.Now,
+                Sender = new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Test1"
+                },
+                Receiver = new User
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Test2"
+                },
+                IsRead = false
+            }
         };
         return temp;
     }

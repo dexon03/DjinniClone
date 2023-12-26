@@ -44,7 +44,7 @@ api.interceptors.response.use(
                 console.log(error);
             }
         }
-        if (error.response.status == 422) {
+        if (error.response.status == 422) {Chat
             showErrorToast(Object.values(error.response.data).join('\n'));
         }
 

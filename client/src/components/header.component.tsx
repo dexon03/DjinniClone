@@ -71,7 +71,7 @@ export function HeaderComponent() {
                 <Container maxWidth="lg">
                     <Toolbar disableGutters>
                         <Typography
-                            // variant="h6"
+                            variant="h6"
                             noWrap
                             sx={{
                                 mr: 2,
@@ -146,7 +146,6 @@ export function HeaderComponent() {
                                     <Typography
                                         variant="h6"
                                         noWrap
-                                        component="a"
                                         sx={{
                                             mr: 2,
                                             display: { xs: 'none', md: 'flex' },
@@ -174,7 +173,6 @@ export function HeaderComponent() {
                                 variant="h5"
                                 noWrap
                                 className="d-inline m-3 fs-4"
-                                component="p"
                                 sx={{
                                     fontFamily: 'Open sans',
                                 }}

@@ -16,7 +16,7 @@ import { chatApi } from './features/chat/chat.api'
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['candidateResumeApi']
+  blacklist: ['candidateResumeApi', 'chatApi']
 };
 
 const appReducer = combineReducers({

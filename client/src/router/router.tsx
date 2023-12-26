@@ -14,6 +14,7 @@ import { UserList } from "../pages/users/user.list.tsx";
 import { UserEdit } from "../pages/users/user.edit.tsx";
 import { StatisticPage } from "../pages/statistics/statistic.page.tsx";
 import ChatList from "../pages/chat/chat.list.page.tsx";
+import ChatPage from "../pages/chat/chat.page.tsx";
 
 const rootLoader = async () => {
     const token = localStorage.getItem("token");
@@ -75,7 +76,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/chat/:id",
-                element: <div>Chat</div>
+                element: <ChatPage />
             },
             {
                 path: "/users",

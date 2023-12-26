@@ -2,6 +2,7 @@ using ChatService.Database;
 using ChatService.Database.AutoMigrations;
 using ChatService.Database.Repository;
 using ChatService.Domain.Contracts;
+using ChatService.Domain.Dto;
 using ChatService.Hubs;
 using Core.Database;
 using Core.Logging;
@@ -36,7 +37,11 @@ builder.Services.AddDbContext<ChatDbContext>(options =>
 builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
 builder.Services.AddScoped<IChatService, ChatService.Application.Services.ChatService>();
 builder.Services.AddScoped<IRepository,Repository>();
-
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+});
+builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
 
 var app = builder.Build();
 
@@ -63,8 +68,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors();
 app.MapControllers();
 
-app.MapHub<ChatHub>("/Chat");
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

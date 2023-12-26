@@ -3,6 +3,7 @@ import { axiosBaseQuery } from "../../../api/axios.baseQuery";
 import { ChatDto } from "../../../models/chat/chat.dto";
 import { environment } from "../../../environment/environment";
 import { ApiServicesRoutes } from "../../../api/api.services.routes";
+import { MessageDto } from "../../../models/chat/message.dto";
 
 
 export const chatApi = createApi({
@@ -15,8 +16,14 @@ export const chatApi = createApi({
                 method: 'get'
             })
         }),
+        getChatMessages: builder.query<MessageDto[], string>({
+            query: (chatId: string) => ({
+                url: `/chat/messages/` + chatId,
+                method: 'get'
+            })
+        }),
     })
 })
 
 
-export const { useGetChatListQuery } = chatApi;
+export const { useGetChatListQuery, useGetChatMessagesQuery } = chatApi;
