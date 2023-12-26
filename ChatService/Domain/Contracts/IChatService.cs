@@ -7,4 +7,5 @@ public interface IChatService
 {
     Task<List<ChatDto>> GetChatList(Guid userId, CancellationToken cancellationToken = default);
     Task<List<MessageDto>> GetChatMessages(Guid chatId, CancellationToken cancellationToken = default);
+    Task CreateChat(CreateChatDto chatDto, CancellationToken cancellationToken = default);
 }

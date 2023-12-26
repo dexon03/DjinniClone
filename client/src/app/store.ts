@@ -4,7 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 import { profileApi } from './features/profile/profile.api'
 import { companyApi } from './features/company/company.api'
 import { candidateApi } from './features/candidate/candidate.api'
-import recruiterProfileReducer from './slices/recruiter.profile.slice'
+import profileReducer from './slices/profile.slice'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore } from 'redux-persist'
 import { usersApi } from './features/users/usersApi'
@@ -20,7 +20,7 @@ const persistConfig = {
 };
 
 const appReducer = combineReducers({
-  recruiterProfile: recruiterProfileReducer,
+  profile: profileReducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [candidateResumeApi.reducerPath]: candidateResumeApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,

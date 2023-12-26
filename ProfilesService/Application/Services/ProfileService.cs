@@ -144,6 +144,33 @@ public class ProfileService : IProfileService
         return profileEntities;
     }
 
+    public async Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid recruiterId, CancellationToken cancellationToken = default)
+    {
+        var profileEntity = await _repository.GetByIdAsync<RecruiterProfile>(recruiterId);
+        if (profileEntity == null)
+        {
+            throw new ExceptionWithStatusCode("Profile not found", HttpStatusCode.BadRequest);
+        }
+
+        var profile = new GetRecruiterProfileDto
+        {
+            Id = profileEntity.Id,
+            Name = profileEntity.Name,
+            Surname = profileEntity.Surname,
+            Email = profileEntity.Email ?? String.Empty,
+            PhoneNumber = profileEntity.PhoneNumber ?? String.Empty,
+            DateBirth = profileEntity.DateBirth,
+            Description = profileEntity.Description ?? String.Empty,
+            ImageUrl = profileEntity.ImageUrl ?? String.Empty,
+            LinkedInUrl = profileEntity.LinkedInUrl ?? String.Empty,
+            PositionTitle = profileEntity.PositionTitle ?? String.Empty,
+            IsActive = profileEntity.IsActive,
+            UserId = profileEntity.UserId
+        };
+        
+        return profile;
+    }
+
     public async Task<GetCandidateProfileDto> GetCandidateProfile(Guid profileId, CancellationToken cancellationToken = default)
     {
         var profileEntity =
@@ -177,6 +204,7 @@ public class ProfileService : IProfileService
                     profile.WorkExperience,
                     profile.DesiredSalary,
                     profile.Attendance,
+                    profile.UserId,
                     SkillId = skill != null ? skill.Id : Guid.Empty,
                     SkillName = skill != null ? skill.Name : String.Empty,
                     LocationId = location != null ? location.Id : Guid.Empty,
@@ -200,7 +228,8 @@ public class ProfileService : IProfileService
                 p.IsActive,
                 p.WorkExperience,
                 p.DesiredSalary,
-                p.Attendance
+                p.Attendance,
+                p.UserId
             })
             .Select(gp => new GetCandidateProfileDto
             {
@@ -219,6 +248,7 @@ public class ProfileService : IProfileService
                 WorkExperience = gp.Key.WorkExperience,
                 DesiredSalary = gp.Key.DesiredSalary,
                 Attendance = gp.Key.Attendance,
+                UserId = gp.Key.UserId,
                 Skills = gp.All(_ => _.SkillId != Guid.Empty)
                     ? gp.Select(p => new
                     {
@@ -337,6 +367,7 @@ public class ProfileService : IProfileService
                 WorkExperience = gp.Key.WorkExperience,
                 DesiredSalary = gp.Key.DesiredSalary,
                 Attendance = gp.Key.Attendance,
+                UserId = userId,
                 Skills = gp.All(_ => _.SkillId != Guid.Empty)
                     ? gp.Select(p => new
                     {
@@ -380,7 +411,7 @@ public class ProfileService : IProfileService
         return profileEntity;
     }
     
-    public async Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<GetRecruiterProfileDto> GetRecruiterProfileByUserId(Guid userId, CancellationToken cancellationToken = default)
     {
         var profileEntity = 
            await _repository.GetAll<RecruiterProfile>()
@@ -400,7 +431,8 @@ public class ProfileService : IProfileService
                 LinkedInUrl = t.LinkedInUrl,
                 PositionTitle = t.PositionTitle,
                 IsActive = t.IsActive,
-                Company = t.Company
+                Company = t.Company,
+                UserId = t.UserId,
             }).FirstOrDefaultAsync(cancellationToken);
         
         if (profileEntity == null)

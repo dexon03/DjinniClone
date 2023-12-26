@@ -6,18 +6,18 @@ const MessageComponent = ({ message, userId }: { message: MessageDto, userId: st
     // const formatTimestamp = (timestamp: Date) => {
     //     return timestamp.getTime();
     // };
-
+    const time = new Date(message.timestamp).toLocaleTimeString()
     return (
         <ListItem alignItems="flex-start">
             <ListItemAvatar>
-                <Avatar>{message.sender.userName}</Avatar>
+                <Avatar>{message.sender.userName.charAt[0]}</Avatar>
             </ListItemAvatar>
             <ListItemText
                 primary={message.sender.id === userId ? "You" : message.sender.userName}
                 secondary={
                     <>
-                        <p>{message.content}</p>
-                        <p>{message.timestamp}</p>
+                        <h5>{message.content}</h5>
+                        <p>{time}</p>
                         {message.isRead ? <span>Read</span> : <span>Unread</span>}
                     </>
                 }

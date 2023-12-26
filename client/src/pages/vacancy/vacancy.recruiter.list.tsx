@@ -4,7 +4,7 @@ import { VacancyTile } from "../../components/vacancy.tile";
 import { useAppSelector } from "../../hooks/redux.hooks";
 
 export function RecruiterVacanciesList() {
-    const recruiterProfileId: string = useAppSelector(state => state.recruiterProfile.profile?.id)
+    const recruiterProfileId: string = useAppSelector(state => state.profile.recruiterProfile?.id)
     const { data, isError, isLoading, error } = useGetRecruiterVacanciesQuery(recruiterProfileId);
 
     if (isLoading) {

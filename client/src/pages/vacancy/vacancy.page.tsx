@@ -3,17 +3,46 @@ import { useGetVacancyQuery } from "../../app/features/vacancy/vacancy.api";
 import { Card, CardContent, Typography, Chip, Box, TextField, Button } from "@mui/material";
 import { AttendanceMode } from "../../models/common/attendance.enum";
 import { useState } from "react";
+import { useLazyGetRecruiterProfileQuery } from "../../app/features/profile/profile.api";
+import { ChatCreateDto } from "../../models/chat/chat.create.dto";
+import useToken from "../../hooks/useToken";
+import { useAppSelector } from "../../hooks/redux.hooks";
+import { Role } from "../../models/common/role.enum";
+import { useCreateChatMutation } from "../../app/features/chat/chat.api";
+import { showErrorToast } from "../../app/features/common/popup";
 
 export function VacancyPage() {
     const { id } = useParams();
     const { data: vacancy, isError, isLoading, error } = useGetVacancyQuery(id);
+    const [getRecruiter] = useLazyGetRecruiterProfileQuery();
+    const [createChat] = useCreateChatMutation();
     const [message, setMessage] = useState('');
+    const [isMessageSent, setIsMessageSent] = useState(false);
+    const { token } = useToken();
+    const candidate = useAppSelector(state => state.profile.candidateProfile);
 
-    const handleSendMessage = () => {
-        // Add logic here to handle sending the message
-        console.log('Sending message:', message);
-        // Clear the message input after sending
-        setMessage('');
+    const handleSendMessage = async () => {
+        if (!message) return;
+
+        const recruiter = await getRecruiter(vacancy?.recruiterId);
+        debugger;
+        if (candidate && !recruiter.isError) {
+            const request = {
+                senderId: token?.userId,
+                senderName: candidate?.name + ' ' + candidate?.surname,
+                receiverId: recruiter?.data.userId,
+                receiverName: recruiter?.data.name + ' ' + recruiter?.data.surname,
+                message: message,
+            } as ChatCreateDto
+            const result = await createChat(request);
+            debugger;
+            if (!result.error) {
+                setIsMessageSent(true);
+                setMessage('');
+            }
+        } else {
+            showErrorToast('Something went wrong')
+        }
     };
 
     if (isLoading) {
@@ -61,24 +90,28 @@ export function VacancyPage() {
                     </CardContent>
                 </Card>
             </div >
-            <div style={{ marginTop: '1rem', width: '100%' }}>
-                <TextField
-                    label="Type your message"
-                    variant="outlined"
-                    fullWidth
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ marginTop: '0.5rem' }}
-                    onClick={handleSendMessage}
-                >
-                    Send Application
-                </Button>
-            </div>
+            {token?.role == Role[Role.Candidate] ? (!isMessageSent ?
+                <div style={{ marginTop: '1rem', width: '100%' }}>
+                    <TextField
+                        label="Type your message"
+                        variant="outlined"
+                        fullWidth
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        style={{ marginTop: '0.5rem' }}
+                        onClick={handleSendMessage}
+                    >
+                        Send Application
+                    </Button>
+                </div> :
+                <Typography variant="h6" style={{ marginTop: '1rem', color: 'green' }}>Your application has been sent</Typography>
+            )
+                : null
+            }
         </>
-
     )
 }

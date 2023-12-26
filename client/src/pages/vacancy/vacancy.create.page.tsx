@@ -18,7 +18,7 @@ export function VacancyCreatePage() {
     const { token } = useToken();
     const navigate = useNavigate();
 
-    const recruiterProfile: RecruiterProfile = useAppSelector(state => state.recruiterProfile.profile)
+    const recruiterProfile: RecruiterProfile = useAppSelector(state => state.profile.recruiterProfile)
 
     const [title, setTitle] = useState('');
     const [positionTitle, setPositionTitle] = useState('');

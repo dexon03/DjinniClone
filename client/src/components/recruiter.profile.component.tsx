@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
 import { Company } from '../models/common/company.models';
 import { useAppDispatch } from '../hooks/redux.hooks';
-import { setProfile } from '../app/slices/recruiter.profile.slice';
+import { setRecruiterProfile } from '../app/slices/profile.slice';
 
 const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isLoading, refetch } = useGetUserRecruiterProfileQuery(id);
@@ -80,7 +80,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
       });
       var refetchedProfile = await refetch();
       if (!refetchedProfile.isError && !refetchedProfile.isLoading) {
-        dispatch(setProfile(refetchedProfile.data));
+        dispatch(setRecruiterProfile(refetchedProfile.data));
       }
     } catch (error) {
       console.error("Error updating profile:", updateError);

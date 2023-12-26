@@ -10,7 +10,7 @@ import { RegisterModel } from '../../models/auth/register.model';
 import { Role } from '../../models/common/role.enum';
 import { useState } from 'react';
 import { useAppDispatch } from '../../hooks/redux.hooks';
-import { setProfile } from '../../app/slices/recruiter.profile.slice';
+import { setCandidateProfile, setRecruiterProfile } from '../../app/slices/profile.slice';
 
 function RegisterPage() {
     const [selectedRole, setSelectedRole] = useState(0);
@@ -34,10 +34,11 @@ function RegisterPage() {
 
         setToken(token);
         if (token.role === Role[Role.Candidate]) {
+            dispatch(setCandidateProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Candidate}/${token.userId}`)));
             navigate('/vacancy');
         } else {
+            dispatch(setRecruiterProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${token.userId}`)));
             navigate('/candidate');
-            dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${token.userId}`)));
         }
     }
 

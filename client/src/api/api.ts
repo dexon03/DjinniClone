@@ -44,11 +44,12 @@ api.interceptors.response.use(
                 console.log(error);
             }
         }
-        if (error.response.status == 422) {Chat
+        if (error.response.status == 422) {
             showErrorToast(Object.values(error.response.data).join('\n'));
         }
-
-        showErrorToast(error.response.data.message);
+        if (error.response.status == 500) {
+            showErrorToast(error.response.data.message);
+        }
 
         return Promise.reject(error);
     }

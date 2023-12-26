@@ -1,4 +1,5 @@
 using ChatService.Domain.Contracts;
+using ChatService.Domain.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatService.Controllers;
@@ -27,4 +28,12 @@ public class ChatController : ControllerBase
         var messages = await _chatService.GetChatMessages(chatId, cancellationToken);
         return Ok(messages);
     }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateChat(CreateChatDto chatDto, CancellationToken cancellationToken)
+    {
+        await _chatService.CreateChat(chatDto, cancellationToken);
+        return Ok();
+    }
+    
 }
