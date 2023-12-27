@@ -1,80 +1,114 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGetChatMessagesQuery } from '../../app/features/chat/chat.api';
 import useToken from '../../hooks/useToken';
 import { useParams } from 'react-router-dom';
 import { MessageDto } from '../../models/chat/message.dto';
 import MessageComponent from '../../components/message.component';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import { useAppSelector } from '../../hooks/redux.hooks';
+import { TextField, Container, Button } from '@mui/material';
 
 const ChatPage = () => {
     const { token } = useToken();
     const { id } = useParams<{ id: string }>();
     const { data: previousMessages, isLoading } = useGetChatMessagesQuery(id);
 
-    // const [users, setUsers] = useState<any[]>([] as any[]);
+    const chatContainerRef = useRef();
+    const [connection, setConnection] = useState<any>(null);
     const [messages, setMessages] = useState<MessageDto[]>([] as MessageDto[]);
-    // const [hubConnection, setHubConnection] = useState<any>(null);
-    // const [messageInput, setMessageInput] = useState<string>('');
+    const [newMessage, setNewMessage] = useState('');
+    const [companionId, setCompanionId] = useState('');
+    const sender = useAppSelector((state) => state.profile.candidateProfile || state.profile.recruiterProfile);
 
     useEffect(() => {
         setMessages(previousMessages);
+        const chatCompanion = previousMessages?.map((msg) => msg.sender.id).find((id) => id !== token?.userId);
+        setCompanionId(chatCompanion || '');
+        const url = "http://localhost:5245/chatHub"
+        const connection = new HubConnectionBuilder()
+            .withUrl(url) // Replace with your SignalR hub URL
+            .configureLogging(LogLevel.Information)
+            .build();
+        try {
+            connection.start().then(() => {
+                connection.invoke('JoinChatGroup', id);
+            });
+            connection.on('ReceiveMessage', (message: MessageDto) => {
+                setMessages(prevMessages => [...prevMessages, message]);
+            });
+            connection.on('ConnectedUser', (message: any) => {
+                console.log(message);
+            })
 
-        // const url = 'http://localhost:5245' + '/chatHub';
-        // const connection = new HubConnectionBuilder()
-        //     .withUrl(url)
-        //     .configureLogging(LogLevel.Information)
-        //     .build();
 
-        // connection.start().then(() => {
-        //     console.log('Connection started!');
-        // }).catch(err => console.error('Error while establishing connection:', err));
+        } catch (error) {
+            console.log(error);
+        }
 
 
+        setConnection(connection);
 
-        // setHubConnection(connection);
-
+        return () => {
+            connection.invoke('LeaveChatGroup', id);
+            connection.stop();
+            setConnection(null);
+        };
     }, [previousMessages]);
 
-    // useEffect(() => {
-    //     if (hubConnection) {
-    //         hubConnection.on('ReceiveMessage', (message: MessageDto) => {
-    //             setMessages((prevMessages: MessageDto[]) => [...prevMessages, message]);
-    //         });
-    //     }
-    // }, [hubConnection]);
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
 
-    // const sendMessage = (message: string) => {
-    //     if (hubConnection) {
-    //         hubConnection.invoke('SendMessage', {
-    //             chatId: id,
-    //             senderId: token?.userId,
-    //             receiver: users.find((u) => u.id !== token?.userId),
-    //             content: message,
-    //         })
-    //             .catch((err: any) => console.error(err));
-    //     }
-    // };
+
+    }, [messages]);
+
+    const handleSendMessage = () => {
+        const newMessageDto = {
+            content: newMessage,
+            senderId: token?.userId || '',
+            receiverId: companionId,
+            senderName: sender?.name + ' ' + sender?.surname,
+            chatId: id,
+            isRead: false,
+        };
+
+        // Send the message to the server using SignalR
+        connection.invoke('SendMessage', newMessageDto);
+
+        // Clear the input field
+        setNewMessage('');
+    };
+
 
     if (isLoading) {
         return <div>Loading...</div>
     }
 
     return (
-        <>
-            {messages && messages.length > 0 ? messages.map((msg) => (
+        <Container ref={chatContainerRef} className='pb-2' maxWidth="md" style={{ maxHeight: '80vh', overflowY: 'auto', overflowX: 'hidden', }}>
+            {messages && messages.map((msg) => (
                 <MessageComponent key={msg.id} message={msg} userId={token?.userId} />
-            )) :
-                <div>No messages</div>}
-            {/* <div>
-                <input
+            ))}
+
+            <div style={{ display: 'flex', marginTop: '8px' }}>
+                <TextField
+                    style={{ flex: 1 }}
                     type="text"
-                    placeholder="Type a message..."
-                    onChange={(e) => setMessageInput(e.target.value)}
-                    value={messageInput}
+                    multiline
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
                 />
-                <button onClick={() => sendMessage(messageInput)}>Send</button>
-            </div> */}
-        </>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    style={{ marginLeft: '8px' }}
+                    onClick={handleSendMessage}
+                >
+                    Send
+                </Button>
+            </div>
+        </Container>
     );
 }
 

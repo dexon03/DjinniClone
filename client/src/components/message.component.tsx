@@ -7,10 +7,12 @@ const MessageComponent = ({ message, userId }: { message: MessageDto, userId: st
     //     return timestamp.getTime();
     // };
     const time = new Date(message.timestamp).toLocaleTimeString()
+
     return (
+        message &&
         <ListItem alignItems="flex-start">
             <ListItemAvatar>
-                <Avatar>{message.sender.userName.charAt[0]}</Avatar>
+                <Avatar>{message.sender.userName.charAt(0)}</Avatar>
             </ListItemAvatar>
             <ListItemText
                 primary={message.sender.id === userId ? "You" : message.sender.userName}

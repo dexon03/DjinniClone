@@ -8,10 +8,7 @@ namespace ChatService.Controllers;
 [Route("api/[controller]")]
 public class MessageController : ControllerBase
 {
-    private readonly IHubContext<ChatHub> _hubContext;
-
-    public MessageController(IHubContext<ChatHub> hubContext)
+    public MessageController()
     {
-        _hubContext = hubContext;
-    }
+        ; }
 }

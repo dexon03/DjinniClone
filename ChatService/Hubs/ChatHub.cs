@@ -1,3 +1,5 @@
+using ChatService.Domain.Dto;
+using ChatService.Domain.Models;
 using Core.Database;
 using Microsoft.AspNetCore.SignalR;
 
@@ -6,31 +8,61 @@ namespace ChatService.Hubs;
 public class ChatHub : Hub
 {
     private readonly IRepository _repository;
+
     public ChatHub(IRepository repository)
     {
         _repository = repository;
     }
-    public override Task OnConnectedAsync()
+
+    public Task JoinChatGroup(string chatId)
     {
-        return Clients.All.SendAsync("ReceiveMessage", $"{Context.User} joined the chat");
-    }
-    
-    public async Task JoinGroup(string chatId)
-    {
-        await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+        return Groups.AddToGroupAsync(Context.ConnectionId, chatId);
     }
 
-    public async Task LeaveGroup(string chatId)
+    public Task LeaveChatGroup(string chatId)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
+        return Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
     }
-    
-    public async Task ReceiveMessage(Guid senderId, Guid receiverId, string message)
+
+    public async Task SendMessage(SendMessageDto messageDto)
     {
+        var messageEntity = new Message
+        {
+            Content = messageDto.Content,
+            SenderId = messageDto.SenderId,
+            ReceiverId = messageDto.ReceiverId,
+            ChatId = messageDto.ChatId,
+            TimeStamp = DateTime.Now,
+        };
+        await _repository.CreateAsync(messageEntity);
+        await _repository.SaveChangesAsync();
         
-    }
-    public async Task SendMessage(Guid senderId, Guid receiverId, string message)
-    {
+        var message = new MessageDto
+        {
+            Id = messageEntity.Id,
+            Content = messageDto.Content,
+            Sender = new User
+            {
+                Id = messageDto.SenderId,
+                UserName = messageDto.SenderName
+            },
+            
+            ChatId = messageDto.ChatId,
+            TimeStamp = DateTime.Now,
+        };
         
+        // Broadcast the message to all clients in the chat group
+        await Clients.Group(messageDto.ChatId.ToString()).SendAsync("ReceiveMessage", message);
     }
+
+    public override async Task OnConnectedAsync()
+    {
+        await Clients.All.SendAsync("ConnectedUser", $"{Context.User.Identity.Name} joined the chat");
+    }
+
+    // public override async Task OnDisconnectedAsync(Exception exception)
+    // {
+    //     // Clean up logic if needed
+    //     await base.OnDisconnectedAsync(exception);
+    // }
 }

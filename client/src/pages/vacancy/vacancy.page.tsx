@@ -96,6 +96,7 @@ export function VacancyPage() {
                         label="Type your message"
                         variant="outlined"
                         fullWidth
+                        multiline
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                     />

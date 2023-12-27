@@ -18,7 +18,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { NavLink } from "react-router-dom";
 import useToken from "../hooks/useToken.ts";
 import { Role } from "../models/common/role.enum.ts";
-import { useAppDispatch } from "../hooks/redux.hooks.ts";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks.ts";
 import { RoleRoute } from "../models/role_routes/role.routes.model.ts";
 
 export function HeaderComponent() {
@@ -29,6 +29,8 @@ export function HeaderComponent() {
     const pages = RoleRoute[authRole];
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    const profile = useAppSelector((state) => state.profile.candidateProfile || state.profile.recruiterProfile);
 
     let theme = createTheme({});
     theme = createTheme(theme, {
@@ -178,7 +180,7 @@ export function HeaderComponent() {
                                 }}
                             >
 
-                                Name Surname
+                                {profile ? profile.name + ' ' + profile.surname : 'User'}
                             </Typography>
                             <Menu
                                 sx={{ mt: '45px' }}

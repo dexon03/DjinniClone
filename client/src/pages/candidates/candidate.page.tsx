@@ -21,7 +21,6 @@ export function CandidatePage() {
     const handleSendMessage = async () => {
         if (!message) return;
 
-        debugger;
         if (recruiter) {
             const request = {
                 senderId: token?.userId,
@@ -31,7 +30,6 @@ export function CandidatePage() {
                 message: message,
             } as ChatCreateDto
             const result = await createChat(request);
-            debugger;
             if (!result.error) {
                 setIsMessageSent(true);
                 setMessage('');
@@ -71,8 +69,8 @@ export function CandidatePage() {
                 </Card>
                 <Card >
                     <CardContent>
-                        <Typography variant="h6">Locations</Typography>
-                        <Typography variant="body1">{locationString}</Typography>
+                        <Typography variant="h6">Locations:</Typography>
+                        <Typography variant="body1">{locationString.length > 0 ? locationString : "No locations"}</Typography>
                         <Typography variant="h6" style={{ marginTop: '1rem' }}>Attendance Mode</Typography>
                         <Typography variant="body1">{attendanceModes[profile.attendance]}</Typography>
                         {profile.desiredSalary ?
@@ -94,6 +92,7 @@ export function CandidatePage() {
                             label="Type your message"
                             variant="outlined"
                             fullWidth
+                            multiline
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                         />
