@@ -25,17 +25,17 @@ export function VacancyPage() {
         if (!message) return;
 
         const recruiter = await getRecruiter(vacancy?.recruiterId);
-        debugger;
+        const currentPageUrl = window.location.href;
+        const messageToSend = message + `\n\n${currentPageUrl}`;
         if (candidate && !recruiter.isError) {
             const request = {
                 senderId: token?.userId,
                 senderName: candidate?.name + ' ' + candidate?.surname,
                 receiverId: recruiter?.data.userId,
                 receiverName: recruiter?.data.name + ' ' + recruiter?.data.surname,
-                message: message,
+                message: messageToSend,
             } as ChatCreateDto
             const result = await createChat(request);
-            debugger;
             if (!result.error) {
                 setIsMessageSent(true);
                 setMessage('');

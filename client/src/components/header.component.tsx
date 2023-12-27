@@ -198,11 +198,15 @@ export function HeaderComponent() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                <NavLink to={'/profile'} className={'nav-link'}>
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">Profile</Typography>
-                                    </MenuItem>
-                                </NavLink>
+                                {
+                                    token?.role != Role[Role.Admin] ?
+                                        <NavLink to={'/profile'} className={'nav-link'}>
+                                            <MenuItem onClick={handleCloseUserMenu}>
+                                                <Typography textAlign="center">Profile</Typography>
+                                            </MenuItem>
+                                        </NavLink> : null
+                                }
+
                                 <NavLink to={'/login'} className={'nav-link'}>
                                     <MenuItem onClick={handleLogout}>
                                         <Typography textAlign="center">Logout</Typography>

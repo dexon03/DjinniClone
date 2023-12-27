@@ -1,22 +1,36 @@
 import { useParams } from "react-router-dom"
 import { useGetCandidateProfileQuery, useLazyGetCandidateProfileQuery } from "../../app/features/profile/profile.api"
 import { Card, CardContent, Typography, Chip, Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../../hooks/redux.hooks";
 import useToken from "../../hooks/useToken";
 import { showErrorToast } from "../../app/features/common/popup";
 import { ChatCreateDto } from "../../models/chat/chat.create.dto";
 import { useCreateChatMutation } from "../../app/features/chat/chat.api";
 import { Role } from "../../models/common/role.enum";
+import { Document, Page } from 'react-pdf';
+import { useLazyDownloadResumeQuery } from "../../app/features/profile/candidateResume.api";
 
 export function CandidatePage() {
     const { id } = useParams();
     const { data: profile, isLoading, isError, error } = useGetCandidateProfileQuery(id);
     const [createChat] = useCreateChatMutation();
+    const [downloadResume] = useLazyDownloadResumeQuery();
     const [message, setMessage] = useState('');
     const [isMessageSent, setIsMessageSent] = useState(false);
     const { token } = useToken();
+    const [resumePdf, setResumePdf] = useState<File | null>(null);
+    const [numPages, setNumPages] = useState<number>();
     const recruiter = useAppSelector(state => state.profile.recruiterProfile);
+
+
+    useEffect(() => {
+        downloadResume(id).then((response) => {
+            const data = response.data;
+            const file = new Blob([data], { type: 'application/pdf' });
+            setResumePdf(file)
+        });
+    }, [id])
 
     const handleSendMessage = async () => {
         if (!message) return;
@@ -53,6 +67,10 @@ export function CandidatePage() {
     // Map attendance modes to their string representations
     const attendanceModes = ['OnSite', 'Remote', 'Mixed', 'OnSiteOrRemote'];
 
+    function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+        setNumPages(numPages);
+    }
+
     return (
         profile &&
         <>
@@ -85,6 +103,16 @@ export function CandidatePage() {
                     </CardContent>
                 </Card>
             </div >
+            {resumePdf !== null && resumePdf.size > 0 ?
+                <div className='my-2' style={{ height: '700px', overflowY: 'scroll', border: '1px solid #ccc', marginBottom: '20px', borderRadius: '7px' }}>
+                    <Document file={resumePdf} onLoadSuccess={onDocumentLoadSuccess}>
+                        {Array.apply(null, Array(numPages)).map((x, i) => i + 1).map(page => (
+                            <Page key={page} pageNumber={page} renderTextLayer={false} renderAnnotationLayer={false} />
+                        ))}
+                    </Document>
+                </div>
+                : null
+            }
             {
                 token?.role == Role[Role.Recruiter] ? (!isMessageSent ?
                     <div style={{ marginTop: '1rem', width: '100%' }}>

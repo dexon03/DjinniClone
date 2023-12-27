@@ -34,11 +34,11 @@ function RegisterPage() {
 
         setToken(token);
         if (token.role === Role[Role.Candidate]) {
-            dispatch(setCandidateProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Candidate}/${token.userId}`)));
             navigate('/vacancy');
+            dispatch(setCandidateProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Candidate}/${token.userId}`)));
         } else {
-            dispatch(setRecruiterProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${token.userId}`)));
             navigate('/candidate');
+            dispatch(setRecruiterProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${token.userId}`)));
         }
     }
 

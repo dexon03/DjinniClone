@@ -64,6 +64,7 @@ const ChatPage = () => {
     }, [messages]);
 
     const handleSendMessage = () => {
+        if (!newMessage) return;
         const newMessageDto = {
             content: newMessage,
             senderId: token?.userId || '',

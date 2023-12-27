@@ -1,7 +1,7 @@
 import { TextField, Button, Container, Typography, Avatar, Checkbox, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
 import { useGetUserRecruiterProfileQuery, useUpdateRecruiterProfileMutation } from '../app/features/profile/profile.api';
 import { useEffect, useState } from 'react';
-import { useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
+import { useCreateCompanyMutation, useLazyGetProfileCompaniesQuery, useUpdateCompanyMutation } from '../app/features/company/company.api';
 import { Company } from '../models/common/company.models';
 import { useAppDispatch } from '../hooks/redux.hooks';
 import { setRecruiterProfile } from '../app/slices/profile.slice';
@@ -11,6 +11,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [getCompanyQuery, { data: companies }] = useLazyGetProfileCompaniesQuery();
   const [updateCandidateProfile, { error: updateError }] = useUpdateRecruiterProfileMutation();
   const [updateCompany] = useUpdateCompanyMutation();
+  const [createCompany, { data: createdCompany }] = useCreateCompanyMutation();
   const dispatch = useAppDispatch();
 
   const [name, setName] = useState('');
@@ -25,6 +26,9 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
   const [selectedCompany, setSelectedCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState('');
   const [companyDescription, setCompanyDescription] = useState('');
+  const [isNewCompany, setIsNewCompany] = useState(false);
+
+
   useEffect(() => {
     if (profile) {
       getCompanyQuery();
@@ -40,11 +44,14 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
       setSelectedCompany(profile.company ? profile.company.id : '');
       setCompanyName(profile?.company ? profile.company.name : '');
       setCompanyDescription(profile?.company ? profile.company.description : '');
+      onCompanyChanged(selectedCompany)
+      dispatch(setRecruiterProfile(profile));
     }
   }, [profile])
 
   const onCompanyChanged = (companyId: string) => {
     try {
+      setSelectedCompany(companyId);
       const company = companies?.find(company => company.id === companyId);
       setCompanyName(company?.name || '');
       setCompanyDescription(company?.description || '');
@@ -53,6 +60,44 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
       console.error("Error getting company:", error);
     }
   }
+
+  const handleCompanySelection = (e) => {
+    const selectedValue: string = e.target.value;
+    if (selectedValue === 'new') {
+      setIsNewCompany(true);
+      setCompanyName('');
+      setCompanyDescription('');
+    } else {
+      setIsNewCompany(false);
+      onCompanyChanged(selectedValue);
+    }
+  };
+
+  const handleUpdateOrAddCompany = async () => {
+    if (isNewCompany) {
+      try {
+        const response = await createCompany({
+          name: companyName,
+          description: companyDescription,
+        } as Company);
+        if (!response.error) {
+          setSelectedCompany(response.data.id);
+        }
+      } catch (error) {
+        console.error("Error creating company:", error);
+      }
+    } else {
+      try {
+        await updateCompany({
+          id: selectedCompany,
+          name: companyName,
+          description: companyDescription,
+        } as Company);
+      } catch (error) {
+        console.error("Error updating company:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     onCompanyChanged(selectedCompany);
@@ -78,23 +123,13 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
         isActive,
         companyId: selectedCompany
       });
-      var refetchedProfile = await refetch();
-      if (!refetchedProfile.isError && !refetchedProfile.isLoading) {
-        dispatch(setRecruiterProfile(refetchedProfile.data));
-      }
+      await refetch();
+
     } catch (error) {
       console.error("Error updating profile:", updateError);
     }
   };
 
-  const handleUpdateCompany = async (e) => {
-
-    updateCompany({
-      id: selectedCompany,
-      name: companyName,
-      description: companyDescription
-    } as Company);
-  }
 
   return (
     <Container component="main" maxWidth="sm">
@@ -182,15 +217,17 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
           <InputLabel>Company</InputLabel>
           <Select
             fullWidth
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
+            value={isNewCompany ? 'new' : selectedCompany}
+            onChange={handleCompanySelection}
             input={<OutlinedInput label="Company" />}
           >
+
             {companies && companies.map((company) => (
               <MenuItem key={company.id} value={company.id}>
                 {company.name}
               </MenuItem>
             ))}
+            <MenuItem value="new">Create New Company</MenuItem>
           </Select>
           {selectedCompany ?
             <>
@@ -210,9 +247,19 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
                 value={companyDescription}
                 onChange={(e) => setCompanyDescription(e.target.value)}
               />
-              <Button onClick={handleUpdateCompany} fullWidth variant="contained" color="secondary">
-                Update Company
-              </Button>
+              {isNewCompany ?
+                <>
+                  <Button onClick={handleUpdateOrAddCompany} fullWidth variant="contained" color="primary">
+                    Create Company
+                  </Button>
+                </>
+                :
+                <>
+                  <Button onClick={handleUpdateOrAddCompany} fullWidth variant="contained" color="secondary">
+                    Update Company
+                  </Button>
+                </>
+              }
             </>
             : null
           }

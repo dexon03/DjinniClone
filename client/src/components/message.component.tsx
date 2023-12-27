@@ -18,7 +18,7 @@ const MessageComponent = ({ message, userId }: { message: MessageDto, userId: st
                 primary={message.sender.id === userId ? "You" : message.sender.userName}
                 secondary={
                     <>
-                        <h5>{message.content}</h5>
+                        <h5 style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}>{message.content}</h5>
                         <p>{time}</p>
                         {message.isRead ? <span>Read</span> : <span>Unread</span>}
                     </>
