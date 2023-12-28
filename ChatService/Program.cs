@@ -5,7 +5,9 @@ using ChatService.Domain.Contracts;
 using ChatService.Domain.Dto;
 using ChatService.Hubs;
 using Core.Database;
+using Core.ExceptionHandler;
 using Core.Logging;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -42,6 +44,17 @@ builder.Services.AddCors(opt =>
     opt.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 });
 builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
+builder.Services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+    x.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host("rabbitmq", "/", h => { });
+                
+        configurator.ConfigureEndpoints(context);
+    });
+});
+builder.Services.AddMassTransitHostedService();
 
 var app = builder.Build();
 
@@ -72,5 +85,6 @@ app.UseCors();
 app.MapControllers();
 
 app.MapHub<ChatHub>("/chatHub");
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.Run();

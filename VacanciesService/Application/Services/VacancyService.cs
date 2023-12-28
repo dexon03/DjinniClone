@@ -21,9 +21,9 @@ public class VacancyService : IVacanciesService
         _mapper = mapper;
     }
 
-    public async Task<List<VacancyGetAllDto>> GetAllVacancies(CancellationToken cancellationToken = default)
+    public async Task<List<VacancyGetAllDto>> GetAllVacancies(VacancyFilterParameters vacancyFilter, CancellationToken cancellationToken = default)
     {
-        var vacancies = await GetAllVacanciesByCondition(v => v.IsActive == true, cancellationToken);
+        var vacancies = await GetAllVacanciesByCondition(v => v.IsActive == true, vacancyFilter, cancellationToken);
         return vacancies;
     }
 
@@ -144,9 +144,9 @@ public class VacancyService : IVacanciesService
         return vacancyEntity;
     }
 
-    public async Task<List<VacancyGetAllDto>> GetVacanciesByRecruiterId(Guid recruiterId, CancellationToken cancellationToken = default)
+    public async Task<List<VacancyGetAllDto>> GetVacanciesByRecruiterId(Guid recruiterId,VacancyFilterParameters vacancyFilter, CancellationToken cancellationToken = default)
     {
-        var vacancies = await GetAllVacanciesByCondition(v => v.RecruiterId == recruiterId, cancellationToken);
+        var vacancies = await GetAllVacanciesByCondition(v => v.RecruiterId == recruiterId, vacancyFilter, cancellationToken);
         return vacancies;
     }
 
@@ -203,11 +203,48 @@ public class VacancyService : IVacanciesService
         await _repository.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task<List<VacancyGetAllDto>> GetAllVacanciesByCondition(Expression<Func<Vacancy, bool>> predicate, CancellationToken cancellationToken = default)
+    private async Task<List<VacancyGetAllDto>> GetAllVacanciesByCondition(Expression<Func<Vacancy, bool>> predicate, VacancyFilterParameters vacancyFilter, CancellationToken cancellationToken = default)
     {
+        var vacancyQuery = _repository.GetAll<Vacancy>();
+
+        if (!string.IsNullOrWhiteSpace(vacancyFilter.searchTerm))
+        {
+            var searchTerm = vacancyFilter.searchTerm;
+            vacancyQuery = vacancyQuery.Where(v =>
+                v.PositionTitle.ToLower().Contains(searchTerm.ToLower()) || v.Title.ToLower().Contains(searchTerm.ToLower()) || 
+                v.Description.ToLower().Contains(searchTerm.ToLower()));
+        }
+
+        if (vacancyFilter.experience is not null)
+        {
+            vacancyQuery = vacancyQuery.Where(v => v.Experience == vacancyFilter.experience);
+        }
+        
+        if (vacancyFilter.attendanceMode is not null)
+        {
+            vacancyQuery = vacancyQuery.Where(v => v.AttendanceMode == vacancyFilter.attendanceMode);
+        }
+        
+        if (vacancyFilter.skill is not null)
+        {
+            vacancyQuery = vacancyQuery.Include(v => v.VacancySkill).ThenInclude(vs => vs.Skill)
+                .Where(v => v.VacancySkill.Any(vs => vs.SkillId == vacancyFilter.skill));
+        }
+        
+        if (vacancyFilter.category is not null)
+        {
+            vacancyQuery = vacancyQuery.Where(v => v.CategoryId == vacancyFilter.category);
+        }
+        
+        if (vacancyFilter.location is not null)
+        {
+            vacancyQuery = vacancyQuery.Include(v => v.LocationVacancy).ThenInclude(lv => lv.Location)
+                .Where(v => v.LocationVacancy.Any(lv => lv.LocationId == vacancyFilter.location));
+        }
+        
         // TODO: Refactor this query
         var vacancies = 
-                await (from vacancy in _repository.GetAll<Vacancy>().Where(predicate)
+                await (from vacancy in vacancyQuery.Where(predicate) 
                 join locationVacancy in _repository.GetAll<LocationVacancy>() 
                     on vacancy.Id equals locationVacancy.VacancyId
                 join location in _repository.GetAll<Location>()
@@ -229,6 +266,8 @@ public class VacancyService : IVacanciesService
                     location.City,
                     location.Country
                 })
+                    .Skip((vacancyFilter.page - 1) * vacancyFilter.pageSize)
+                    .Take(vacancyFilter.pageSize)
                 .ToListAsync(cancellationToken);
         var groupedVacancies = vacancies
                 .GroupBy(v => new

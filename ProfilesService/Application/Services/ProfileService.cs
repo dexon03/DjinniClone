@@ -6,7 +6,6 @@ using Core.Exceptions;
 using Core.MessageContract;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
@@ -32,10 +31,45 @@ public class ProfileService : IProfileService
         _pdfService = pdfService;
     }
     
-    public async Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CancellationToken cancellationToken = default)
+    public async Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CandidateFilterParameters filter,CancellationToken cancellationToken = default)
     {
+        var profileQuery = _repository.GetAll<CandidateProfile>();
+        
+        if(filter.searchTerm is not null)
+        {
+            profileQuery = profileQuery.Where(p => p.Name.ToLower().Contains(filter.searchTerm.ToLower())
+                                                   || p.Surname.ToLower().Contains(filter.searchTerm.ToLower())
+                                                   || p.PositionTitle.ToLower().Contains(filter.searchTerm.ToLower())
+                                                   || p.Description.ToLower().Contains(filter.searchTerm.ToLower()));
+        }
+        
+        if (filter.skill is not null)
+        {
+            profileQuery = profileQuery?
+                .Include(p => p.ProfileSkills)!.ThenInclude(ps => ps.Skill)
+                .Where(p => p.ProfileSkills.Any(ps => filter.skill == ps.Skill.Id));
+                
+        }
+        
+        if (filter.location is not null)
+        {
+            profileQuery = profileQuery?
+                .Include(p => p.LocationProfiles)!.ThenInclude(lp => lp.Location)
+                .Where(p => p.LocationProfiles.Any(lp => filter.location == lp.Location.Id));
+        }
+        
+        if (filter.experience is not null)
+        {
+            profileQuery = profileQuery.Where(p => p.WorkExperience == filter.experience);
+        }
+        
+        if (filter.attendanceMode is not null)
+        {
+            profileQuery = profileQuery.Where(p => p.Attendance == filter.attendanceMode);
+        }
+        
         var profileEntities =
-            (await (from profile in _repository.GetAll<CandidateProfile>()
+            (await (from profile in profileQuery
                 join profileSkill in _repository.GetAll<ProfileSkills>()
                     on profile.Id equals profileSkill.ProfileId into profileSkills
                 from profileSkill in profileSkills.DefaultIfEmpty()
@@ -70,7 +104,10 @@ public class ProfileService : IProfileService
                     LocationId = location != null ? location.Id : Guid.Empty,
                     LocationCity = location != null ? location.City : String.Empty,
                     LocationCountry = location != null ? location.Country : String.Empty
-                }).ToListAsync(cancellationToken))
+                })
+                .Skip((filter.page-1) * filter.pageSize)
+                .Take(filter.pageSize)
+                .ToListAsync(cancellationToken))
             .GroupBy(p => new
             {
                 p.ProfileId,

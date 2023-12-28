@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCreateVacancyMutation, useLazyGetVacancyCategoriesQuery, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, vacancyApi, useQuerySubscriptionGetAllVacancies } from "../../app/features/vacancy/vacancy.api"
+import { useCreateVacancyMutation, useLazyGetVacancyCategoriesQuery, useLazyGetVacancyLocationQuery, useLazyGetVacancySkillsQuery, useLazyGenerateVacancyDesciprtionQuery } from "../../app/features/vacancy/vacancy.api"
 import { Experience } from "../../models/vacancy/experience.enum";
 import { AttendanceMode } from "../../models/common/attendance.enum";
 import { Button, Container, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
@@ -15,6 +15,7 @@ export function VacancyCreatePage() {
     const [getVacancySkills, { data: skills, isError: isSkillsLoadingError }] = useLazyGetVacancySkillsQuery();
     const [getVacancyLocations, { data: locations, isError: isErrorLoadingError }] = useLazyGetVacancyLocationQuery();
     const [getVacancyCategories, { data: categories, isError: isCategoriesLoadingError }] = useLazyGetVacancyCategoriesQuery();
+    const [generateDescription, { data: generatedDescription }] = useLazyGenerateVacancyDesciprtionQuery();
     const { token } = useToken();
     const navigate = useNavigate();
 
@@ -73,6 +74,21 @@ export function VacancyCreatePage() {
         if (result.error == null) {
             navigate('/vacancy')
         }
+    }
+
+    const handleGenerateWithGPT = async () => {
+        if (!title || !description) {
+            showWarningToast('Title and description must be filled')
+            return;
+        }
+
+        if (recruiterProfile.company == null) {
+            showWarningToast('You must be registered in company')
+            return;
+        }
+        const result = await generateDescription();
+        setDescription(result.data)
+
     }
 
     return (
@@ -194,6 +210,14 @@ export function VacancyCreatePage() {
                         rows={4}
                         required
                     />
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        style={{ backgroundColor: 'green', color: 'white', marginTop: '10px' }}
+                        onClick={handleGenerateWithGPT} // Add a function to handle the click event
+                    >
+                        Generate vacancy with GPT
+                    </Button>
                     <Button type="submit" fullWidth variant="contained" color="primary">
                         Save
                     </Button>

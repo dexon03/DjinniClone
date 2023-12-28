@@ -49,9 +49,9 @@ public class ProfileController : BaseController
     }
 
     [HttpGet("getCandidatesProfile")]
-    public async Task<IActionResult> GetCandidatesProfiles()
+    public async Task<IActionResult> GetCandidatesProfiles([FromQuery]CandidateFilterParameters filter)
     {
-        var result = await _profileService.GetAllCandidatesProfiles();
+        var result = await _profileService.GetAllCandidatesProfiles(filter);
         return Ok(result);
     }
 
