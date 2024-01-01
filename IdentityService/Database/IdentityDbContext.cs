@@ -1,4 +1,5 @@
-﻿using IdentityService.Domain.Constants;
+﻿using IdentityService.Application.Utilities;
+using IdentityService.Domain.Constants;
 using IdentityService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,20 @@ public class IdentityDbContext : DbContext
     {
         var roles = GetRoles();
         modelBuilder.Entity<Role>().HasData(roles);
+
+        var passwordSalt = PasswordUtility.CreatePasswordSalt();
+        var admin = new User
+        {
+            Id = Guid.NewGuid(),
+            PhoneNumber = "123456789",
+            FirstName = "Admin",
+            LastName = "Admin",
+            Email = "admin@mail.com",
+            PasswordSalt = passwordSalt,
+            PasswordHash = PasswordUtility.GetHashedPassword("admin", passwordSalt),
+            RoleId = roles.First(x => x.Name == Roles.Admin.ToString()).Id,
+        };
+        modelBuilder.Entity<User>().HasData(admin);
     }
 
     public DbSet<User> User { get; set; }

@@ -89,6 +89,7 @@ export function UserEdit() {
                     name="roleName"
                     value={Role[role]}
                     fullWidth
+                    disabled
                     margin="normal"
                 />
                 <Button variant="contained" color="primary" onClick={handleSubmit}>

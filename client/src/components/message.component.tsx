@@ -3,11 +3,7 @@ import { MessageDto } from "../models/chat/message.dto";
 
 const MessageComponent = ({ message, userId }: { message: MessageDto, userId: string }) => {
 
-    // const formatTimestamp = (timestamp: Date) => {
-    //     return timestamp.getTime();
-    // };
-    const time = new Date(message.timestamp).toLocaleTimeString()
-
+    const time = message.timeStamp.split('T')[1].split('.')[0] + ' ' + message.timeStamp.split('T')[0];
     return (
         message &&
         <ListItem alignItems="flex-start">

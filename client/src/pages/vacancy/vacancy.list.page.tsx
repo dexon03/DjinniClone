@@ -160,7 +160,7 @@ export function VacancyListPage() {
                 {data && data.map((vacancy) => <VacancyTile key={vacancy.id} vacancy={vacancy} isRecruiterList={false} />)}
                 <div className="m-2" style={{ display: 'flex', justifyContent: 'center' }}>
                     <Pagination
-                        count={Math.ceil((data?.length - 1) / pageSize)}
+                        count={Math.ceil((data?.length - 1) / pageSize) + 1}
                         page={page}
                         onChange={handlePageChange}
                         color="primary"

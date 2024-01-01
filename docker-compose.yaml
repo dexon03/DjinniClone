@@ -52,6 +52,7 @@ services:
         - IdentityService
         - ProfileService
         - VacanciesService
+        - ChatService
   
   identity-postgres:
     image: postgres

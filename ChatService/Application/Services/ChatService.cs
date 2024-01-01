@@ -61,7 +61,7 @@ public class ChatService : IChatService
 
     public async Task<List<MessageDto>> GetChatMessages(Guid chatId, CancellationToken cancellationToken = default)
     {
-        var messages = await  _repository.GetAll<Message>()
+        var messages = await _repository.GetAll<Message>()
             .Include(m => m.Sender)
             .Include(m => m.Receiver)
             .Where(m => m.ChatId == chatId)
@@ -77,28 +77,6 @@ public class ChatService : IChatService
             })
             .OrderBy(m => m.TimeStamp)
             .ToListAsync(cancellationToken);
-
-        var temp = new List<MessageDto>()
-        {
-            new MessageDto
-            {
-                Id = Guid.NewGuid(),
-                ChatId = Guid.NewGuid(),
-                Content = "Test Message",
-                TimeStamp = DateTime.Now,
-                Sender = new User
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Test1"
-                },
-                Receiver = new User
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Test2"
-                },
-                IsRead = false
-            }
-        };
         return messages;
     }
 

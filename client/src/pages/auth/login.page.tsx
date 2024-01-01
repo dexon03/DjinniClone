@@ -73,13 +73,6 @@ function LoginPage() {
                 variant="text"
                 color="primary"
                 style={{ marginTop: 8 }}
-            >
-                Forgot Password
-            </Button>
-            <Button
-                variant="text"
-                color="primary"
-                style={{ marginTop: 8 }}
                 component={NavLink} to="/register"
             >
                 Sign Up

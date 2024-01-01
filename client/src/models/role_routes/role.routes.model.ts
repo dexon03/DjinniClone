@@ -34,10 +34,6 @@ export const RoleRoute =
     ],
     2: [
         {
-            name: 'Applicants',
-            route: '/application'
-        },
-        {
             name: 'Candidates',
             route: '/candidate',
         },

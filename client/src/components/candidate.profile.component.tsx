@@ -7,6 +7,8 @@ import { CandidateProfile } from '../models/profile/candidate.profile.model';
 import { showErrorToast } from '../app/features/common/popup';
 import { useLazyDownloadResumeQuery, useUploadResumeMutation } from '../app/features/profile/candidateResume.api';
 import { Document, Page } from 'react-pdf';
+import { useAppDispatch } from '../hooks/redux.hooks';
+import { setCandidateProfile } from '../app/slices/profile.slice';
 
 const CandidateProfileComponent = ({ id }: { id: string }) => {
   const { data: profile, isError, isLoading, error } = useGetUserCandidateProfileQuery(id);
@@ -33,6 +35,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (profile) {
@@ -57,6 +60,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
         const file = new Blob([data], { type: 'application/pdf' });
         setSelectedFile(file)
       });
+      dispatch(setCandidateProfile(profile));
     }
   }, [profile]);
 
@@ -275,7 +279,7 @@ const CandidateProfileComponent = ({ id }: { id: string }) => {
             Save
           </Button>
           <Box marginTop={'2em'}>
-            <InputLabel htmlFor="resume">Upload Resume (PDF, with non-latin characters)</InputLabel>
+            <InputLabel htmlFor="resume">Upload Resume (PDF, with non-cyrillic characters)</InputLabel>
             <Input
               id="handleFileChange"
               name="handleFileChange"

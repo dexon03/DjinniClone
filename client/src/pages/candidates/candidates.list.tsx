@@ -127,7 +127,7 @@ export function CandidateList() {
                 : <p>No candidates found</p>}
             <div className="m-2" style={{ display: 'flex', justifyContent: 'center' }}>
                 <Pagination
-                    count={Math.floor((candidates?.length) / pageSize) + 1}
+                    count={Math.ceil((candidates?.length - 1) / pageSize) + 1}
                     page={page}
                     onChange={handlePageChange}
                     color="primary"

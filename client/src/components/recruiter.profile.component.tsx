@@ -229,7 +229,7 @@ const RecruiterProfileComponent = ({ id }: { id: string }) => {
             ))}
             <MenuItem value="new">Create New Company</MenuItem>
           </Select>
-          {selectedCompany ?
+          {selectedCompany || isNewCompany ?
             <>
               <TextField
                 label="Company Name"

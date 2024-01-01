@@ -1,3 +1,4 @@
+using System.Reflection;
 using ChatService.Database;
 using ChatService.Database.AutoMigrations;
 using ChatService.Database.Repository;
@@ -47,6 +48,7 @@ builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts => new D
 builder.Services.AddMassTransit(x =>
 {
     x.SetKebabCaseEndpointNameFormatter();
+    x.AddConsumers(Assembly.GetExecutingAssembly());
     x.UsingRabbitMq((context, configurator) =>
     {
         configurator.Host("rabbitmq", "/", h => { });

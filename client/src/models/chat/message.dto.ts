@@ -3,7 +3,7 @@ import { MessageUserDto } from "./message.user.dto";
 export interface MessageDto {
     id: string;
     content: string;
-    timestamp: Date;
+    timeStamp: Date;
     sender: MessageUserDto;
     receiver: MessageUserDto;
     chatId: string;

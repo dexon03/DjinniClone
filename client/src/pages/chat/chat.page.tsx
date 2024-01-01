@@ -22,7 +22,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         setMessages(previousMessages);
-        const chatCompanion = previousMessages?.map((msg) => msg.sender.id).find((id) => id !== token?.userId);
+        const chatCompanion = previousMessages && (previousMessages[0]?.sender.id === token?.userId ? previousMessages[0]?.receiver.id : previousMessages[0]?.sender.id);
         setCompanionId(chatCompanion || '');
         const url = "http://localhost:5245/chatHub"
         const connection = new HubConnectionBuilder()
