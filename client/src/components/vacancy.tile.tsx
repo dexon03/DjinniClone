@@ -4,7 +4,7 @@ import { Button, Card, CardContent } from "@mui/material";
 import { useActivateDisactivateVacancyMutation } from "../app/features/vacancy/vacancy.api.ts";
 import { useState } from "react";
 
-export function VacancyTile({ vacancy, isRecruiterList }: { vacancy: VacancyGetAll, isRecruiterList: boolean}) {
+export function VacancyTile({ vacancy, isRecruiterList }: { vacancy: VacancyGetAll, isRecruiterList: boolean }) {
     const navigate = useNavigate();
     const [activateDisactivateVacancy] = useActivateDisactivateVacancyMutation();
     const [isActivated, setIsActivated] = useState<boolean>(vacancy.isActive);
@@ -28,7 +28,7 @@ export function VacancyTile({ vacancy, isRecruiterList }: { vacancy: VacancyGetA
         <Card className={cardClassName}>
             <CardContent style={{ display: 'flex', flexDirection: 'column' }}>
                 <h2 className="fw-bold">{vacancy.title}</h2>
-                <h4>{vacancy.companyName}</h4>
+                <h4>Company: {vacancy.companyName}</h4>
                 <p>{vacancy.attendanceMode}</p>
                 <p>{vacancy.experience}</p>
                 {vacancy.locations.map((location) => (

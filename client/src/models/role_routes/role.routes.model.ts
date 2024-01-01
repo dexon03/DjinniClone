@@ -1,4 +1,4 @@
-export const RoleRoute = 
+export const RoleRoute =
 {
     0: [
         {
@@ -17,7 +17,7 @@ export const RoleRoute =
     1: [
         {
             name: 'Applicants',
-            route: '/application'
+            route: '/applications'
         },
         {
             name: 'Candidates',
@@ -33,10 +33,6 @@ export const RoleRoute =
         }
     ],
     2: [
-        {
-            name: 'Applicants',
-            route: '/application'
-        },
         {
             name: 'Candidates',
             route: '/candidate',

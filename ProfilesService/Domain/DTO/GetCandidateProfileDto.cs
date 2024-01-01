@@ -20,6 +20,7 @@ public class GetCandidateProfileDto : IProfileDto<CandidateProfile>
     public bool IsActive { get; set; } 
     public Experience WorkExperience { get; set; }
     public double DesiredSalary{ get; set; }
+    public Guid UserId { get; set; }
     public AttendanceMode Attendance { get; set; }
     public IEnumerable<SkillDto>? Skills { get; set; }
     public IEnumerable<LocationGetDto>? Locations { get; set; }

@@ -6,10 +6,11 @@ namespace ProfilesService.Domain.Contracts;
 
 public interface IProfileService
 {
-    Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CancellationToken cancellationToken = default);
+    Task<List<GetCandidateProfileDto>> GetAllCandidatesProfiles(CandidateFilterParameters filter,CancellationToken cancellationToken = default);
+    Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid recruiterId,CancellationToken cancellationToken = default);
     Task<GetCandidateProfileDto> GetCandidateProfile(Guid profileId, CancellationToken cancellationToken = default);
     Task<GetCandidateProfileDto> GetCandidateProfileByUserId(Guid userId, CancellationToken cancellationToken = default);
-    Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid userId, CancellationToken cancellationToken = default);
+    Task<GetRecruiterProfileDto> GetRecruiterProfileByUserId(Guid userId, CancellationToken cancellationToken = default);
     Task CreateProfile(ProfileCreateDto profile, CancellationToken cancellationToken = default);
     Task<CandidateProfile> UpdateCandidateProfile(CandidateProfileUpdateDto profileDto, CancellationToken cancellationToken = default);
     Task<RecruiterProfile> UpdateRecruiterProfile(RecruiterProfileUpdateDto profileDto, CancellationToken cancellationToken = default);

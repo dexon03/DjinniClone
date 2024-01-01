@@ -26,21 +26,21 @@ public class CompanyController : BaseController
         return Ok(await _companyService.GetCompanyById(id));
     }
     
-    [Authorize(Roles = "Admin, CompanyOwner")]
+    [Authorize(Roles = "Admin, Recruiter")]
     [HttpPost]
     public async Task<IActionResult> Create(CompanyCreateDto company)
     {
         return Ok(await _companyService.CreateCompany(company));
     }
     
-    [Authorize(Roles = "Admin, CompanyOwner, Recruiter")]
+    [Authorize(Roles = "Admin, Recruiter")]
     [HttpPut]
     public async Task<IActionResult> Update(CompanyUpdateDto company)
     {
         return Ok(await _companyService.UpdateCompany(company));
     }
     
-    [Authorize(Roles = "Admin, CompanyOwner")]
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

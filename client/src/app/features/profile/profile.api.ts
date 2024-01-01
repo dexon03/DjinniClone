@@ -33,6 +33,13 @@ export const profileApi = createApi({
             }),
             providesTags: ['CandidateProfile']
         }),
+        getRecruiterProfile: builder.query<RecruiterProfile, string>({
+            query: (id: string) => ({
+                url: `/profile/getRecruiter/${id}`,
+                method: 'get'
+            }),
+            providesTags: ['RecruiterProfile']
+        }),
         updateCandidateProfile: builder.mutation<CandidateProfile, CandidateProfile>({
             query: (profile: CandidateProfile) => ({
                 url: `/profile/updateCandidate`,
@@ -69,6 +76,8 @@ export const
         useGetUserCandidateProfileQuery,
         useGetUserRecruiterProfileQuery,
         useGetCandidateProfileQuery,
+        useLazyGetCandidateProfileQuery,
+        useLazyGetRecruiterProfileQuery,
         useUpdateCandidateProfileMutation,
         useUpdateRecruiterProfileMutation,
         useLazyGetProfileSkillsQuery,

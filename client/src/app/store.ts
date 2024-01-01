@@ -4,22 +4,24 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 import { profileApi } from './features/profile/profile.api'
 import { companyApi } from './features/company/company.api'
 import { candidateApi } from './features/candidate/candidate.api'
-import recruiterProfileReducer from './slices/recruiter.profile.slice'
+import profileReducer from './slices/profile.slice'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore } from 'redux-persist'
 import { usersApi } from './features/users/usersApi'
 import { candidateResumeApi } from './features/profile/candidateResume.api'
+import { chatApi } from './features/chat/chat.api'
 
 
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['candidateResumeApi']
+  blacklist: ['candidateResumeApi', 'chatApi']
 };
 
 const appReducer = combineReducers({
-  recruiterProfile: recruiterProfileReducer,
+  profile: profileReducer,
+  [chatApi.reducerPath]: chatApi.reducer,
   [candidateResumeApi.reducerPath]: candidateResumeApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
   [vacancyApi.reducerPath]: vacancyApi.reducer,
@@ -43,6 +45,7 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware().concat(
+      chatApi.middleware,
       candidateResumeApi.middleware,
       usersApi.middleware,
       vacancyApi.middleware,

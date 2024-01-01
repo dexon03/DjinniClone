@@ -13,6 +13,8 @@ import { VacancyUpdatePage } from "../pages/vacancy/vacancy.update.page.tsx";
 import { UserList } from "../pages/users/user.list.tsx";
 import { UserEdit } from "../pages/users/user.edit.tsx";
 import { StatisticPage } from "../pages/statistics/statistic.page.tsx";
+import ChatList from "../pages/chat/chat.list.page.tsx";
+import ChatPage from "../pages/chat/chat.page.tsx";
 
 const rootLoader = async () => {
     const token = localStorage.getItem("token");
@@ -66,7 +68,15 @@ const routes: RouteObject[] = [
             },
             {
                 path: "/offers",
-                element: <div>offers</div>
+                element: <ChatList />
+            },
+            {
+                path: "/applications",
+                element: <ChatList />
+            },
+            {
+                path: "/chat/:id",
+                element: <ChatPage />
             },
             {
                 path: "/users",

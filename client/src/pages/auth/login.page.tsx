@@ -9,7 +9,7 @@ import { TokenResponse } from '../../models/auth/jwt.respone';
 import { LoginModel } from '../../models/auth/login.model';
 import { Role } from '../../models/common/role.enum';
 import { useAppDispatch } from '../../hooks/redux.hooks';
-import { setProfile } from '../../app/slices/recruiter.profile.slice';
+import { setCandidateProfile, setRecruiterProfile } from '../../app/slices/profile.slice';
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -24,9 +24,10 @@ function LoginPage() {
         } as LoginModel);
         setToken(tokenResponse);
         if (tokenResponse.role === Role[Role.Candidate]) {
+            dispatch(setCandidateProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Candidate}/${tokenResponse.userId}`)));
             navigate('/vacancy');
         } else if (tokenResponse.role === Role[Role.Recruiter]) {
-            dispatch(setProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${tokenResponse.userId}`)));
+            dispatch(setRecruiterProfile(await restClient.get(ApiServicesRoutes.profile + `/profile/${Role.Recruiter}/${tokenResponse.userId}`)));
             navigate('/candidate');
         } else {
             navigate('/users')
@@ -68,13 +69,6 @@ function LoginPage() {
                     </Form>
                 )}
             </Formik>
-            <Button
-                variant="text"
-                color="primary"
-                style={{ marginTop: 8 }}
-            >
-                Forgot Password
-            </Button>
             <Button
                 variant="text"
                 color="primary"

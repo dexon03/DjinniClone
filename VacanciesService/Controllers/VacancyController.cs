@@ -21,16 +21,16 @@ public class VacancyController : BaseController
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetVacancies(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetVacancies([FromQuery]VacancyFilterParameters vacancyFilter, CancellationToken cancellationToken)
     {
-        var result = await _vacanciesService.GetAllVacancies(cancellationToken);
+        var result = await _vacanciesService.GetAllVacancies(vacancyFilter,cancellationToken);
         return Ok(result);
     }
     
     [HttpGet("getRecruiterVacancies/{recruiterId}")]
-    public async Task<IActionResult> GetRecruiterVacancies(Guid recruiterId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetRecruiterVacancies(Guid recruiterId, [FromQuery]VacancyFilterParameters vacancyFilter,CancellationToken cancellationToken)
     {
-        var result = await _vacanciesService.GetVacanciesByRecruiterId(recruiterId,cancellationToken);
+        var result = await _vacanciesService.GetVacanciesByRecruiterId(recruiterId,vacancyFilter, cancellationToken);
         return Ok(result);
     }
     
@@ -66,4 +66,10 @@ public class VacancyController : BaseController
         return Ok();
     }
     
+    [Authorize(Roles = "Recruiter")]
+    [HttpGet("getDescription")]
+    public IActionResult GetGeneratedVacancyDescriprion()
+    { 
+        return Ok("*generated*");
+    }
 }

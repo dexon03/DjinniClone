@@ -24,7 +24,7 @@ public class UserUpdateValidator : AbstractValidator<UpdateUserRequest>
             .EmailAddress()
             .Custom((email, context) =>
             {
-                if (repository.Any<User>( x => x.Email == email))
+                if (repository.Any<User>( x => x.Email == email && x.Id != context.InstanceToValidate.Id))
                 {
                     context.AddFailure("Email should be unique");
                 }

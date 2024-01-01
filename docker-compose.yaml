@@ -5,6 +5,8 @@
     driver: bridge
   VacanciesService:
     driver: bridge
+  ChatService:
+    driver: bridge
   
   
 services:
@@ -21,6 +23,7 @@ services:
       - IdentityService
       - ProfileService
       - VacanciesService
+      - ChatService
   redis:
     image: redis
     container_name: redis
@@ -49,6 +52,7 @@ services:
         - IdentityService
         - ProfileService
         - VacanciesService
+        - ChatService
   
   identity-postgres:
     image: postgres
@@ -157,3 +161,40 @@ services:
         condition: service_healthy
     networks:
       - VacanciesService
+  
+  chat-postgres:
+    image: postgres
+    container_name: chat-postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: postgres_chat
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ChatDb
+    # restart: always
+    volumes:
+        - ./chatDbDir:/var/lib/postgresql/data
+    networks:
+        - ChatService
+    healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres_chat" ]
+        interval: 10s
+        timeout: 3s
+        retries: 3
+    
+  chat-service:
+    image: chat-service
+    container_name: chat-service
+    build:
+      context: .
+      dockerfile: ./ChatService/Dockerfile
+    # restart: always
+    working_dir: "/app"
+    ports:
+      - "5245:80"
+    depends_on:
+      chat-postgres:
+        condition: service_healthy
+    networks:
+      - ChatService
+      

@@ -1,0 +1,39 @@
+﻿using Core.Database;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using ILogger = Serilog.ILogger;
+
+namespace ChatService.Database.AutoMigrations;
+
+public class MigrationsManager : IMigrationsManager
+{
+    private readonly ChatDbContext _context;
+    private readonly ILogger _log = Log.ForContext<MigrationsManager>();
+
+    public MigrationsManager(ChatDbContext context)
+    {
+        _context = context;
+    }
+    
+    public async Task MigrateDbIfNeeded()
+    {
+        var dbContextName = _context.GetType().Name;
+        _log.Information($"Getting pending migrations for {dbContextName}");
+        var migrations = await _context.Database.GetPendingMigrationsAsync();
+        var pendingMigrations = migrations.ToArray();
+        if (pendingMigrations.Any())
+        {
+            _log.Information($"Migrating database for {dbContextName}");
+            try
+            {
+                await _context.Database.MigrateAsync();
+                _log.Information($"Successfully finished migrating database for {dbContextName}");
+            }
+            catch (Exception e)
+            {
+                _log.Error(e, $"Error while executing migration for context {dbContextName}");
+            }
+        }
+        
+    }
+}

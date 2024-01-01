@@ -28,10 +28,17 @@ public class ProfileController : BaseController
         }
         if (role == Role.Recruiter)
         {
-            var result = await _profileService.GetRecruiterProfile(userId,cancellationToken);
+            var result = await _profileService.GetRecruiterProfileByUserId(userId,cancellationToken);
             return Ok(result);
         }
         return BadRequest();
+    }
+    
+    [HttpGet("getRecruiter/{profileId}")]
+    public async Task<IActionResult> GetRecruiterProfile(Guid profileId, CancellationToken cancellationToken)
+    {
+        var result = await _profileService.GetRecruiterProfile(profileId,cancellationToken);
+        return Ok(result);
     }
     
     [HttpGet("getCandidate/{profileId}")]
@@ -42,9 +49,9 @@ public class ProfileController : BaseController
     }
 
     [HttpGet("getCandidatesProfile")]
-    public async Task<IActionResult> GetCandidatesProfiles()
+    public async Task<IActionResult> GetCandidatesProfiles([FromQuery]CandidateFilterParameters filter)
     {
-        var result = await _profileService.GetAllCandidatesProfiles();
+        var result = await _profileService.GetAllCandidatesProfiles(filter);
         return Ok(result);
     }
 

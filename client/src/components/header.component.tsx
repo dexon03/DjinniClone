@@ -18,9 +18,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { NavLink } from "react-router-dom";
 import useToken from "../hooks/useToken.ts";
 import { Role } from "../models/common/role.enum.ts";
-import { useAppDispatch } from "../hooks/redux.hooks.ts";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks.ts";
 import { RoleRoute } from "../models/role_routes/role.routes.model.ts";
-import { persistStore } from "redux-persist";
 
 export function HeaderComponent() {
     const { token, setToken } = useToken();
@@ -30,6 +29,8 @@ export function HeaderComponent() {
     const pages = RoleRoute[authRole];
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    const profile = useAppSelector((state) => state.profile.candidateProfile || state.profile.recruiterProfile);
 
     let theme = createTheme({});
     theme = createTheme(theme, {
@@ -66,14 +67,13 @@ export function HeaderComponent() {
         setAnchorElUser(null);
     }
 
-
     return (
         <ThemeProvider theme={theme}>
             <AppBar position="static" color="myTheme">
                 <Container maxWidth="lg">
                     <Toolbar disableGutters>
                         <Typography
-                            // variant="h6"
+                            variant="h6"
                             noWrap
                             sx={{
                                 mr: 2,
@@ -148,7 +148,6 @@ export function HeaderComponent() {
                                     <Typography
                                         variant="h6"
                                         noWrap
-                                        component="a"
                                         sx={{
                                             mr: 2,
                                             display: { xs: 'none', md: 'flex' },
@@ -176,13 +175,12 @@ export function HeaderComponent() {
                                 variant="h5"
                                 noWrap
                                 className="d-inline m-3 fs-4"
-                                component="p"
                                 sx={{
                                     fontFamily: 'Open sans',
                                 }}
                             >
 
-                                Name Surname
+                                {profile ? profile.name + ' ' + profile.surname : 'User'}
                             </Typography>
                             <Menu
                                 sx={{ mt: '45px' }}
@@ -200,11 +198,15 @@ export function HeaderComponent() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                <NavLink to={'/profile'} className={'nav-link'}>
-                                    <MenuItem onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">Profile</Typography>
-                                    </MenuItem>
-                                </NavLink>
+                                {
+                                    token?.role != Role[Role.Admin] ?
+                                        <NavLink to={'/profile'} className={'nav-link'}>
+                                            <MenuItem onClick={handleCloseUserMenu}>
+                                                <Typography textAlign="center">Profile</Typography>
+                                            </MenuItem>
+                                        </NavLink> : null
+                                }
+
                                 <NavLink to={'/login'} className={'nav-link'}>
                                     <MenuItem onClick={handleLogout}>
                                         <Typography textAlign="center">Logout</Typography>
