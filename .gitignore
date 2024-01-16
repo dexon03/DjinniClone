@@ -381,5 +381,6 @@ profileDbDir
 analyticsDbDir
 rabbitmq-data
 rabbitmq-logs
+chatDbDir
 
 ProfilesService/PdfResumesFiles/*

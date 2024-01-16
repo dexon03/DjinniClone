@@ -51,7 +51,6 @@ public class ChatHub : Hub
             TimeStamp = DateTime.Now,
         };
         
-        // Broadcast the message to all clients in the chat group
         await Clients.Group(messageDto.ChatId.ToString()).SendAsync("ReceiveMessage", message);
     }
 
@@ -59,10 +58,4 @@ public class ChatHub : Hub
     {
         await Clients.All.SendAsync("ConnectedUser", $"{Context.User.Identity.Name} joined the chat");
     }
-
-    // public override async Task OnDisconnectedAsync(Exception exception)
-    // {
-    //     // Clean up logic if needed
-    //     await base.OnDisconnectedAsync(exception);
-    // }
 }

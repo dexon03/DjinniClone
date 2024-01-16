@@ -69,7 +69,7 @@ services:
     networks:
       - IdentityService
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres_identity -d IdentityDb" ]
+      test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -105,7 +105,7 @@ services:
     networks:
         - ProfileService
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres_profile -d ProfileDb" ]
+      test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -141,7 +141,7 @@ services:
     networks:
         - VacanciesService
     healthcheck:
-        test: [ "CMD-SHELL", "pg_isready -U postgres_vacancies -d VacanciesDb" ]
+        test: [ "CMD-SHELL", "pg_isready" ]
         interval: 10s
         timeout: 3s
         retries: 3
@@ -177,7 +177,7 @@ services:
     networks:
         - ChatService
     healthcheck:
-        test: [ "CMD-SHELL", "pg_isready -U postgres_chat" ]
+        test: [ "CMD-SHELL", "pg_isready" ]
         interval: 10s
         timeout: 3s
         retries: 3

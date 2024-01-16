@@ -3,4 +3,5 @@ export const ApiServicesRoutes = {
     profile: '/api/profile',
     identity: '/api/identity',
     chat: '/api/chat',
+    chatHub: '/api/chatHub',
 }
