@@ -1,7 +1,6 @@
 ﻿using Core.Database;
 using FluentValidation;
 using ProfilesService.Domain.DTO;
-using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Application.Validators;
 

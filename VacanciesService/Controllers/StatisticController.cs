@@ -17,15 +17,13 @@ public class StatisticController : BaseController
     public async Task<IActionResult> GetStatistic([FromQuery]string? skillName)
     {
         var encode = HttpUtility.UrlEncode(skillName);
-        var statistic = await _statisticService.GetStatisticAsync(encode);
-        return Ok(statistic);
+        return Ok(await _statisticService.GetStatisticAsync(encode));
     }
     
     [HttpGet("mocked")]
     public async Task<IActionResult> GetMockedStatistic()
     {
-        var statistic = await _statisticService.GetMockedStatisticAsync();
-        return Ok(statistic);
+        return Ok(await _statisticService.GetMockedStatisticAsync());
     }
     
 }

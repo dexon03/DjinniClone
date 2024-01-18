@@ -19,31 +19,27 @@ public class LocationController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _locationService.GetAllLocations();
-        return Ok(result);
+        return Ok(await _locationService.GetAllLocations());
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _locationService.GetLocationById(id);
-        return Ok(result);
+        return Ok(await _locationService.GetLocationById(id));
     }
     
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(LocationCreateDto location)
     {
-        var result = await _locationService.CreateLocation(location);
-        return Ok(result);
+        return Ok(await _locationService.CreateLocation(location));
     }
     
     [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update(LocationUpdateDto location)
     {
-        var result = await _locationService.UpdateLocation(location);
-        return Ok(result);
+        return Ok(await _locationService.UpdateLocation(location));
     }
     
     [Authorize(Roles = "Admin")]

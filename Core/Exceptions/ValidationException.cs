@@ -16,5 +16,3 @@ public class ValidationException : Exception
         return string.Join(";  |  ", _errors.Select(error => $"{error.PropertyName}: {error.ErrorMessage}"));
     }
 }
-
-public record ValidationError(string PropertyName, string ErrorMessage);

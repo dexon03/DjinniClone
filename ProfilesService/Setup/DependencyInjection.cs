@@ -72,7 +72,6 @@ public static class DependencyInjection
     private static IServiceCollection RegisterDomainServices(this IServiceCollection services)
     {
         services.AddScoped<ILocationService, LocationService>();
-        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<ISkillService, SkillService>();
         services.AddScoped<ICompanyService, CompanyService>();

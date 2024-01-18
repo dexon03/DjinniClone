@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace IdentityService.Application.Utilities;
 
@@ -8,7 +9,7 @@ public static class PasswordUtility
     {
         string saltedPassword = password + salt;
         using SHA256 sha256 = SHA256.Create();
-        byte[] hashBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(saltedPassword));
+        byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(saltedPassword));
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
     }
 

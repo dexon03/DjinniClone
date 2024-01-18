@@ -63,7 +63,7 @@ public class PdfService : IPdfService
         return existingFileBytes.Length == formFile.Length;
     }
 
-    public Task DeletePdf(Guid profileId, CancellationToken cancellationToken = default)
+    public Task DeletePdf(Guid profileId)
     {
         var filePath = Path.Combine(fileStoragePath, profileId.ToString());
         if (Directory.Exists(filePath))

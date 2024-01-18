@@ -3,7 +3,6 @@ using System.Text;
 using Core.Database;
 using Core.Exceptions;
 using Core.MessageContract;
-using FluentValidation;
 using IdentityService.Application.Utilities;
 using IdentityService.Domain.Constants;
 using IdentityService.Domain.Contracts;

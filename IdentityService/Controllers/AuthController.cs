@@ -1,6 +1,5 @@
 using IdentityService.Domain.Contracts;
 using IdentityService.Domain.Dto;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Controllers;

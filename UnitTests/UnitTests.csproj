@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AnalyticsService\AnalyticsService.csproj" />
-      <ProjectReference Include="..\IdentityService\IdentityService.csproj" />
       <ProjectReference Include="..\ProfilesService\ProfilesService.csproj" />
       <ProjectReference Include="..\VacanciesService\VacanciesService.csproj" />
     </ItemGroup>

@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Core.Database;
 using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;

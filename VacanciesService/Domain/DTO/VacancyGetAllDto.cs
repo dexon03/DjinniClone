@@ -1,7 +1,4 @@
-﻿using VacanciesService.Domain.Enums;
-using VacanciesService.Domain.Models;
-
-namespace VacanciesService.Domain.DTO;
+﻿namespace VacanciesService.Domain.DTO;
 
 public class VacancyGetAllDto
 {

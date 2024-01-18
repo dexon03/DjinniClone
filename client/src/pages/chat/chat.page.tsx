@@ -7,6 +7,8 @@ import MessageComponent from '../../components/message.component';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useAppSelector } from '../../hooks/redux.hooks';
 import { TextField, Container, Button } from '@mui/material';
+import { environment } from '../../environment/environment';
+import { ApiServicesRoutes } from '../../api/api.services.routes';
 
 const ChatPage = () => {
     const { token } = useToken();
@@ -24,9 +26,10 @@ const ChatPage = () => {
         setMessages(previousMessages);
         const chatCompanion = previousMessages && (previousMessages[0]?.sender.id === token?.userId ? previousMessages[0]?.receiver.id : previousMessages[0]?.sender.id);
         setCompanionId(chatCompanion || '');
-        const url = "http://localhost:5245/chatHub"
+        // const url = "http://localhost:5245/chatHub"
+        const url = environment.apiUrl + ApiServicesRoutes.chatHub + '/chatHub'
         const connection = new HubConnectionBuilder()
-            .withUrl(url) // Replace with your SignalR hub URL
+            .withUrl(url)
             .configureLogging(LogLevel.Information)
             .build();
         try {

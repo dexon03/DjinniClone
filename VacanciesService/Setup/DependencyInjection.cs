@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
 using Core.Database;
-using Core.Exceptions;
 using Core.Validation;
 using FluentValidation;
 using MassTransit;

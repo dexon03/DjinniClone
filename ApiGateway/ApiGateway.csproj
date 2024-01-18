@@ -19,8 +19,4 @@
       <PackageReference Include="Ocelot" Version="18.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Core\Core.csproj" />
-    </ItemGroup>
-
 </Project>

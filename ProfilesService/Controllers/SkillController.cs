@@ -25,24 +25,21 @@ public class SkillController : BaseController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _skillService.GetSkillById(id);
-        return Ok(result);
+        return Ok(await _skillService.GetSkillById(id));
     }
 
     [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPost]
     public async Task<IActionResult> Create(SkillCreateDto skill)
     {
-        var result = await _skillService.CreateSkill(skill);
-        return Ok(result);
+        return Ok(await _skillService.CreateSkill(skill));
     }
 
     [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPut]
     public async Task<IActionResult> Update(SkillUpdateDto skill)
     {
-        var result = await _skillService.UpdateSkill(skill);
-        return Ok(result);
+        return Ok(await _skillService.UpdateSkill(skill));
     }
     
     [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]

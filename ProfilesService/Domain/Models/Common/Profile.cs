@@ -1,5 +1,4 @@
-﻿using ProfilesService.Domain.Contracts;
-using ProfilesService.Domain.DTO;
+﻿using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Enums;
 
 namespace ProfilesService.Domain.Models.Common;
@@ -18,11 +17,6 @@ public class Profile<T>
     public string? LinkedInUrl { get; set; }
     public string? PositionTitle { get; set; }
     public bool IsActive { get; set; } = false;
-
-    public virtual IProfileDto<T> ToDto()
-    {
-        throw new NotImplementedException();
-    }
 }
 
 public static class ProfileMapperExtension

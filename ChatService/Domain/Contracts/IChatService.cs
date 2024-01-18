@@ -1,5 +1,4 @@
 using ChatService.Domain.Dto;
-using ChatService.Domain.Models;
 
 namespace ChatService.Domain.Contracts;
 

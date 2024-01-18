@@ -1,10 +1,8 @@
 using Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProfilesService.Domain;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
-using ProfilesService.Domain.Models;
 
 namespace ProfilesService.Controllers;
 
@@ -23,13 +21,11 @@ public class ProfileController : BaseController
     {
         if (role == Role.Candidate)
         {
-            var result = await _profileService.GetCandidateProfileByUserId(userId,cancellationToken);
-            return Ok(result);
+            return Ok(await _profileService.GetCandidateProfileByUserId(userId,cancellationToken));
         }
         if (role == Role.Recruiter)
         {
-            var result = await _profileService.GetRecruiterProfileByUserId(userId,cancellationToken);
-            return Ok(result);
+            return Ok(await _profileService.GetRecruiterProfileByUserId(userId,cancellationToken));
         }
         return BadRequest();
     }
@@ -37,43 +33,25 @@ public class ProfileController : BaseController
     [HttpGet("getRecruiter/{profileId}")]
     public async Task<IActionResult> GetRecruiterProfile(Guid profileId, CancellationToken cancellationToken)
     {
-        var result = await _profileService.GetRecruiterProfile(profileId,cancellationToken);
-        return Ok(result);
+        return Ok(await _profileService.GetRecruiterProfile(profileId));
     }
     
     [HttpGet("getCandidate/{profileId}")]
     public async Task<IActionResult> GetCandidateProfile(Guid profileId, CancellationToken cancellationToken)
     {
-        var result = await _profileService.GetCandidateProfile(profileId,cancellationToken);
-        return Ok(result);
+        return Ok(await _profileService.GetCandidateProfile(profileId,cancellationToken));
     }
 
     [HttpGet("getCandidatesProfile")]
     public async Task<IActionResult> GetCandidatesProfiles([FromQuery]CandidateFilterParameters filter)
     {
-        var result = await _profileService.GetAllCandidatesProfiles(filter);
-        return Ok(result);
+        return Ok(await _profileService.GetAllCandidatesProfiles(filter));
     }
-
-    // [HttpDelete("{}{id}")]
-    // public async Task<IActionResult> DeleteProfile(Guid id)
-    // {
-    //     await _profileService.DeleteProfile(id);
-    //     return Ok();
-    // }
-
-    // [HttpPost]
-    // public async Task<IActionResult> CreateProfile(ProfileCreateDto profile)
-    // {
-    //     var createdProfile = await _profileService.CreateProfile(profile);
-    //     return Ok(createdProfile);
-    // }
-
+    
     [HttpPut("updateCandidate")]
     public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken)
     {
-        var updatedProfile = await _profileService.UpdateCandidateProfile(profile, cancellationToken);
-        return Ok(updatedProfile);
+        return Ok(await _profileService.UpdateCandidateProfile(profile, cancellationToken));
     }
     
     [HttpPut("uploadResume")]
@@ -98,7 +76,6 @@ public class ProfileController : BaseController
     [HttpPut("updateRecruiter")]
     public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
     {
-        var updatedProfile = await _profileService.UpdateRecruiterProfile(profile, cancellationToken);
-        return Ok(updatedProfile);
+        return Ok(await _profileService.UpdateRecruiterProfile(profile, cancellationToken));
     }
 }

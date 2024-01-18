@@ -1,5 +1,4 @@
 ﻿using VacanciesService.Domain.Enums;
-using VacanciesService.Domain.Models;
 
 namespace VacanciesService.Domain.DTO;
 

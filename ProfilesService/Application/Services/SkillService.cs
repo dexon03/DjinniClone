@@ -22,7 +22,7 @@ public class SkillService : ISkillService
         return _repository.GetAll<Skill>().ToListAsync(cancellationToken);
     }
 
-    public async Task<Skill> GetSkillById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Skill> GetSkillById(Guid id)
     {
         var skill = await _repository.GetByIdAsync<Skill>(id);
         if (skill == null)
