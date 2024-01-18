@@ -1,5 +1,4 @@
-﻿using System.Data;
-using FluentValidation;
+﻿using FluentValidation;
 using VacanciesService.Domain.DTO;
 
 namespace VacanciesService.Application.Validators;

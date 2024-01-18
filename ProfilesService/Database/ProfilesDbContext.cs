@@ -64,7 +64,6 @@ public class ProfilesDbContext : DbContext
             .HasOne(lp => lp.Profile)
             .WithMany(p => p.LocationProfiles)
             .HasForeignKey(lp => lp.ProfileId);
-            
     }
 
     public DbSet<CandidateProfile> CandidateProfile { get; set; }

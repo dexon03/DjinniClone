@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
+
 namespace VacanciesService.Application.Services;
 
 public class SkillService : ISkillService
@@ -21,7 +22,7 @@ public class SkillService : ISkillService
         return _repository.GetAll<Skill>().ToListAsync(cancellationToken);
     }
 
-    public async Task<Skill> GetSkillById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Skill> GetSkillById(Guid id)
     {
         var skill = await _repository.GetByIdAsync<Skill>(id);
         if (skill == null)

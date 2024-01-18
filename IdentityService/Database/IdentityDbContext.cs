@@ -26,7 +26,7 @@ public class IdentityDbContext : DbContext
             Email = "admin@mail.com",
             PasswordSalt = passwordSalt,
             PasswordHash = PasswordUtility.GetHashedPassword("admin", passwordSalt),
-            RoleId = roles.First(x => x.Name == Roles.Admin.ToString()).Id,
+            RoleId = roles.First(x => x.Name == Core.Enums.Role.Admin.ToString()).Id,
         };
         modelBuilder.Entity<User>().HasData(admin);
     }
@@ -41,23 +41,18 @@ public class IdentityDbContext : DbContext
             new Role()
             {
                 Id = Guid.NewGuid(),
-                Name = Roles.Admin.ToString(),
+                Name = Core.Enums.Role.Admin.ToString(),
             },
             new Role()
             {
                 Id = Guid.NewGuid(),
-                Name = Roles.Recruiter.ToString(),
+                Name = Core.Enums.Role.Recruiter.ToString(),
             },
             new Role()
             {
                 Id = Guid.NewGuid(),
-                Name = Roles.Candidate.ToString(),
-            },
-            new Role()
-            {
-                Id = Guid.NewGuid(),
-                Name = Roles.CompanyOwner.ToString(),
-            },
+                Name = Core.Enums.Role.Candidate.ToString(),
+            }
         };
     }
 }

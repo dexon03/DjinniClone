@@ -54,8 +54,8 @@ public class ChatHub : Hub
         await Clients.Group(messageDto.ChatId.ToString()).SendAsync("ReceiveMessage", message);
     }
 
-    public override async Task OnConnectedAsync()
+    public override Task OnConnectedAsync()
     {
-        await Clients.All.SendAsync("ConnectedUser", $"{Context.User.Identity.Name} joined the chat");
+        return Clients.All.SendAsync("ConnectedUser", $"{Context.User.Identity.Name} joined the chat");
     }
 }

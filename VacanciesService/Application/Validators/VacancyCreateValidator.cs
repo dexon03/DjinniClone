@@ -1,6 +1,4 @@
-﻿using System.Net;
-using Core.Database;
-using Core.Exceptions;
+﻿using Core.Database;
 using FluentValidation;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;

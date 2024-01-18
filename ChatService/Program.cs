@@ -1,9 +1,9 @@
 using System.Reflection;
+using ChatService.Application.Services;
 using ChatService.Database;
 using ChatService.Database.AutoMigrations;
 using ChatService.Database.Repository;
 using ChatService.Domain.Contracts;
-using ChatService.Domain.Dto;
 using ChatService.Hubs;
 using Core.Database;
 using Core.ExceptionHandler;
@@ -40,6 +40,7 @@ builder.Services.AddDbContext<ChatDbContext>(options =>
 builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
 builder.Services.AddScoped<IChatService, ChatService.Application.Services.ChatService>();
 builder.Services.AddScoped<IRepository,Repository>();
+builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddCors(opt =>
 {
     opt.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());

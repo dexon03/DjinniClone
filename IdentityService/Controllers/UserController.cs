@@ -1,7 +1,5 @@
-﻿using Core.Database;
-using IdentityService.Application.Services;
+﻿using IdentityService.Application.Services;
 using IdentityService.Domain.Dto;
-using MassTransit.Initializers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

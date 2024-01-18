@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
+
 namespace VacanciesService.Controllers;
 
 public class VacancyController : BaseController
@@ -16,22 +17,19 @@ public class VacancyController : BaseController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetVacancyById(Guid id)
     {
-        var result = await _vacanciesService.GetVacancyById(id);
-        return Ok(result);
+        return Ok(await _vacanciesService.GetVacancyById(id));
     }
     
     [HttpGet]
     public async Task<IActionResult> GetVacancies([FromQuery]VacancyFilterParameters vacancyFilter, CancellationToken cancellationToken)
     {
-        var result = await _vacanciesService.GetAllVacancies(vacancyFilter,cancellationToken);
-        return Ok(result);
+        return Ok(await _vacanciesService.GetAllVacancies(vacancyFilter,cancellationToken));
     }
     
     [HttpGet("getRecruiterVacancies/{recruiterId}")]
     public async Task<IActionResult> GetRecruiterVacancies(Guid recruiterId, [FromQuery]VacancyFilterParameters vacancyFilter,CancellationToken cancellationToken)
     {
-        var result = await _vacanciesService.GetVacanciesByRecruiterId(recruiterId,vacancyFilter, cancellationToken);
-        return Ok(result);
+        return Ok(await _vacanciesService.GetVacanciesByRecruiterId(recruiterId,vacancyFilter, cancellationToken));
     }
     
     [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
@@ -46,16 +44,14 @@ public class VacancyController : BaseController
     [HttpPost]
     public async Task<IActionResult> CreateVacancy(VacancyCreateDto vacancy)
     {
-        var createdVacancy = await _vacanciesService.CreateVacancy(vacancy);
-        return Ok(createdVacancy);
+        return Ok(await _vacanciesService.CreateVacancy(vacancy));
     }
     
     [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]
     [HttpPut]
     public async Task<IActionResult> UpdateVacancy(VacancyUpdateDto vacancy)
     {
-        var updatedVacancy = await _vacanciesService.UpdateVacancy(vacancy);
-        return Ok(updatedVacancy);
+        return Ok(await _vacanciesService.UpdateVacancy(vacancy));
     }
     
     [Authorize(Roles = "Admin, Recruiter, CompanyOwner")]

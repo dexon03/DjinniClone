@@ -2,7 +2,6 @@
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.Enums;
 using ProfilesService.Domain.Models;
-using ProfilesService.Domain.Models.Common;
 
 namespace ProfilesService.Domain.DTO;
 

@@ -1,6 +1,5 @@
 using AutoMapper;
 using Core.Database;
-using Microsoft.EntityFrameworkCore;
 using VacanciesService.Domain.DTO;
 using VacanciesService.Domain.Models;
 

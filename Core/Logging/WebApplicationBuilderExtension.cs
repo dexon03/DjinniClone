@@ -6,16 +6,14 @@ namespace Core.Logging;
 
 public static class WebApplicationBuilderExtension
 {
-    public static WebApplication UseSerilogLogging(this WebApplication builder)
+    public static void UseSerilogLogging(this WebApplication builder)
     {
         builder.UseSerilogRequestLogging();
-        return builder;
     }
     
-    public static WebApplicationBuilder AddSerilogLogging(this WebApplicationBuilder builder)
+    public static void AddSerilogLogging(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton(Log.Logger);
         builder.Host.UseSerilog();
-        return builder;
     }
 }

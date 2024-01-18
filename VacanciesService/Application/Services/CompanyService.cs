@@ -23,7 +23,7 @@ public class CompanyService : ICompanyService
         return _repository.GetAll<Company>().ToListAsync(cancellationToken);
     }
 
-    public async Task<Company> GetCompanyById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Company> GetCompanyById(Guid id)
     {
         var company = await _repository.GetByIdAsync<Company>(id);
         if (company == null)

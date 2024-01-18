@@ -22,7 +22,7 @@ public class LocationService : ILocationService
         return _repository.GetAll<Location>().ToListAsync(cancellationToken);
     }
 
-    public async Task<Location> GetLocationById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Location> GetLocationById(Guid id)
     {
         var location = await _repository.GetByIdAsync<Location>(id);
         if (location == null)

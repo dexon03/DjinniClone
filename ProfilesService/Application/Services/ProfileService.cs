@@ -10,6 +10,7 @@ using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 using ProfilesService.Domain.Models;
 using ProfilesService.Domain.Models.Common;
+
 namespace ProfilesService.Application.Services;
 
 public class ProfileService : IProfileService
@@ -181,7 +182,7 @@ public class ProfileService : IProfileService
         return profileEntities;
     }
 
-    public async Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid recruiterId, CancellationToken cancellationToken = default)
+    public async Task<GetRecruiterProfileDto> GetRecruiterProfile(Guid recruiterId)
     {
         var profileEntity = await _repository.GetByIdAsync<RecruiterProfile>(recruiterId);
         if (profileEntity == null)
@@ -567,7 +568,7 @@ public class ProfileService : IProfileService
             await _repository.SaveChangesAsync(cancellationToken);
             if (typeof(T) == typeof(CandidateProfile))
             {
-                await _pdfService.DeletePdf(profile.Id, cancellationToken);
+                await _pdfService.DeletePdf(profile.Id);
             }
             if (typeof(T) == typeof(RecruiterProfile))
             {

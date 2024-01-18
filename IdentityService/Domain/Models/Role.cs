@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace IdentityService.Domain.Models;
+﻿namespace IdentityService.Domain.Models;
 
 public class Role
 {

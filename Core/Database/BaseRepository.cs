@@ -5,7 +5,7 @@ using Serilog;
 
 namespace Core.Database;
 
-public abstract class BaseRepository
+public abstract class BaseRepository 
 {
     private readonly ILogger _logger;
 

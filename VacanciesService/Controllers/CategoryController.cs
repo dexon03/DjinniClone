@@ -18,31 +18,27 @@ public class CategoryController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _categoryService.GetAllCategories();
-        return Ok(result);
+        return Ok(await _categoryService.GetAllCategories());
     }
     
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var result = await _categoryService.GetCategoryById(id);
-        return Ok(result);
+        return Ok(await _categoryService.GetCategoryById(id));
     }
     
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(CategoryCreateDto category)
     {
-        var result = await _categoryService.CreateCategory(category);
-        return Ok(result);
+        return Ok(await _categoryService.CreateCategory(category));
     }
     
     [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> Update(CategoryUpdateDto category)
     {
-        var result = await _categoryService.UpdateCategory(category);
-        return Ok(result);
+        return Ok(await _categoryService.UpdateCategory(category));
     }
     
     [Authorize(Roles = "Admin")]

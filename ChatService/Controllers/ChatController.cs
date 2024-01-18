@@ -16,17 +16,15 @@ public class ChatController : ControllerBase
     }
     
     [HttpGet("list/{userId}")]
-    public async Task<IActionResult> GetChats(Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetChatList(Guid userId, CancellationToken cancellationToken)
     {
-        var chats = await _chatService.GetChatList(userId,cancellationToken);
-        return Ok(chats);
+        return Ok(await _chatService.GetChatList(userId,cancellationToken));
     }
     
     [HttpGet("messages/{chatId}")]
     public async Task<IActionResult> GetChatMessages(Guid chatId, CancellationToken cancellationToken)
     {
-        var messages = await _chatService.GetChatMessages(chatId, cancellationToken);
-        return Ok(messages);
+        return Ok(await _chatService.GetChatMessages(chatId, cancellationToken));
     }
 
     [HttpPost("create")]

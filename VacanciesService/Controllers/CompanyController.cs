@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VacanciesService.Domain.Contacts;
-using VacanciesService.Domain.DTO;
 
 namespace VacanciesService.Controllers;
 

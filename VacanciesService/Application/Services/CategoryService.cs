@@ -22,7 +22,7 @@ public class CategoryService : ICategoryService
         return _repository.GetAll<Category>().ToListAsync(cancellationToken);
     }
 
-    public async Task<Category> GetCategoryById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Category> GetCategoryById(Guid id)
     {
         var category = await _repository.GetByIdAsync<Category>(id);
         if (category == null)
