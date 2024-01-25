@@ -1,15 +1,4 @@
-﻿networks:
-  IdentityService: 
-    driver: bridge
-  ProfileService: 
-    driver: bridge
-  VacanciesService:
-    driver: bridge
-  ChatService:
-    driver: bridge
-  
-  
-services:
+﻿services:
   api-gateway:
     image: api-gateway
     container_name: api-gateway
@@ -19,21 +8,14 @@ services:
     working_dir: "/app"
     ports:
       - "5000:80"
-    networks:
-      - IdentityService
-      - ProfileService
-      - VacanciesService
-      - ChatService
+
   redis:
     image: redis
     container_name: redis
     ports:
       - "6379:6379"
     restart: always
-    networks:
-      - IdentityService
-      - ProfileService
-      - VacanciesService
+
   
   rabbitmq:
     image: "rabbitmq:management"
@@ -46,34 +28,21 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
-      - ./rabbitmq-data:/var/lib/rabbitmq
-      - ./rabbitmq-logs:/var/log/rabbitmq
-    networks:
-        - IdentityService
-        - ProfileService
-        - VacanciesService
-        - ChatService
-  
+      - ./Volumes/rabbitmq-data:/var/lib/rabbitmq
+      - ./Volumes/rabbitmq-logs:/var/log/rabbitmq
+        
   identity-postgres:
     image: postgres
     container_name: identity-postgres
     ports:
       - "5431:5432"
-    # restart: always
     environment:
       POSTGRES_USER: postgres_identity
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: IdentityDb
     volumes:
-      - ./identityDbDir:/var/lib/postgresql/data
-    networks:
-      - IdentityService
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-        
+      - ./Volumes/identityDbDir:/var/lib/postgresql/data
+
   identity-service:
     image: identity-service
     container_name: identity-service
@@ -81,15 +50,11 @@ services:
       context: .
       dockerfile: ./IdentityService/Dockerfile
     working_dir: "/app"
-    # restart: always
     ports:
       - "5242:80"
     depends_on:
-      identity-postgres:
-        condition: service_healthy
-    networks:
-      - IdentityService
-    
+       - identity-postgres
+
   profile-postgres:
     image: postgres
     container_name: profile-postgres
@@ -99,17 +64,9 @@ services:
       POSTGRES_USER: postgres_profile
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ProfileDb
-    # restart: always
     volumes:
-        - ./profileDbDir:/var/lib/postgresql/data
-    networks:
-        - ProfileService
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    
+        - ./Volumes/profileDbDir:/var/lib/postgresql/data
+        
   profile-service:
     image: profile-service
     container_name: profile-service
@@ -117,14 +74,10 @@ services:
       context: .
       dockerfile: ./ProfilesService/Dockerfile
     working_dir: "/app"
-    # restart: always
     ports:
       - "5243:80"
     depends_on:
-      profile-postgres:
-        condition: service_healthy
-    networks:
-      - ProfileService
+      - profile-postgres
     
   vacancies-postgres:
     image: postgres
@@ -137,14 +90,7 @@ services:
       POSTGRES_DB: VacanciesDb
     # restart: always
     volumes:
-        - ./vacanciesDbDir:/var/lib/postgresql/data
-    networks:
-        - VacanciesService
-    healthcheck:
-        test: [ "CMD-SHELL", "pg_isready" ]
-        interval: 10s
-        timeout: 3s
-        retries: 3
+        - ./Volumes/vacanciesDbDir:/var/lib/postgresql/data
     
   vacancies-service:
     image: vacancies-service
@@ -152,15 +98,12 @@ services:
     build:
       context: .
       dockerfile: ./VacanciesService/Dockerfile
-    # restart: always
+
     working_dir: "/app"
     ports:
       - "5244:80"
     depends_on:
-      vacancies-postgres:
-        condition: service_healthy
-    networks:
-      - VacanciesService
+      - vacancies-postgres
   
   chat-postgres:
     image: postgres
@@ -173,28 +116,17 @@ services:
       POSTGRES_DB: ChatDb
     # restart: always
     volumes:
-        - ./chatDbDir:/var/lib/postgresql/data
-    networks:
-        - ChatService
-    healthcheck:
-        test: [ "CMD-SHELL", "pg_isready" ]
-        interval: 10s
-        timeout: 3s
-        retries: 3
-    
+        - ./Volumes/chatDbDir:/var/lib/postgresql/data
+
   chat-service:
     image: chat-service
     container_name: chat-service
     build:
       context: .
       dockerfile: ./ChatService/Dockerfile
-    # restart: always
     working_dir: "/app"
     ports:
       - "5245:80"
     depends_on:
-      chat-postgres:
-        condition: service_healthy
-    networks:
-      - ChatService
+      - chat-postgres
       
