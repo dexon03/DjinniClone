@@ -1,0 +1,36 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: chat-service-service
+spec:
+  selector:
+    app: chat-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+  
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-service-deployment
+  labels:
+    app: chat-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-service
+  template:
+    metadata:
+      name: chat-service
+      labels:
+        app: chat-service
+    spec:
+      containers:
+        - name: chat-service
+          image: dexon03/chat-service:latest
+          imagePullPolicy: Always

@@ -1,0 +1,16 @@
+﻿apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: identity-db-persistent-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  storageClassName: standard
+  hostPath:
+    path: /data/IdentityDb
+    type: DirectoryOrCreate
+  
+  

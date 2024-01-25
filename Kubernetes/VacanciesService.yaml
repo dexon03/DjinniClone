@@ -1,0 +1,37 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: vacancies-service-service
+spec:
+  selector:
+    app: vacancies-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vacancies-service-deployment
+  labels:
+    app: vacancies-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vacancies-service
+  template:
+    metadata:
+      name: vacancies-service
+      labels:
+        app: vacancies-service
+    spec:
+      containers:
+        - name: vacancies-service
+          image: dexon03/vacancies-service:latest
+          imagePullPolicy: Always
+

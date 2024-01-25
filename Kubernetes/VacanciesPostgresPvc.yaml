@@ -1,0 +1,12 @@
+﻿apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vacancies-db-persistent-volume-claim
+spec:
+  volumeName: vacancies-db-persistent-volume
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+      - ReadWriteOnce

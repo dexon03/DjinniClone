@@ -1,0 +1,55 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: vacancies-postgres
+spec:
+  selector:
+    app: vacancies-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vacancies-postgres
+  labels:
+    app: vacancies-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vacancies-postgres
+  template:
+    metadata:
+      name: vacancies-postgres
+      labels:
+        app: vacancies-postgres
+    spec:
+      containers:
+        - name: vacancies-postgres
+          image: postgres
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_USER
+              value: postgres_vacancies
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: VacanciesDb
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: vacancies-db-dir
+          ports:
+            - containerPort: 5432
+              hostPort: 5432
+              protocol: TCP
+      volumes:
+        - name: vacancies-db-dir
+          persistentVolumeClaim:
+            claimName: vacancies-db-persistent-volume-claim
+      

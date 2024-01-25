@@ -1,0 +1,52 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: identity-postgres
+spec:
+  selector:
+    app: identity-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity-postgres
+  template:
+    metadata:
+      name: identity-postgres
+      labels:
+        app: identity-postgres
+    spec:
+      containers:
+        - name: identity-postgres
+          image: postgres
+          imagePullPolicy: Always
+          env:
+            - name: POSTGRES_USER
+              value: postgres_identity
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: IdentityDb
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: identity-db-dir
+          ports:
+            - containerPort: 5432
+              hostPort: 5432
+              protocol: TCP
+      volumes:
+        - name: identity-db-dir
+          persistentVolumeClaim:
+            claimName: identity-db-persistent-volume-claim      

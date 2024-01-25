@@ -1,0 +1,16 @@
+﻿apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vacancies-db-persistent-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  storageClassName: standard
+  hostPath:
+    path: /data/VacanciesDb
+    type: DirectoryOrCreate
+  
+  

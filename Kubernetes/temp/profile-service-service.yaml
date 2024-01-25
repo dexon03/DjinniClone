@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\dima0\AppData\Local\Microsoft\WinGet\Links\kompose.exe convert
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: profile-service
+  name: profile-service
+spec:
+  ports:
+    - name: "5243"
+      port: 5243
+      targetPort: 80
+  selector:
+    io.kompose.service: profile-service
+status:
+  loadBalancer: {}

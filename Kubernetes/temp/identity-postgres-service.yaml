@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: identity-postgres
+  name: identity-postgres
+spec:
+  ports:
+    - name: "5431"
+      port: 5432
+      targetPort: 5432
+  selector:
+    io.kompose.service: identity-postgres
+status:
+  loadBalancer: {}
