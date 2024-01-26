@@ -1,0 +1,12 @@
+﻿apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: profile-service-persistent-volume-claim
+spec:
+  volumeName: profile-service-persistent-volume
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+      - ReadWriteOnce

@@ -15,10 +15,9 @@ public class UserServices : IUserService
     }
     public async Task CreateUsersIfNotExists(CreateChatDto chatDto, CancellationToken cancellationToken)
     {
-        var isSenderExists =  _repository.AnyAsync<User>(u => u.Id == chatDto.SenderId);
-        var isReceiverExists = _repository.AnyAsync<User>(u => u.Id == chatDto.ReceiverId);
-        var result =  await Task.WhenAll(isSenderExists, isReceiverExists);
-        if (!result[0])
+        var isSenderExists =  await _repository.AnyAsync<User>(u => u.Id == chatDto.SenderId);
+        var isReceiverExists = await _repository.AnyAsync<User>(u => u.Id == chatDto.ReceiverId);
+        if (!isSenderExists)
         {
             var newSender = new User
             {
@@ -27,7 +26,7 @@ public class UserServices : IUserService
             };
             await _repository.CreateAsync(newSender);
         }
-        if (!result[1])
+        if (!isReceiverExists)
         {
             var newReceiver = new User
             {

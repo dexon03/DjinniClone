@@ -34,4 +34,11 @@ spec:
         - name: profile-service
           image: dexon03/profile-service:latest
           imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /app/PdfResumesFiles
+              name: profile-service-dir
+      volumes:
+        - name: profile-service-dir
+          persistentVolumeClaim:
+            claimName: profile-service-persistent-volume-claim
 
