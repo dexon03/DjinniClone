@@ -1,7 +1,7 @@
 ﻿apiVersion: v1
 kind: Service
 metadata:
-  name: chat-postgress
+  name: chat-postgres
 spec:
   selector:
     app: chat-postgres
@@ -44,7 +44,7 @@ spec:
               name: chat-db-dir
           ports:
             - containerPort: 5432
-              hostPort: 5432
+              hostPort: 5434
               protocol: TCP
       volumes:
         - name: chat-db-dir

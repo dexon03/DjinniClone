@@ -1,7 +1,7 @@
 ﻿apiVersion: v1
 kind: Service
 metadata:
-  name: chat-service-service
+  name: chat-service
 spec:
   selector:
     app: chat-service
@@ -10,7 +10,7 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
-  
+
 ---
 
 apiVersion: apps/v1

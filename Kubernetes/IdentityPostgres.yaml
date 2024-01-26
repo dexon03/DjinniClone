@@ -44,7 +44,7 @@ spec:
               name: identity-db-dir
           ports:
             - containerPort: 5432
-              hostPort: 5432
+              hostPort: 5431
               protocol: TCP
       volumes:
         - name: identity-db-dir

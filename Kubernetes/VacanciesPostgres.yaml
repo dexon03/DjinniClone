@@ -46,7 +46,7 @@ spec:
               name: vacancies-db-dir
           ports:
             - containerPort: 5432
-              hostPort: 5432
+              hostPort: 5433
               protocol: TCP
       volumes:
         - name: vacancies-db-dir

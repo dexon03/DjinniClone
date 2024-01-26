@@ -1,0 +1,16 @@
+﻿apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rabbitmq-logs-persistent-volume
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  storageClassName: standard
+  hostPath:
+    path: /data/RabbitMQLogs
+    type: DirectoryOrCreate    
+  
+      
