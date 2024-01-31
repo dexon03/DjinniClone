@@ -1,0 +1,52 @@
+﻿apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: profile-service-storage-class
+provisioner: pd.csi.storage.gke.io
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: pd-balanced
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: profile-service-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard-rwo
+  resources:
+    requests:
+      storage: 100Mi
+      cpu: 50m
+
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: profile-service-persistent-volume
+#spec:
+#  capacity:
+#    storage: 1Gi
+#  accessModes:
+#    - ReadWriteOnce
+#  volumeMode: Filesystem
+#  storageClassName: standard
+#  hostPath:
+#    path: /data/ProfileResumes
+#    type: DirectoryOrCreate
+#
+#---
+#
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: profile-service-persistent-volume-claim
+#spec:
+#  volumeName: profile-service-persistent-volume
+#  storageClassName: standard
+#  resources:
+#    requests:
+#      storage: 1Gi
+#  accessModes:
+#    - ReadWriteOnce

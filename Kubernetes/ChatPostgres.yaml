@@ -1,0 +1,60 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: chat-postgres
+spec:
+  selector:
+    app: chat-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+  
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-postgres
+  template:
+    metadata:
+      name: chat-postgres
+      labels:
+        app: chat-postgres
+    spec:
+      containers:
+        - name: chat-postgres
+          image: postgres
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "100Mi"
+              cpu: "50m"
+          env:
+            - name: POSTGRES_USER
+              value: postgres_chat
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: ChatDb
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: chat-db-dir
+              subPath: postgres
+          ports:
+            - containerPort: 5432
+#              hostPort: 5434
+              protocol: TCP
+      volumes:
+        - name: chat-db-dir
+          persistentVolumeClaim:
+            claimName: chat-db-persistent-volume-claim

@@ -1,0 +1,69 @@
+﻿apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: identity-db-storage-class
+provisioner: pd.csi.storage.gke.io
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: pd-balanced
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: identity-db-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard-rwo
+  resources:
+    requests:
+      storage: 100Mi
+      cpu: 50m
+      
+---
+#
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: identity-db-persistent-volume
+#spec:
+#  capacity:
+#    storage: 1Gi
+#  accessModes:
+#    - ReadWriteOnce
+#  volumeMode: Filesystem
+#  storageClassName: standard-rwo
+#  csi:
+#    driver: pd.csi.storage.gke.io
+#    volumeHandle: csi-gcs
+#    
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: identity-db-persistent-volume-claim
+#spec:
+#  volumeName: identity-db-persistent-volume
+#  storageClassName: standard-rwo
+#  resources:
+#    requests:
+#      storage: 1Gi
+#  accessModes:
+#    - ReadWriteOnce
+
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: identity-db-persistent-volume
+#spec:
+#  capacity:
+#    storage: 1Gi
+#  accessModes:
+#    - ReadWriteOnce
+#  volumeMode: Filesystem
+#  storageClassName: standard
+#  hostPath:
+#    path: /data/IdentityDb
+#    type: DirectoryOrCreate

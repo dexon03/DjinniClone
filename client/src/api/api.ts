@@ -31,7 +31,7 @@ api.interceptors.response.use(
             try {
                 const storageToken = localStorage.getItem('token');
                 const refreshToken = storageToken ? JSON.parse(storageToken)?.refreshToken : null;
-                var response = await axios.post(environment.apiUrl + ApiServicesRoutes.identity + '/auth/refresh', { refreshToken })
+                const response = await axios.post(environment.apiUrl + ApiServicesRoutes.identity + '/auth/refresh', { refreshToken })
 
                 const token = response.data;
                 const stringToken = JSON.stringify(token);
@@ -41,13 +41,17 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${token.accessToken}`;
                 return axios(originalRequest);
             } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }
                 console.log(error);
             }
         }
-        if (error.response.status == 422) {
+        if (error.response.status === 422) {
             showErrorToast(Object.values(error.response.data).join('\n'));
         }
-        if (error.response.status == 500) {
+        if (error.response.status === 500) {
             showErrorToast(error.response.data.message);
         }
 

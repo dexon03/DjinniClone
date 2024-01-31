@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: identity-service
+  name: identity-service
+spec:
+  ports:
+    - name: "5242"
+      port: 5242
+      targetPort: 80
+  selector:
+    io.kompose.service: identity-service
+status:
+  loadBalancer: {}
