@@ -384,3 +384,5 @@ rabbitmq-logs
 chatDbDir
 
 ProfilesService/PdfResumesFiles/*
+
+*firebase*

@@ -126,7 +126,7 @@ export function VacancyListPage() {
                         onChange={(e) => setFilterLocation(e.target.value)}
                         labelId="location-label"
                     >
-                        {locations && locations.map((location) => <MenuItem value={location.id}>{location.city}, {location.country}</MenuItem>)}
+                        {locations && locations.map((location) => <MenuItem key={location.id} value={location.id}>{location.city}, {location.country}</MenuItem>)}
                         <MenuItem value={''}>Clear</MenuItem>
                     </Select>
                 </FormControl>
@@ -139,7 +139,7 @@ export function VacancyListPage() {
                         onChange={(e) => setFilterSkill(e.target.value)}
                         labelId="skill-label"
                     >
-                        {skills && skills.map((skill) => <MenuItem value={skill.id}>{skill.name}</MenuItem>)}
+                        {skills && skills.map((skill) => <MenuItem key={skill.id} value={skill.id}>{skill.name}</MenuItem>)}
                         <MenuItem value={''}>Clear</MenuItem>
                     </Select>
                 </FormControl>
@@ -151,7 +151,7 @@ export function VacancyListPage() {
                         onChange={(e) => setFilterCategory(e.target.value)}
                         labelId="category-label"
                     >
-                        {categories && categories.map((category) => <MenuItem value={category.id}>{category.name}</MenuItem>)}
+                        {categories && categories.map((category) => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}
                         <MenuItem value={''}>Clear</MenuItem>
                     </Select>
                 </FormControl>

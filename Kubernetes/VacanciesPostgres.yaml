@@ -41,12 +41,18 @@ spec:
               value: postgres
             - name: POSTGRES_DB
               value: VacanciesDb
+          resources:
+            requests:
+              cpu: "50m"
+            limits:
+              cpu: "50m"
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: vacancies-db-dir
+              subPath: postgres
           ports:
             - containerPort: 5432
-              hostPort: 5433
+#              hostPort: 5433
               protocol: TCP
       volumes:
         - name: vacancies-db-dir

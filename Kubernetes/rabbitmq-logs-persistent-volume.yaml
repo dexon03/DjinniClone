@@ -1,16 +1,51 @@
-﻿apiVersion: v1
-kind: PersistentVolume
+﻿apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
-  name: rabbitmq-logs-persistent-volume
+  name: rabbitmq-logs-storage-class
+provisioner: pd.csi.storage.gke.io
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: pd-balanced
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-logs-volume-claim
 spec:
-  capacity:
-    storage: 100Mi
   accessModes:
     - ReadWriteOnce
-  volumeMode: Filesystem
-  storageClassName: standard
-  hostPath:
-    path: /data/RabbitMQLogs
-    type: DirectoryOrCreate    
-  
-      
+  storageClassName: standard-rwo
+  resources:
+    requests:
+      storage: 50Mi
+      cpu: 50m
+
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: rabbitmq-logs-persistent-volume
+#spec:
+#  capacity:
+#    storage: 100Mi
+#  accessModes:
+#    - ReadWriteOnce
+#  volumeMode: Filesystem
+#  storageClassName: standard
+#  hostPath:
+#    path: /data/RabbitMQLogs
+#    type: DirectoryOrCreate    
+#  
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: rabbitmq-logs-volume-claim
+#spec:
+#  volumeName: rabbitmq-logs-persistent-volume
+#  accessModes:
+#    - ReadWriteOnce
+#  storageClassName: standard
+#  resources:
+#    requests:
+#      storage: 100Mi      

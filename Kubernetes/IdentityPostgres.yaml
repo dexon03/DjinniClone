@@ -32,6 +32,11 @@ spec:
         - name: identity-postgres
           image: postgres
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "50m"
+            limits:
+              cpu: "50m"
           env:
             - name: POSTGRES_USER
               value: postgres_identity
@@ -42,9 +47,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: identity-db-dir
+              subPath: postgres
           ports:
             - containerPort: 5432
-              hostPort: 5431
+#              hostPort: 5431
               protocol: TCP
       volumes:
         - name: identity-db-dir
