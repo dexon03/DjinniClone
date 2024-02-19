@@ -386,3 +386,4 @@ chatDbDir
 ProfilesService/PdfResumesFiles/*
 
 *firebase*
+*dist*
