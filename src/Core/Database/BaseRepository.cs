@@ -1,5 +1,7 @@
 ﻿using System.Data.Common;
 using System.Linq.Expressions;
+using System.Net;
+using Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -234,7 +236,7 @@ public abstract class BaseRepository
         
         if (result == null)
         {
-            throw new Exception($"Entity of type {typeof(T).Name} not found");
+            throw new ExceptionWithStatusCode($"Entity of type {typeof(T).Name} not found", HttpStatusCode.BadRequest);
         }
         
         return result;
@@ -246,7 +248,7 @@ public abstract class BaseRepository
         
         if (result == null)
         {
-            throw new Exception($"Entity of type {typeof(T).Name} not found");
+            throw new ExceptionWithStatusCode($"Entity of type {typeof(T).Name} not found", HttpStatusCode.BadRequest);
         }
         
         return result;

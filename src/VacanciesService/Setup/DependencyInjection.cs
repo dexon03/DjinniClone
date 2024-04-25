@@ -24,8 +24,9 @@ public static class DependencyInjection
     {
         services.AddDbContext<VacanciesDbContext>(opt =>
         {
-            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
+            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);
         });
+        
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);
         services.AddFluentValidationAutoValidation(opt =>
@@ -51,7 +52,7 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = appConfiguration["Jwt:Issuer"],
                     ValidAudience = appConfiguration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"] ?? throw new InvalidOperationException()))
                 };
             });
         services.AddMassTransit(x =>
@@ -65,7 +66,7 @@ public static class DependencyInjection
                 configurator.ConfigureEndpoints(context);
             });
         });
-        services.AddMassTransitHostedService();
+        // services.AddMassTransitHostedService();
         return services;
     }
     

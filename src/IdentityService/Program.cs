@@ -25,6 +25,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
+builder.AddServiceDefaults();
 builder.Services.RegisterDependencies(builder.Configuration);
 
 var app = builder.Build();

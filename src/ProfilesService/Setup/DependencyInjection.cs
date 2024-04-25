@@ -51,7 +51,7 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = appConfiguration["Jwt:Issuer"],
                     ValidAudience = appConfiguration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"] ?? throw new InvalidOperationException()))
                 };
             });
         services.AddMassTransit(x =>
@@ -65,7 +65,6 @@ public static class DependencyInjection
                 configurator.ConfigureEndpoints(context);
             });
         });
-        services.AddMassTransitHostedService();
         return services;
     }
     

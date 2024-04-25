@@ -16,7 +16,6 @@ public class UserDeletedMessageConsumer : IConsumer<UserDeletedEvent>
     public async Task Consume(ConsumeContext<UserDeletedEvent> context)
     {
         var message = context.Message;
-        await _repository.DeleteRange<Message>(m => m.ReceiverId == message.UserId || m.SenderId == message.UserId);
         await _repository.DeleteRange<User>(u => u.Id == message.UserId);
         await _repository.SaveChangesAsync();
     }

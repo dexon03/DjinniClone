@@ -1,15 +1,8 @@
-using System.Reflection;
-using ChatService.Application.Services;
-using ChatService.Database;
-using ChatService.Database.AutoMigrations;
-using ChatService.Database.Repository;
-using ChatService.Domain.Contracts;
 using ChatService.Hubs;
+using ChatService.Setup;
 using Core.Database;
 using Core.ExceptionHandler;
 using Core.Logging;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -31,32 +24,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.AddServiceDefaults();
 builder.AddSerilogLogging();
-builder.Services.AddSignalR();
-builder.Services.AddDbContext<ChatDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
-});
-builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
-builder.Services.AddScoped<IChatService, ChatService.Application.Services.ChatService>();
-builder.Services.AddScoped<IRepository,Repository>();
-builder.Services.AddScoped<IUserService, UserServices>();
-builder.Services.AddCors(opt =>
-{
-    opt.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
-});
-builder.Services.AddMassTransit(x =>
-{
-    x.SetKebabCaseEndpointNameFormatter();
-    x.AddConsumers(Assembly.GetExecutingAssembly());
-    x.UsingRabbitMq((context, configurator) =>
-    {
-        configurator.Host("rabbitmq", "/", h => { });
-                
-        configurator.ConfigureEndpoints(context);
-    });
-});
-builder.Services.AddMassTransitHostedService();
+builder.Services.AddDependencies(builder.Configuration);
 
 var app = builder.Build();
 

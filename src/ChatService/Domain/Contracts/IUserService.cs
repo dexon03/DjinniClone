@@ -4,5 +4,5 @@ namespace ChatService.Domain.Contracts;
 
 public interface IUserService
 {
-    Task CreateUsersIfNotExists(CreateChatDto chatDto, CancellationToken cancellationToken);
+    Task AddUsersIfNotExists(CreateChatDto chatDto, CancellationToken cancellationToken);
 }

@@ -4,17 +4,18 @@ namespace ChatService.Domain.Models;
 
 public class Message
 {
-    public Guid Id { get; set; }
-    public string Content { get; set; } = null!;
-    public DateTime TimeStamp { get; set; }
+    public Guid Id { get; init; }
+    public string Content { get; init; } = null!;
+    public DateTime TimeStamp { get; init; }
     [ForeignKey("Sender")]
-    public Guid SenderId { get; set; }
+    public Guid SenderId { get; init; }
     [ForeignKey("Receiver")]
-    public Guid ReceiverId { get; set; }
+    public Guid ReceiverId { get; init; }
     [ForeignKey("Chat")]
-    public Guid ChatId { get; set; }
-    public bool IsRead { get; set; }
-    public User Receiver { get; set; }
-    public User Sender { get; set; }
-    public Chat Chat { get; set; }
+    public Guid ChatId { get; init; }
+
+    public bool IsRead { get; init; } = false;
+    public User Receiver { get; init; }
+    public User Sender { get; init; }
+    public Chat Chat { get; init; }
 }

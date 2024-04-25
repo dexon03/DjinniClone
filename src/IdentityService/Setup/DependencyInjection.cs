@@ -35,7 +35,7 @@ public static class DependencyInjection
         });
         services.AddScoped<UserManager>();
         services.AddScoped<IRepository, Repository>();
-        services.AddScoped<IJWTService, JWTService>();
+        services.AddScoped<IJWTService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddStackExchangeRedisCache(options =>
         {
@@ -53,7 +53,7 @@ public static class DependencyInjection
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = appConfiguration["Jwt:Issuer"],
                     ValidAudience = appConfiguration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfiguration["Jwt:Key"] ?? throw new InvalidOperationException()))
                 };
             });
         services.AddMassTransit(x =>
@@ -67,7 +67,6 @@ public static class DependencyInjection
             });
         });
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-        services.AddMassTransitHostedService();
         return services;
     }
 }

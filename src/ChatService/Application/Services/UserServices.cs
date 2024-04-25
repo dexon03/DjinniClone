@@ -13,7 +13,7 @@ public class UserServices : IUserService
     {
         _repository = repository;
     }
-    public async Task CreateUsersIfNotExists(CreateChatDto chatDto, CancellationToken cancellationToken)
+    public async Task AddUsersIfNotExists(CreateChatDto chatDto, CancellationToken cancellationToken)
     {
         var isSenderExists =  await _repository.AnyAsync<User>(u => u.Id == chatDto.SenderId);
         var isReceiverExists = await _repository.AnyAsync<User>(u => u.Id == chatDto.ReceiverId);

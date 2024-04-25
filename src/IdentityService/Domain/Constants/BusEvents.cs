@@ -2,5 +2,5 @@
 
 public static class BusEvents
 {
-    public static string OnUserCreated = "OnUserCreated";
+    public static readonly string OnUserCreated = "OnUserCreated";
 }

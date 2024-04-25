@@ -5,6 +5,7 @@ using Core.Middlewares;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using VacanciesService.Database;
 using VacanciesService.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.AddServiceDefaults();
 builder.AddSerilogLogging();
 builder.Services.RegisterDependencies(builder.Configuration);
 
@@ -58,5 +60,6 @@ app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseMiddleware<CheckTokenInCacheMiddleware>();
+
 
 app.Run();

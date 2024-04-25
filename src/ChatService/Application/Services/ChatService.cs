@@ -72,20 +72,19 @@ public class ChatService : IChatService
                 TimeStamp = DateTime.Now,
                 SenderId = chatDto.SenderId,
                 ReceiverId = chatDto.ReceiverId,
-                IsRead = false
             };
             await _repository.CreateAsync(newMessage);
             await _repository.SaveChangesAsync(cancellationToken);
         }
         else
         {
-           await CreateNewChatAndAddMessage(chatDto, cancellationToken);
+           await CreateNewChatWithMessage(chatDto, cancellationToken);
         }
     }
 
-    private async Task CreateNewChatAndAddMessage(CreateChatDto chatDto, CancellationToken cancellationToken = default)
+    private async Task CreateNewChatWithMessage(CreateChatDto chatDto, CancellationToken cancellationToken = default)
     {
-        await _userService.CreateUsersIfNotExists(chatDto, cancellationToken);
+        await _userService.AddUsersIfNotExists(chatDto, cancellationToken);
         var chat = new Chat
         {
             Id = Guid.NewGuid(),
@@ -100,7 +99,6 @@ public class ChatService : IChatService
             TimeStamp = DateTime.Now,
             SenderId = chatDto.SenderId,
             ReceiverId = chatDto.ReceiverId,
-            IsRead = false
         };
             
         await _repository.CreateAsync(chat);

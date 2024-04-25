@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Core.Database;
@@ -10,12 +11,12 @@ using JwtConstants = IdentityService.Domain.Constants.JwtConstants;
 
 namespace IdentityService.Application.Services;
 
-public class JWTService : IJWTService
+public class JwtService : IJWTService
 {
     private readonly IConfiguration _configuration;
     private readonly IRepository _repository;
 
-    public JWTService(IConfiguration configuration, IRepository repository)
+    public JwtService(IConfiguration configuration, IRepository repository)
     {
         _configuration = configuration;
         _repository = repository;
@@ -26,11 +27,11 @@ public class JWTService : IJWTService
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var claims = new List<Claim>()
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.Name)
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.CurrentCulture)),
+            new(ClaimTypes.NameIdentifier, user.Email),
+            new(ClaimTypes.Role, user.Role.Name)
         };
         var token = new JwtSecurityToken(
             _configuration["Jwt:Issuer"],
@@ -78,10 +79,10 @@ public class JWTService : IJWTService
         return userId;
     }
 
-    private bool TryValidateToken(string token, out ClaimsPrincipal principal)
+    private bool TryValidateToken(string token, out ClaimsPrincipal? principal)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_configuration["JWT:RefreshTokenKey"]);
+        var key = Encoding.UTF8.GetBytes(_configuration["JWT:RefreshTokenKey"] ?? throw new InvalidOperationException());
 
         try
         {

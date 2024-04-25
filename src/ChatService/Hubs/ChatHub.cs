@@ -46,16 +46,14 @@ public class ChatHub : Hub
                 Id = messageDto.SenderId,
                 UserName = messageDto.SenderName
             },
-            
             ChatId = messageDto.ChatId,
             TimeStamp = DateTime.Now,
         };
-        
         await Clients.Group(messageDto.ChatId.ToString()).SendAsync("ReceiveMessage", message);
     }
 
     public override Task OnConnectedAsync()
     {
-        return Clients.All.SendAsync("ConnectedUser", $"{Context.User.Identity.Name} joined the chat");
+        return Clients.All.SendAsync("ConnectedUser", $"{Context?.User?.Identity?.Name} joined the chat");
     }
 }

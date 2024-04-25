@@ -9,7 +9,7 @@ namespace Core.ExceptionHandler;
 public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly string ContentType = "application/json";
+    private const string ContentType = "application/json";
     private readonly ILogger _logger = Log.ForContext<ExceptionHandlerMiddleware>();
 
     public ExceptionHandlerMiddleware(RequestDelegate next)
@@ -50,7 +50,7 @@ public class ExceptionHandlerMiddleware
         }
         
         _logger.Error(exception, exception.Message);
-        var result = JsonConvert.SerializeObject(new { message = exception?.Message });
+        var result = JsonConvert.SerializeObject(new { message = exception.Message });
         return response.WriteAsync(result);
     }
 }

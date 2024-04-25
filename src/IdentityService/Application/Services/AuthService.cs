@@ -41,10 +41,10 @@ public class AuthService : IAuthService
             //TODO: replace all exception by ErrorOr
             throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.BadRequest);
         }
-        var token = GetNewTokenForUser(user);
-        _repository.Update(user);
+        var token = GetNewTokenForUser(user!);
+        _repository.Update(user!);
         await _repository.SaveChangesAsync(cancellationToken);
-        await AddTokenToCache(user.Id.ToString(), token.AccessToken);
+        await AddTokenToCache(user!.Id.ToString(), token.AccessToken);
         return token;
     }
 
@@ -59,10 +59,10 @@ public class AuthService : IAuthService
         await _publishEndpoint.Publish<UserCreatedEvent>(new 
         {
             UserId = user.Id,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            PhoneNumber = user.PhoneNumber,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
             Role = user.Role.Name
         }, cancellationToken);
         return token;
@@ -90,6 +90,10 @@ public class AuthService : IAuthService
         }
         
         var user = await _userManager.FindByIdAsync(Guid.Parse(userId));
+        if (user == null)
+        {
+            throw new ExceptionWithStatusCode("Invalid refresh token", HttpStatusCode.BadRequest);
+        }
         var token = GetNewTokenForUser(user);
         _repository.Update(user);
         await _repository.SaveChangesAsync(cancellationToken);
