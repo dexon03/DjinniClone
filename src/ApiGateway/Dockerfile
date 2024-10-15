@@ -1,16 +1,23 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
 WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ApiGateway/ApiGateway.csproj", "ApiGateway/"]
-RUN dotnet restore "ApiGateway/ApiGateway.csproj"
+COPY ["src/ApiGateway/ApiGateway.csproj", "src/ApiGateway/"]
+#COPY ["src/AspireApp1/AspireApp1.Defaults/AspireApp1.Defaults.csproj", "src/AspireApp1/AspireApp1.Defaults/"]
+COPY ["src/Core/Core.csproj", "src/Core/"]
+RUN dotnet restore "src/ApiGateway/ApiGateway.csproj"
 COPY . .
-WORKDIR "/src/ApiGateway"
-RUN dotnet build "ApiGateway.csproj" -c Release -o /app/build
+WORKDIR "/src/src/ApiGateway"
+RUN dotnet build "ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ApiGateway.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
