@@ -61,13 +61,12 @@ public static class DependencyInjection
             x.SetKebabCaseEndpointNameFormatter();
             x.UsingRabbitMq((context, configurator) =>
             {
-                configurator.Host("rabbitmq", "/", h => { });
+                configurator.Host("rabbitmq");
                 
                 configurator.ConfigureEndpoints(context);
             });
         });
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-        services.AddMassTransitHostedService();
         return services;
     }
 }

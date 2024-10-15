@@ -65,7 +65,6 @@ public static class DependencyInjection
                 configurator.ConfigureEndpoints(context);
             });
         });
-        services.AddMassTransitHostedService();
         return services;
     }
     
