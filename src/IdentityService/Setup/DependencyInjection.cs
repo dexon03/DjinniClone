@@ -25,7 +25,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<IdentityDbContext>(opt =>
         {
-            opt.UseNpgsql(appConfiguration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);
+            opt.UseNpgsql(appConfiguration.GetConnectionString("IdentityPostgres")).LogTo(Log.Logger.Information, LogLevel.Information);
         });
         services.AddScoped<IMigrationsManager, MigrationsManager>();
         services.AddValidatorsFromAssembly(ApplicationAssembly);
@@ -61,13 +61,12 @@ public static class DependencyInjection
             x.SetKebabCaseEndpointNameFormatter();
             x.UsingRabbitMq((context, configurator) =>
             {
-                configurator.Host("rabbitmq", "/", h => { });
+                configurator.Host(appConfiguration.GetConnectionString("RabbitMq"));
                 
                 configurator.ConfigureEndpoints(context);
             });
         });
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-        services.AddMassTransitHostedService();
         return services;
     }
 }

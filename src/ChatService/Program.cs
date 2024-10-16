@@ -15,6 +15,8 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -35,7 +37,7 @@ builder.AddSerilogLogging();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<ChatDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")).LogTo(Log.Logger.Information, LogLevel.Information);;
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ChatPostgres")).LogTo(Log.Logger.Information, LogLevel.Information);;
 });
 builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
 builder.Services.AddScoped<IChatService, ChatService.Application.Services.ChatService>();
@@ -51,14 +53,15 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumers(Assembly.GetExecutingAssembly());
     x.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host("rabbitmq", "/", h => { });
+        configurator.Host(builder.Configuration.GetConnectionString("RabbitMq"));
                 
         configurator.ConfigureEndpoints(context);
     });
 });
-builder.Services.AddMassTransitHostedService();
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 using (var serviceScope = app.Services.CreateScope())
 {
