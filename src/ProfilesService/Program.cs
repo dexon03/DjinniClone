@@ -9,6 +9,8 @@ using Serilog.Sinks.SystemConsole.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -29,6 +31,8 @@ builder.AddSerilogLogging();
 builder.Services.RegisterDependencies(builder.Configuration);
 
 var app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 using (var serviceScope = app.Services.CreateScope())
 {

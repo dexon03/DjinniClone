@@ -5,7 +5,7 @@
     build:
       context: .
       dockerfile: ./src/ApiGateway/Dockerfile
-    working_dir: "/app"
+#    working_dir: "/app"
     ports:
       - "5000:80"
 
@@ -14,7 +14,7 @@
     container_name: redis
     ports:
       - "6379:6379"
-    restart: always
+    restart: unless-stopped
 
   
   rabbitmq:
@@ -32,7 +32,7 @@
       - ./Volumes/rabbitmq-logs:/var/log/rabbitmq
         
   identity-postgres:
-    image: postgres
+    image: postgres:15
     container_name: identity-postgres
     ports:
       - "5431:5432"
@@ -49,14 +49,14 @@
     build:
       context: .
       dockerfile: ./src/IdentityService/Dockerfile
-    working_dir: "/app"
+#    working_dir: "/app"
     ports:
       - "5242:80"
     depends_on:
        - identity-postgres
 
   profile-postgres:
-    image: postgres
+    image: postgres:15
     container_name: profile-postgres
     ports:
       - "5432:5432"
@@ -73,14 +73,14 @@
     build:
       context: .
       dockerfile: ./src/ProfilesService/Dockerfile
-    working_dir: "/app"
+#    working_dir: "/app"
     ports:
       - "5243:80"
     depends_on:
       - profile-postgres
     
   vacancies-postgres:
-    image: postgres
+    image: postgres:15
     container_name: vacancies-postgres
     ports:
       - "5433:5432"
@@ -98,15 +98,14 @@
     build:
       context: .
       dockerfile: ./src/VacanciesService/Dockerfile
-
-    working_dir: "/app"
+#    working_dir: "/app"
     ports:
       - "5244:80"
     depends_on:
       - vacancies-postgres
   
   chat-postgres:
-    image: postgres
+    image: postgres:15
     container_name: chat-postgres
     ports:
       - "5434:5432"
@@ -129,4 +128,3 @@
       - "5245:80"
     depends_on:
       - chat-postgres
-      

@@ -8,10 +8,10 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/ApiGateway/ApiGateway.csproj", "src/ApiGateway/"]
-#COPY ["src/AspireApp1/AspireApp1.Defaults/AspireApp1.Defaults.csproj", "src/AspireApp1/AspireApp1.Defaults/"]
-COPY ["src/Core/Core.csproj", "src/Core/"]
+COPY ["src/DjinniClone.ServiceDefaults/DjinniClone.ServiceDefaults.csproj", "src/DjinniClone.ServiceDefaults/"]
 RUN dotnet restore "src/ApiGateway/ApiGateway.csproj"
-COPY . .
+COPY ./src/ApiGateway ./src/ApiGateway
+COPY ./src/DjinniClone.ServiceDefaults ./src/DjinniClone.ServiceDefaults
 WORKDIR "/src/src/ApiGateway"
 RUN dotnet build "ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

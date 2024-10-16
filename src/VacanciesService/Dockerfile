@@ -8,10 +8,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/VacanciesService/VacanciesService.csproj", "src/VacanciesService/"]
-#COPY ["src/AspireApp1/AspireApp1.ServiceDefaults/AspireApp1.ServiceDefaults.csproj", "src/AspireApp1/AspireApp1.ServiceDefaults/"]
 COPY ["src/Core/Core.csproj", "src/Core/"]
+COPY ["src/DjinniClone.ServiceDefaults/DjinniClone.ServiceDefaults.csproj", "src/DjinniClone.ServiceDefaults/"]
 RUN dotnet restore "src/VacanciesService/VacanciesService.csproj"
-COPY . .
+COPY ./src/VacanciesService ./src/VacanciesService
+COPY ./src/Core ./src/Core
+COPY ./src/DjinniClone.ServiceDefaults ./src/DjinniClone.ServiceDefaults
 WORKDIR "/src/src/VacanciesService"
 RUN dotnet build "VacanciesService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
