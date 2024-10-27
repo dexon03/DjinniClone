@@ -51,7 +51,7 @@ api.interceptors.response.use(
         if (error.response.status === 422) {
             showErrorToast(Object.values(error.response.data).join('\n'));
         }
-        if (error.response.status === 500) {
+        if (error.response.status === 500 || error.response.status === 400) {
             showErrorToast(error.response.data.message);
         }
 

@@ -8,10 +8,12 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("front", policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173").AllowCredentials());
 });
+
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("ocelot.json")
     .AddEnvironmentVariables();
 builder.Services.AddOcelot(builder.Configuration);
+// builder.Services.ConfigureDownstreamHostAndPortsPlaceholders(builder.Configuration);
 builder.Services.AddSignalR();
 
 var app = builder.Build();

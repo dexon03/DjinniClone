@@ -28,6 +28,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddSerilogLogging();
 builder.Services.RegisterDependencies(builder.Configuration);
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("front", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+});
+
 
 var app = builder.Build();
 
@@ -50,13 +55,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("front");
 app.UseSerilogLogging();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection()
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();

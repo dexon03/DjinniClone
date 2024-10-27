@@ -28,7 +28,7 @@ public class IdentityDbContext : DbContext
             PasswordHash = PasswordUtility.GetHashedPassword("admin", passwordSalt),
             RoleId = roles.First(x => x.Name == Core.Enums.Role.Admin.ToString()).Id,
         };
-        modelBuilder.Entity<User>().HasData(admin);
+        modelBuilder.Entity<User>().HasData([admin]);
     }
 
     public DbSet<User> User { get; set; }

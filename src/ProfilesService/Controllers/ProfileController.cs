@@ -49,7 +49,7 @@ public class ProfileController : BaseController
     }
     
     [HttpPut("updateCandidate")]
-    public async Task<IActionResult> UpdateCandidateProfile(CandidateProfileUpdateDto profile, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateCandidateProfile([FromBody]CandidateProfileUpdateDto profile, CancellationToken cancellationToken)
     {
         return Ok(await _profileService.UpdateCandidateProfile(profile, cancellationToken));
     }
@@ -74,7 +74,7 @@ public class ProfileController : BaseController
     }
     
     [HttpPut("updateRecruiter")]
-    public async Task<IActionResult> UpdateRecruiterProfile(RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateRecruiterProfile([FromBody]RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
     {
         return Ok(await _profileService.UpdateRecruiterProfile(profile, cancellationToken));
     }

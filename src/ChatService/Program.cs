@@ -45,7 +45,7 @@ builder.Services.AddScoped<IRepository,Repository>();
 builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddCors(opt =>
 {
-    opt.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+    opt.AddPolicy("front", policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5174").AllowCredentials());
 });
 builder.Services.AddMassTransit(x =>
 {
@@ -80,13 +80,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("front");
 app.UseSerilogLogging();
 
-app.UseHttpsRedirection();
+// // app.UseHttpsRedirection()
 
 app.UseAuthorization();
 
-app.UseCors();
 app.MapControllers();
 
 app.MapHub<ChatHub>("/chatHub");
