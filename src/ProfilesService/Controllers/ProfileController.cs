@@ -1,6 +1,8 @@
 using Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OllamaSharp;
+using OllamaSharp.Models;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 
@@ -10,10 +12,12 @@ namespace ProfilesService.Controllers;
 public class ProfileController : BaseController
 {
     private readonly IProfileService _profileService;
+    private readonly IConfiguration _configuration;
 
-    public ProfileController(IProfileService profileService)
+    public ProfileController(IProfileService profileService, IConfiguration configuration)
     {
         _profileService = profileService;
+        _configuration = configuration;
     }
 
     [HttpGet("{role}/{userId}")]
@@ -77,5 +81,20 @@ public class ProfileController : BaseController
     public async Task<IActionResult> UpdateRecruiterProfile([FromBody]RecruiterProfileUpdateDto profile, CancellationToken cancellationToken)
     {
         return Ok(await _profileService.UpdateRecruiterProfile(profile, cancellationToken));
+    }
+    
+    
+    [AllowAnonymous]
+    [HttpGet("TestAi")]
+    public async Task<IActionResult> TestAi()
+    {
+        var uri = _configuration.GetConnectionString("ollama");
+        var ollama = new OllamaApiClient(uri);
+        ollama.SelectedModel = _configuration["Aspire:OllamaSharp:ollama:Models:0"] ?? throw new InvalidOperationException();
+        string result = string.Empty; 
+        await foreach (var stream in ollama.GenerateAsync("Generate me description for vacancy of c# developer with 1 year experience. Skill: ef core, c# 6, azure, postgres, react, typescript. Come up with a catchy description."))
+            result += stream.Response;
+        
+        return Ok(result);
     }
 }

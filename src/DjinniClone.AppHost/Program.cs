@@ -31,6 +31,11 @@ var rabbitMq = builder.AddRabbitMQ("RabbitMq")
 
 var redis = builder.AddRedis("Redis");
 
+// var ollama = builder.AddOllama(name: "ollama", port: null)
+//     .AddModel("phi3.5")
+//     .WithOpenWebUI()
+//     .WithDataVolume()
+//     .PublishAsContainer();
 
 // var apiGateway = builder.AddProject<Projects.ApiGateway>("apigateway")
 //     .WithExternalHttpEndpoints();
@@ -48,6 +53,7 @@ var identityService = builder.AddProject<IdentityService>("identityservice")
 var profileService = builder.AddProject<ProfilesService>("profilesservice")
     .WithReference(profilePostgres)
     .WithReference(redis)
+    // .WithReference(ollama)
     .WithReference(rabbitMq);
 
 var vacanciesService = builder.AddProject<VacanciesService>("vacanciesservice")
@@ -57,7 +63,6 @@ var vacanciesService = builder.AddProject<VacanciesService>("vacanciesservice")
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 var ingressPort = int.TryParse(builder.Configuration["Ingress:Port"], out var port) ? port : (int?)null;
-
 
 
 builder.AddYarp("ingress")

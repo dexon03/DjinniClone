@@ -15,6 +15,7 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.1" />
     <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.2.1" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="8.2.1" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" Version="8.3.0" />
   </ItemGroup>
 
   <ItemGroup>
