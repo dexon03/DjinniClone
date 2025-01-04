@@ -18,16 +18,17 @@ public class IdentityDbContext : DbContext
         var passwordSalt = PasswordUtility.CreatePasswordSalt();
         var admin = new User
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("01943117-825a-7c86-b126-2e2839404e47"),
             PhoneNumber = "123456789",
             FirstName = "Admin",
             LastName = "Admin",
             Email = "admin@mail.com",
+            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
             PasswordSalt = passwordSalt,
             PasswordHash = PasswordUtility.GetHashedPassword("admin", passwordSalt),
             RoleId = roles.First(x => x.Name == Core.Enums.Role.Admin.ToString()).Id,
         };
-        modelBuilder.Entity<User>().HasData([admin]);
+        modelBuilder.Entity<User>().HasData(admin);
     }
 
     public DbSet<User> User { get; set; }
@@ -39,17 +40,17 @@ public class IdentityDbContext : DbContext
         {
             new Role()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("01943117-fb31-746c-8c46-3e4656c887ba"),
                 Name = Core.Enums.Role.Admin.ToString(),
             },
             new Role()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("01943118-4440-7b9e-8960-efa609825355"),
                 Name = Core.Enums.Role.Recruiter.ToString(),
             },
             new Role()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.Parse("01943118-53b4-7ca3-84fc-43f969fde248"),
                 Name = Core.Enums.Role.Candidate.ToString(),
             }
         };

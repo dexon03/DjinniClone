@@ -18,9 +18,9 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers(int pageNumber = 1, int pageSize = 10)
     {
-        var users = (await _userManager.GetUsers()).Select(u => new UserDto
+        var users = (await _userManager.GetUsers(pageNumber, pageSize)).Select(u => new UserDto
         {
             Id = u.Id,
             Email = u.Email,

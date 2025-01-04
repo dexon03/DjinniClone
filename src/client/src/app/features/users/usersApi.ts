@@ -1,4 +1,3 @@
-
 import { createApi } from "@reduxjs/toolkit/dist/query/react";
 import { ApiServicesRoutes } from "../../../api/api.services.routes";
 import { axiosBaseQuery } from "../../../api/axios.baseQuery";
@@ -11,10 +10,14 @@ export const usersApi = createApi({
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.identity }),
     tagTypes: ['Users'],
     endpoints: (builder) => ({
-        getUsers: builder.query<UserDto[], void>({
-            query: () => ({
-                url: '/user',
-                method: 'get'
+        getUsers: builder.query<{items: UserDto[], totalCount: number}, {page: number, pageSize: number}>({
+            query: ({page, pageSize}) => ({
+                url: `/users`,
+                method: 'get',
+                params: {
+                    page,
+                    pageSize
+                }
             }),
             providesTags: ['Users']
         }),

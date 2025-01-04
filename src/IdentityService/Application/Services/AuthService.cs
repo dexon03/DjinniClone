@@ -36,7 +36,7 @@ public class AuthService : IAuthService
     public async Task<TokenResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
-        if (!await IsLoginRequestValid(user, request.Password))
+        if (!IsLoginRequestValid(user, request.Password))
         {
             //TODO: replace all exception by ErrorOr
             throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.BadRequest);
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.CreateUser(request, cancellationToken);
+        var user = await _userManager.CreateUser(request);
         var token = GetNewTokenForUser(user);
         await _repository.CreateAsync(user);
         await _repository.SaveChangesAsync(cancellationToken);
@@ -112,13 +112,13 @@ public class AuthService : IAuthService
         };
     }
 
-    private async Task<bool> IsLoginRequestValid(User? user, string password)
+    private bool IsLoginRequestValid(User? user, string password)
     {
         if (user == null)
         {
             return false;
         }
-        return await _userManager.CheckPasswordAsync(user, password);
+        return _userManager.CheckPassword(user, password);
     }
 
     private async Task AddTokenToCache(string userId, string token)
