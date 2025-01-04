@@ -1,6 +1,7 @@
 ﻿using ChatService.Domain.Contracts;
 using ChatService.Domain.Models;
 using Core.Database;
+using Helpers;
 using Moq;
 
 namespace ChatService.UnitTests.ChatServiceTests;
@@ -23,8 +24,10 @@ public class GetChatListTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        repositoryMock.Setup(r => r.GetAll<Message>())
-                      .Returns(new List<Message>().AsQueryable());
+        var messages = new List<Message>().AsQueryable();
+
+        var mockDbSet = EfHelpers.CreateMockDbSet(messages);
+        repositoryMock.Setup(r => r.GetAll<Message>()).Returns(mockDbSet.Object);
 
         // Act
         var result = await chatService.GetChatList(userId, 1, 10, CancellationToken.None);
@@ -53,8 +56,8 @@ public class GetChatListTests
             }
         }.AsQueryable();
 
-        repositoryMock.Setup(r => r.GetAll<Message>())
-                      .Returns(messages);
+        var mockDbSet = EfHelpers.CreateMockDbSet(messages);
+        repositoryMock.Setup(r => r.GetAll<Message>()).Returns(mockDbSet.Object);
 
         // Act
         var result = await chatService.GetChatList(userId, 1, 10, CancellationToken.None);
@@ -96,8 +99,8 @@ public class GetChatListTests
             }
         }.AsQueryable();
 
-        repositoryMock.Setup(r => r.GetAll<Message>())
-                      .Returns(messages);
+        var mockDbSet = EfHelpers.CreateMockDbSet(messages);
+        repositoryMock.Setup(r => r.GetAll<Message>()).Returns(mockDbSet.Object);
 
         // Act
         var result = await chatService.GetChatList(userId, 1, 1, CancellationToken.None);
