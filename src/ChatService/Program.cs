@@ -11,6 +11,7 @@ using Core.Logging;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +21,10 @@ builder.AddServiceDefaults();
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .MinimumLevel.Override("JobService", Serilog.Events.LogEventLevel.Debug)
-    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("JobService", LogEventLevel.Debug)
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .ReadFrom.Configuration(builder.Configuration)
     .WriteTo.Console(theme: AnsiConsoleTheme.Code)
@@ -42,10 +43,10 @@ builder.Services.AddDbContext<ChatDbContext>(options =>
 builder.Services.AddScoped<IMigrationsManager, MigrationsManager>();
 builder.Services.AddScoped<IChatService, ChatService.Application.Services.ChatService>();
 builder.Services.AddScoped<IRepository,Repository>();
-builder.Services.AddScoped<IUserService, UserServices>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddCors(opt =>
 {
-    opt.AddPolicy("front", policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5174").AllowCredentials());
+    opt.AddPolicy("front", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 });
 builder.Services.AddMassTransit(x =>
 {

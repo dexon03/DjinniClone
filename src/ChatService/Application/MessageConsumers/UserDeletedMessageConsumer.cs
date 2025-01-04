@@ -5,19 +5,13 @@ using MassTransit;
 
 namespace ChatService.Application.MessageConsumers;
 
-public class UserDeletedMessageConsumer : IConsumer<UserDeletedEvent>
+public class UserDeletedMessageConsumer(IRepository repository) : IConsumer<UserDeletedEvent>
 {
-    private readonly IRepository _repository;
-
-    public UserDeletedMessageConsumer(IRepository repository)
-    {
-        _repository = repository;
-    }
     public async Task Consume(ConsumeContext<UserDeletedEvent> context)
     {
         var message = context.Message;
-        await _repository.DeleteRange<Message>(m => m.ReceiverId == message.UserId || m.SenderId == message.UserId);
-        await _repository.DeleteRange<User>(u => u.Id == message.UserId);
-        await _repository.SaveChangesAsync();
+        await repository.DeleteRange<Message>(m => m.ReceiverId == message.UserId || m.SenderId == message.UserId);
+        await repository.DeleteRange<User>(u => u.Id == message.UserId);
+        await repository.SaveChangesAsync();
     }
 }

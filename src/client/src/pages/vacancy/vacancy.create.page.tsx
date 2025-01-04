@@ -38,11 +38,10 @@ export function VacancyCreatePage() {
         if (!locations) {
             getVacancyLocations();
         }
-
         if (!categories) {
             getVacancyCategories();
         }
-    }, [skills, locations, categories])
+    }, [skills, locations, categories, getVacancySkills, getVacancyLocations, getVacancyCategories])
 
     if (token?.role == 'Candidate') {
         return <p>Access denied</p>
@@ -52,7 +51,7 @@ export function VacancyCreatePage() {
         return <p>Error</p>
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (recruiterProfile.company == null) {
             showWarningToast('You must be registered in company')
@@ -68,8 +67,8 @@ export function VacancyCreatePage() {
             companyId: recruiterProfile?.company?.id,
             recruiterId: recruiterProfile.id,
             categoryId: categories && categories.find(category => category.id === selectedCategory)?.id,
-            locations: locations.filter(location => selectedLocations.includes(location.id)),
-            skills: skills.filter(skill => selectedSkills.includes(skill.id)),
+            locations: locations && locations.filter(location => selectedLocations.includes(location.id)),
+            skills: skills && skills.filter(skill => selectedSkills.includes(skill.id)),
         } as VacancyCreate)
         if (result.error == null) {
             navigate('/vacancy')
@@ -92,7 +91,7 @@ export function VacancyCreatePage() {
     }
 
     return (
-        token.role == 'Candidate'
+        token?.role == 'Candidate'
             ? <p>Access denied</p>
             : <Container component="main" maxWidth="sm">
                 <form onSubmit={handleSubmit}>

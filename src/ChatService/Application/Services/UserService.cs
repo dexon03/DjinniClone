@@ -5,11 +5,11 @@ using Core.Database;
 
 namespace ChatService.Application.Services;
 
-public class UserServices : IUserService
+public class UserService : IUserService
 {
     private readonly IRepository _repository;
 
-    public UserServices(IRepository repository)
+    public UserService(IRepository repository)
     {
         _repository = repository;
     }

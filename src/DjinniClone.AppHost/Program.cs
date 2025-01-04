@@ -43,23 +43,35 @@ var redis = builder.AddRedis("Redis");
 var chatService = builder.AddProject<ChatService>("chatservice")
     .WithReference(chatPostgres)
     .WithReference(redis)
-    .WithReference(rabbitMq);
+    .WithReference(rabbitMq)
+    .WaitFor(chatPostgres)
+    .WaitFor(redis)
+    .WaitFor(rabbitMq);
 
 var identityService = builder.AddProject<IdentityService>("identityservice")
     .WithReference(identityPostgres)
     .WithReference(redis)
-    .WithReference(rabbitMq);
+    .WithReference(rabbitMq)
+    .WaitFor(identityPostgres)
+    .WaitFor(redis)
+    .WaitFor(rabbitMq);
 
 var profileService = builder.AddProject<ProfilesService>("profilesservice")
     .WithReference(profilePostgres)
     .WithReference(redis)
     // .WithReference(ollama)
-    .WithReference(rabbitMq);
+    .WithReference(rabbitMq)
+    .WaitFor(profilePostgres)
+    .WaitFor(redis)
+    .WaitFor(rabbitMq);
 
 var vacanciesService = builder.AddProject<VacanciesService>("vacanciesservice")
     .WithReference(vacanciesPostgres)
     .WithReference(redis)
-    .WithReference(rabbitMq);
+    .WithReference(rabbitMq)
+    .WaitFor(vacanciesPostgres)
+    .WaitFor(redis)
+    .WaitFor(rabbitMq);
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";
 var ingressPort = int.TryParse(builder.Configuration["Ingress:Port"], out var port) ? port : (int?)null;

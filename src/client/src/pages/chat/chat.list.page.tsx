@@ -1,16 +1,26 @@
-import { List, ListItem, ListItemIcon, Grid, Card, CardContent, Typography } from "@mui/material";
+import { List, ListItem, ListItemIcon, Grid, Card, CardContent, Typography, Pagination } from "@mui/material";
 import { useGetChatListQuery } from "../../app/features/chat/chat.api";
 import useToken from "../../hooks/useToken";
 import { ChatDto } from "../../models/chat/chat.dto";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function ChatList() {
-
+    const [page, setPage] = useState(1);
+    const pageSize = 10; // or any number you prefer
     const { token } = useToken();
-    const { data: chatList, isLoading } = useGetChatListQuery(token?.userId);
+    const { data, isLoading } = useGetChatListQuery({
+        userId: token?.userId ?? 'skip',
+        page,
+        pageSize
+    });
     const navigate = useNavigate();
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -24,7 +34,7 @@ export default function ChatList() {
         <div>
             <h1>ChatList</h1>
             <List>
-                {chatList.map((chat: ChatDto) => (
+                {data?.items?.map((chat: ChatDto) => (
                     <ListItem key={chat.id} onClick={() => onChatClick(chat.id)}>
                         <Card sx={{ width: '100%' }}>
                             <CardContent>
@@ -47,6 +57,12 @@ export default function ChatList() {
                     </ListItem>
                 ))}
             </List>
-        </div >
+            <Pagination 
+                count={Math.ceil((data?.totalCount ?? 0) / pageSize)} 
+                page={page}
+                onChange={handlePageChange}
+                sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
+            />
+        </div>
     );
 }

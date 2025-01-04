@@ -15,10 +15,11 @@ public class ChatController : ControllerBase
         _chatService = chatService;
     }
     
-    [HttpGet("list/{userId}")]
-    public async Task<IActionResult> GetChatList(Guid userId, CancellationToken cancellationToken)
+    [HttpGet("list")]
+    public async Task<IActionResult> GetChatList([FromQuery] Guid userId, CancellationToken cancellationToken,
+        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 25)
     {
-        return Ok(await _chatService.GetChatList(userId,cancellationToken));
+        return Ok(await _chatService.GetChatList(userId, pageNumber, pageSize, cancellationToken));
     }
     
     [HttpGet("messages/{chatId}")]

@@ -2,7 +2,6 @@ using Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OllamaSharp;
-using OllamaSharp.Models;
 using ProfilesService.Domain.Contracts;
 using ProfilesService.Domain.DTO;
 

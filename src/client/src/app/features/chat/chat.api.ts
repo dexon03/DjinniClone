@@ -12,10 +12,15 @@ export const chatApi = createApi({
     baseQuery: axiosBaseQuery({ baseUrl: environment.apiUrl + ApiServicesRoutes.chat }),
     tagTypes: ['ChatList', 'ChatMessages'],
     endpoints: (builder) => ({
-        getChatList: builder.query<ChatDto[], string>({
-            query: (userId: string) => ({
-                url: `/chat/list/` + userId,
-                method: 'get'
+        getChatList: builder.query<{items: ChatDto[], totalCount: number}, {userId: string, page: number, pageSize: number}>({
+            query: ({userId, page, pageSize}) => ({
+                url: `/chat/list`,
+                method: 'get',
+                params: {
+                    userId,
+                    page,
+                    pageSize
+                }
             }),
             providesTags: ['ChatList']
         }),
@@ -27,7 +32,7 @@ export const chatApi = createApi({
             providesTags: ['ChatMessages']
         }),
         createChat: builder.mutation<void, ChatCreateDto>({
-            query: (chat: ChatDto) => ({
+            query: (chat: ChatCreateDto) => ({
                 url: `/chat/create`,
                 method: 'post',
                 data: chat

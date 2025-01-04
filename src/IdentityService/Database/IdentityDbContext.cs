@@ -1,5 +1,4 @@
 ﻿using IdentityService.Application.Utilities;
-using IdentityService.Domain.Constants;
 using IdentityService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 

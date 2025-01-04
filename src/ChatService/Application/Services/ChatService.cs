@@ -6,22 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatService.Application.Services;
 
-public class ChatService : IChatService
+public class ChatService(IRepository repository, IUserService userService) : IChatService
 {
-    private readonly IRepository _repository;
-    private readonly IUserService _userService;
-
-    public ChatService(IRepository repository, IUserService userService)
+    public async Task<List<ChatDto>> GetChatList(Guid userId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
-        _repository = repository;
-        _userService = userService;
-    }
-    public async Task<List<ChatDto>> GetChatList(Guid userId, CancellationToken cancellationToken = default)
-    {
-        var chats = await _repository.GetAll<Message>()
+        var chats = await repository.GetAll<Message>()
             .Include(m => m.Chat)
             .AsSplitQuery()
             .Where(m => m.ReceiverId == userId || m.SenderId == userId)
+            .OrderByDescending(x => x.TimeStamp)
             .GroupBy(m => m.Chat)
             .Select(g => new ChatDto
             {
@@ -31,13 +24,15 @@ public class ChatService : IChatService
                 LastMessage = g.OrderByDescending(m => m.TimeStamp).First().Content,
                 IsLastMessageRead = g.OrderByDescending(m => m.TimeStamp).First().IsRead
             })
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
         return chats;
     }
 
     public async Task<List<MessageDto>> GetChatMessages(Guid chatId, CancellationToken cancellationToken = default)
     {
-        var messages = await _repository.GetAll<Message>()
+        var messages = await repository.GetAll<Message>()
             .Include(m => m.Sender)
             .Include(m => m.Receiver)
             .AsSplitQuery()
@@ -59,7 +54,7 @@ public class ChatService : IChatService
 
     public async Task CreateChat(CreateChatDto chatDto, CancellationToken cancellationToken = default)
     {
-        var existentChat = await _repository
+        var existentChat = await repository
             .FirstOrDefaultAsync<Message>(m => (m.ReceiverId == chatDto.ReceiverId && m.SenderId == chatDto.SenderId) 
                                     || (m.ReceiverId == chatDto.SenderId && m.SenderId == chatDto.ReceiverId));
         if (existentChat is not null)
@@ -74,8 +69,8 @@ public class ChatService : IChatService
                 ReceiverId = chatDto.ReceiverId,
                 IsRead = false
             };
-            await _repository.CreateAsync(newMessage);
-            await _repository.SaveChangesAsync(cancellationToken);
+            await repository.CreateAsync(newMessage);
+            await repository.SaveChangesAsync(cancellationToken);
         }
         else
         {
@@ -85,7 +80,7 @@ public class ChatService : IChatService
 
     private async Task CreateNewChatAndAddMessage(CreateChatDto chatDto, CancellationToken cancellationToken = default)
     {
-        await _userService.CreateUsersIfNotExists(chatDto, cancellationToken);
+        await userService.CreateUsersIfNotExists(chatDto, cancellationToken);
         var chat = new Chat
         {
             Id = Guid.NewGuid(),
@@ -103,8 +98,8 @@ public class ChatService : IChatService
             IsRead = false
         };
             
-        await _repository.CreateAsync(chat);
-        await _repository.CreateAsync(message);
-        await _repository.SaveChangesAsync(cancellationToken);
+        await repository.CreateAsync(chat);
+        await repository.CreateAsync(message);
+        await repository.SaveChangesAsync(cancellationToken);
     }
 }

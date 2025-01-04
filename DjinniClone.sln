@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacanciesService", "src\Vac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProfilesService", "src\ProfilesService\ProfilesService.csproj", "{ED6BB312-F378-4B45-9217-C9B7B69371C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "src\UnitTests\UnitTests.csproj", "{483DEFE3-1B3B-418D-BF0A-3CB0292CC707}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspire", "aspire", "{8DE2C4D0-A5F9-4A65-B254-75E5080619EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DjinniClone.AppHost", "src\DjinniClone.AppHost\DjinniClone.AppHost.csproj", "{8DEE7DC5-C927-45C0-BBD7-860B4830151B}"
@@ -29,6 +27,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{00B3E02D-A877-49B7-8249-C3A51752F3BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatService.UnitTests", "tests\UnitTests\ChatService.UnitTests\ChatService.UnitTests.csproj", "{7D0258AA-7751-4932-91D5-CEB8698A8B50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,10 +62,6 @@ Global
 		{ED6BB312-F378-4B45-9217-C9B7B69371C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED6BB312-F378-4B45-9217-C9B7B69371C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED6BB312-F378-4B45-9217-C9B7B69371C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{483DEFE3-1B3B-418D-BF0A-3CB0292CC707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{483DEFE3-1B3B-418D-BF0A-3CB0292CC707}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{483DEFE3-1B3B-418D-BF0A-3CB0292CC707}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{483DEFE3-1B3B-418D-BF0A-3CB0292CC707}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8DEE7DC5-C927-45C0-BBD7-860B4830151B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8DEE7DC5-C927-45C0-BBD7-860B4830151B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DEE7DC5-C927-45C0-BBD7-860B4830151B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,6 +70,10 @@ Global
 		{7E174381-B95B-4DCB-AF72-1D14578E9EA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E174381-B95B-4DCB-AF72-1D14578E9EA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E174381-B95B-4DCB-AF72-1D14578E9EA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D0258AA-7751-4932-91D5-CEB8698A8B50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D0258AA-7751-4932-91D5-CEB8698A8B50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D0258AA-7751-4932-91D5-CEB8698A8B50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D0258AA-7751-4932-91D5-CEB8698A8B50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,9 +85,9 @@ Global
 		{C1C77E58-D31C-4B95-BBA3-223BA7F49C5B} = {8119CEA4-C9CA-45B3-9D47-1CA1C9145A4E}
 		{DD0C2A29-3C39-49F9-9D1A-D110310989D9} = {8119CEA4-C9CA-45B3-9D47-1CA1C9145A4E}
 		{ED6BB312-F378-4B45-9217-C9B7B69371C6} = {8119CEA4-C9CA-45B3-9D47-1CA1C9145A4E}
-		{483DEFE3-1B3B-418D-BF0A-3CB0292CC707} = {8119CEA4-C9CA-45B3-9D47-1CA1C9145A4E}
 		{8DEE7DC5-C927-45C0-BBD7-860B4830151B} = {8DE2C4D0-A5F9-4A65-B254-75E5080619EE}
 		{7E174381-B95B-4DCB-AF72-1D14578E9EA7} = {8DE2C4D0-A5F9-4A65-B254-75E5080619EE}
+		{7D0258AA-7751-4932-91D5-CEB8698A8B50} = {00B3E02D-A877-49B7-8249-C3A51752F3BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8EC82093-F37C-4772-8B70-C18D7B940195}

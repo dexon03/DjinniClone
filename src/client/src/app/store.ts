@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit'
 import { vacancyApi } from './features/vacancy/vacancy.api'
 import { setupListeners } from '@reduxjs/toolkit/dist/query/react'
 import { profileApi } from './features/profile/profile.api'
@@ -30,7 +30,10 @@ const appReducer = combineReducers({
   [candidateApi.reducerPath]: candidateApi.reducer,
 });
 
-const rootReducer = (state, action) => {
+// Define state type before using it
+type StateType = ReturnType<typeof appReducer>;
+
+const rootReducer = (state: StateType | undefined, action: AnyAction) => {
   if (action.type === 'SIGNOUT_REQUEST') {
     storage.removeItem('persist:root')
     return appReducer(undefined, action);
