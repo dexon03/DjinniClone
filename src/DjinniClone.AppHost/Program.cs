@@ -59,10 +59,11 @@ var identityService = builder.AddProject<IdentityService>("identityservice")
 var profileService = builder.AddProject<ProfilesService>("profilesservice")
     .WithReference(profilePostgres)
     .WithReference(redis)
-    // .WithReference(ollama)
+    .WithReference(ollama)
     .WithReference(rabbitMq)
     .WaitFor(profilePostgres)
     .WaitFor(redis)
+    .WaitFor(ollama)
     .WaitFor(rabbitMq);
 
 var vacanciesService = builder.AddProject<VacanciesService>("vacanciesservice")
@@ -83,6 +84,7 @@ builder.AddYarp("ingress")
     .WithReference(vacanciesService)
     .WithReference(profileService)
     .WithReference(identityService)
+    .WithReference(ollama)
     .LoadFromConfiguration("ReverseProxy");
 
 

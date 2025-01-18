@@ -65,6 +65,7 @@ public static class DependencyInjection
                 configurator.ConfigureEndpoints(context);
             });
         });
+        
         return services;
     }
     

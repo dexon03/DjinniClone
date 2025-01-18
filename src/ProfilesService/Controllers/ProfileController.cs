@@ -12,11 +12,13 @@ public class ProfileController : BaseController
 {
     private readonly IProfileService _profileService;
     private readonly IConfiguration _configuration;
+    private readonly IOllamaApiClient _ollamaApiClient;
 
-    public ProfileController(IProfileService profileService, IConfiguration configuration)
+    public ProfileController(IProfileService profileService, IConfiguration configuration, IOllamaApiClient ollamaApiClient)
     {
         _profileService = profileService;
         _configuration = configuration;
+        _ollamaApiClient = ollamaApiClient;
     }
 
     [HttpGet("{role}/{userId}")]
@@ -87,11 +89,9 @@ public class ProfileController : BaseController
     [HttpPost("TestAi")]
     public async Task<IActionResult> TestAi([FromBody]TestAiRequest request)
     {
-        var uri = _configuration.GetConnectionString("ollama");
-        var ollama = new OllamaApiClient(uri);
-        ollama.SelectedModel = _configuration["Aspire:OllamaSharp:ollama:Models:0"] ?? throw new InvalidOperationException();
+        // _ollamaApiClient.SelectedModel= _configuration["Aspire:OllamaSharp:ollama:Models:0"] ?? throw new InvalidOperationException();
         string result = string.Empty; 
-        await foreach (var stream in ollama.GenerateAsync(request.Prompt))
+        await foreach (var stream in _ollamaApiClient.GenerateAsync(request.Prompt))
             result += stream.Response;
         
         return Ok(result);
