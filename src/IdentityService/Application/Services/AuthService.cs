@@ -33,22 +33,21 @@ public class AuthService : IAuthService
         _cache = cache;
         _publishEndpoint = publishEndpoint;
     }
-    public async Task<TokenResponse> LoginAsync(LoginRequest request,CancellationToken cancellationToken = default)
+    public async Task<TokenResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (!IsLoginRequestValid(user, request.Password))
         {
-            //TODO: replace all exception by ErrorOr
             throw new ExceptionWithStatusCode("Invalid email or password",HttpStatusCode.BadRequest);
         }
-        var token = GetNewTokenForUser(user);
-        _repository.Update(user);
+        
+        var token = GetNewTokenForUser(user!);
+        _repository.Update(user!);
         await _repository.SaveChangesAsync(cancellationToken);
-        await AddTokenToCache(user.Id.ToString(), token.AccessToken);
+        await AddTokenToCache(user!.Id.ToString(), token.AccessToken);
         return token;
     }
-
-
+    
     public async Task<TokenResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.CreateUser(request);
@@ -114,7 +113,7 @@ public class AuthService : IAuthService
 
     private bool IsLoginRequestValid(User? user, string password)
     {
-        if (user == null)
+        if (user is null)
         {
             return false;
         }

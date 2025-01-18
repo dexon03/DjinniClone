@@ -55,12 +55,13 @@ public class CompanyService : ICompanyService
 
     public async Task<Company> UpdateCompany(CompanyUpdateDto company, CancellationToken cancellationToken = default)
     {
-        var companyEntity = _mapper.Map<Company>(company);
-        var isExist = await _repository.AnyAsync<Company>(x => x.Id == companyEntity.Id);
+        var isExist = await _repository.AnyAsync<Company>(x => x.Id == company.Id);
         if (!isExist)
         {
             throw new Exception("Company that you trying to update, not exist");
         }
+        
+        var companyEntity = _mapper.Map<Company>(company);
         var result = _repository.Update(companyEntity);
         await _repository.SaveChangesAsync(cancellationToken);
         
@@ -77,7 +78,7 @@ public class CompanyService : ICompanyService
     public async Task DeleteCompany(Guid id, CancellationToken cancellationToken = default)
     {
         var company = await _repository.GetByIdAsync<Company>(id);
-        if (company == null)
+        if (company is null)
         {
             throw new Exception("Company not found");
         }

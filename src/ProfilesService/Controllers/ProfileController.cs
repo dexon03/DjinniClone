@@ -84,16 +84,18 @@ public class ProfileController : BaseController
     
     
     [AllowAnonymous]
-    [HttpGet("TestAi")]
-    public async Task<IActionResult> TestAi()
+    [HttpPost("TestAi")]
+    public async Task<IActionResult> TestAi([FromBody]TestAiRequest request)
     {
         var uri = _configuration.GetConnectionString("ollama");
         var ollama = new OllamaApiClient(uri);
         ollama.SelectedModel = _configuration["Aspire:OllamaSharp:ollama:Models:0"] ?? throw new InvalidOperationException();
         string result = string.Empty; 
-        await foreach (var stream in ollama.GenerateAsync("Generate me description for vacancy of c# developer with 1 year experience. Skill: ef core, c# 6, azure, postgres, react, typescript. Come up with a catchy description."))
+        await foreach (var stream in ollama.GenerateAsync(request.Prompt))
             result += stream.Response;
         
         return Ok(result);
     }
 }
+
+public record TestAiRequest(string Prompt);
