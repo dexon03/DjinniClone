@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OllamaSharp;
 using VacanciesService.Domain.Contacts;
 using VacanciesService.Domain.DTO;
 
@@ -8,10 +9,12 @@ namespace VacanciesService.Controllers;
 public class VacancyController : BaseController
 {
     private readonly IVacanciesService _vacanciesService;
+    private readonly IOllamaApiClient _ollamaApiClient;
 
-    public VacancyController(IVacanciesService vacanciesService)
+    public VacancyController(IVacanciesService vacanciesService, IOllamaApiClient ollamaApiClient)
     {
         _vacanciesService = vacanciesService;
+        _ollamaApiClient = ollamaApiClient;
     }
     
     [HttpGet("{id}")]
@@ -63,9 +66,22 @@ public class VacancyController : BaseController
     }
     
     [Authorize(Roles = "Recruiter")]
-    [HttpGet("getDescription")]
-    public IActionResult GetGeneratedVacancyDescriprion()
+    [HttpPost("getDescription")]
+    public async Task<IActionResult> GetGeneratedVacancyDescription(GenerateVacancyDescription request)
     { 
-        return Ok("*generated*");
+        string result = string.Empty;
+        var prompt = "Generate description for vacancy in english. Max word count is 1000. " +
+                     "!!!Important " +
+                     "Return only vacancy description" +
+                     "!!! The vacancy is for a " +
+                     request.Title + " at " + request.CompanyDescription + ". The job description is " +
+                     request.VacancyShortDescription;
+        await foreach (var stream in _ollamaApiClient.GenerateAsync(prompt))
+            result += stream.Response;
+        
+        return Ok(new
+        {
+            Description = result
+        });
     }
 }

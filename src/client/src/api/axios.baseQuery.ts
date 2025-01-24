@@ -18,6 +18,7 @@ export const axiosBaseQuery = ({ baseUrl }: { baseUrl: string } = { baseUrl: '' 
             const result = await api({
                 url: baseUrl + url,
                 method,
+                timeout: 10000000,
                 data,
                 params,
                 headers,

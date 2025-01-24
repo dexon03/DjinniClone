@@ -34,6 +34,8 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy("front", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 });
 
+builder.AddOllamaApiClient("ollama-phi3-5");
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();

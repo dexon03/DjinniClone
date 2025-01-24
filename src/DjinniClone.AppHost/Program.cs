@@ -69,9 +69,11 @@ var profileService = builder.AddProject<ProfilesService>("profilesservice")
 var vacanciesService = builder.AddProject<VacanciesService>("vacanciesservice")
     .WithReference(vacanciesPostgres)
     .WithReference(redis)
+    .WithReference(ollama)
     .WithReference(rabbitMq)
     .WaitFor(vacanciesPostgres)
     .WaitFor(redis)
+    .WaitFor(ollama)
     .WaitFor(rabbitMq);
 
 var isHttps = builder.Configuration["DOTNET_LAUNCH_PROFILE"] == "https";

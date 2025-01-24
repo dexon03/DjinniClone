@@ -85,9 +85,14 @@ export function VacancyCreatePage() {
             showWarningToast('You must be registered in company')
             return;
         }
-        const result = await generateDescription();
-        setDescription(result.data)
-
+        const result = await generateDescription({
+            title,
+            vacancyShortDescription: description,
+            companyDescription: recruiterProfile.company.description
+        });
+        if (result.data) {
+            setDescription(result.data)
+        }
     }
 
     return (
@@ -213,7 +218,7 @@ export function VacancyCreatePage() {
                         fullWidth
                         variant="contained"
                         style={{ backgroundColor: 'green', color: 'white', marginTop: '10px' }}
-                        onClick={handleGenerateWithGPT} // Add a function to handle the click event
+                        onClick={handleGenerateWithGPT}
                     >
                         Generate vacancy with GPT
                     </Button>

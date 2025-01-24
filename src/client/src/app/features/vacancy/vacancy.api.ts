@@ -12,6 +12,7 @@ import { VacancyUpdateModel } from '../../../models/vacancy/vacancy.update.dto';
 import { StatisticNode } from '../../../models/statistic/statistic.node';
 import { GenerateVacancyDescription } from '../../../models/vacancy/generated.desription';
 import { VacancyFilter } from '../../../models/common/vacancy.filters';
+import { GenerateVacancyDescriptionRequest } from '../../../models/vacancy/generateVacancyDescription.model';
 
 export const vacancyApi = createApi({
     reducerPath: 'vacancyApi',
@@ -95,11 +96,20 @@ export const vacancyApi = createApi({
             }),
             providesTags: ['Statistic']
         }),
-        generateVacancyDesciprtion: builder.query<GenerateVacancyDescription, void>({
-            query: () => ({
+        generateVacancyDesciprtion: builder.query<GenerateVacancyDescription, GenerateVacancyDescriptionRequest>({
+            query: (request: GenerateVacancyDescriptionRequest) => ({
                 url: '/vacancy/getDescription',
-                method: 'get',
+                method: 'post',
+                data: request,
+                timeout: 120000,
             }),
+            extraOptions: {
+                maxRetries: 3,
+                retryCondition: (err: any) => {
+                    return err.status === 504 || err.status === 408;
+                },
+                backoff: (attempt: number) => Math.min(1000 * (2 ** attempt), 30000),
+            },
         }),
     }),
 });
