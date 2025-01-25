@@ -18,19 +18,16 @@ public class AuthService : IAuthService
     private readonly UserManager _userManager;
     private readonly IJWTService _jwtService;
     private readonly IRepository _repository;
-    private readonly IDistributedCache _cache;
     private readonly IPublishEndpoint _publishEndpoint;
 
     public AuthService(UserManager userManager, 
         IJWTService jwtService, 
-        IRepository repository, 
-        IDistributedCache cache,
+        IRepository repository,
         IPublishEndpoint publishEndpoint)
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _repository = repository;
-        _cache = cache;
         _publishEndpoint = publishEndpoint;
     }
     public async Task<TokenResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -44,7 +41,6 @@ public class AuthService : IAuthService
         var token = GetNewTokenForUser(user!);
         _repository.Update(user!);
         await _repository.SaveChangesAsync(cancellationToken);
-        await AddTokenToCache(user!.Id.ToString(), token.AccessToken);
         return token;
     }
     
@@ -54,7 +50,6 @@ public class AuthService : IAuthService
         var token = GetNewTokenForUser(user);
         await _repository.CreateAsync(user);
         await _repository.SaveChangesAsync(cancellationToken);
-        await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         await _publishEndpoint.Publish<UserCreatedEvent>(new 
         {
             UserId = user.Id,
@@ -92,7 +87,6 @@ public class AuthService : IAuthService
         var token = GetNewTokenForUser(user);
         _repository.Update(user);
         await _repository.SaveChangesAsync(cancellationToken);
-        await AddTokenToCache(user.Id.ToString(), token.AccessToken);
         
         return token;
     }
@@ -101,7 +95,6 @@ public class AuthService : IAuthService
     {
         var accessToken = _jwtService.GenerateToken(user);
         var newRefreshToken = _jwtService.GenerateRefreshToken(user);
-        user.RefreshToken = newRefreshToken;
         return new TokenResponse
         {
             AccessToken = accessToken,
@@ -118,14 +111,5 @@ public class AuthService : IAuthService
             return false;
         }
         return _userManager.CheckPassword(user, password);
-    }
-
-    private async Task AddTokenToCache(string userId, string token)
-    {
-        var tokenBytes = Encoding.UTF8.GetBytes(token);
-        await _cache.SetAsync(userId, tokenBytes, new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(JwtConstants.TokenExpirationTimeInHours)
-        });
     }
 }

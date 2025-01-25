@@ -6,7 +6,6 @@ using IdentityService.Application.Utilities;
 using IdentityService.Domain.Dto;
 using IdentityService.Domain.Models;
 using MassTransit;
-using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Application.Services;
@@ -15,74 +14,36 @@ public class UserManager(IRepository repository, IPublishEndpoint publishEndpoin
 {
     public Task<List<User>> GetUsers(int pageNumber, int pageSize)
     {
-        
         return repository.GetAll<User>()
-            .Include(x => x.Role).Select(u => new User
-            {
-                Id = u.Id,
-                Email = u.Email,
-                PasswordHash = u.PasswordHash,
-                PasswordSalt = u.PasswordSalt,
-                Role = u.Role,
-                RoleId = u.RoleId,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                PhoneNumber = u.PhoneNumber,
-                RefreshToken = u.RefreshToken,
-            })
+            .Include(x => x.Role)
             .OrderBy(x => x.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
     }
-    
+
     public async Task<User?> FindByEmailAsync(string email)
     {
-        var user =  await repository.GetAll<User>()
+        var user = await repository.GetAll<User>()
             .Include(x => x.Role)
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email.Equals(email))
-            .Select(u => new User
-            {
-                Id = u.Id,
-                Email = u.Email,
-                PasswordHash = u.PasswordHash,
-                PasswordSalt = u.PasswordSalt,
-                Role = u.Role,
-                RoleId = u.RoleId,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                PhoneNumber = u.PhoneNumber,
-                RefreshToken = u.RefreshToken,
-            });
+            .FirstOrDefaultAsync(x => x.Email.Equals(email));
         if (user is null)
         {
             throw new Exception("Wrong email");
         }
 
         return user;
-    } 
-    
+    }
+
     public async Task<User?> FindByIdAsync(Guid id)
     {
-        var user = await 
+        var user = await
             repository.GetAll<User>()
                 .Where(u => u.Id == id)
                 .AsSplitQuery()
-            .Include(u => u.Role)
-            .Select(u => new User
-            {
-                Id = u.Id,
-                Email = u.Email,
-                PasswordHash = u.PasswordHash,
-                PasswordSalt = u.PasswordSalt,
-                Role = u.Role,
-                RoleId = u.RoleId,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                PhoneNumber = u.PhoneNumber,
-                RefreshToken = u.RefreshToken,
-            }).FirstOrDefaultAsync();
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync();
         if (user is null)
         {
             throw new ExceptionWithStatusCode($"User with id {id} not found", HttpStatusCode.BadRequest);
@@ -115,11 +76,11 @@ public class UserManager(IRepository repository, IPublishEndpoint publishEndpoin
         };
         return user;
     }
-    
+
     public async Task<User> UpdateUser(UpdateUserRequest request)
     {
         var user = await FindByIdAsync(request.Id);
-        
+
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Email = request.Email;
@@ -144,7 +105,7 @@ public class UserManager(IRepository repository, IPublishEndpoint publishEndpoin
         var hashedPassword = PasswordUtility.GetHashedPassword(password, user.PasswordSalt);
         return hashedPassword == user.PasswordHash;
     }
-    
+
     public async Task DeleteUser(Guid id)
     {
         var user = await FindByIdAsync(id);

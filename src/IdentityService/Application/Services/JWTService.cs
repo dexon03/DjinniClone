@@ -65,7 +65,7 @@ public class JWTService(IConfiguration configuration, IRepository repository) : 
         var isTokenValid = TryValidateToken(token, out var principal);
         var userId = principal?.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
 
-        if (!isTokenValid || !IsRefreshTokenExistsForUser(userId, token))
+        if (!isTokenValid)
         {
             return null;
         }
@@ -99,11 +99,5 @@ public class JWTService(IConfiguration configuration, IRepository repository) : 
             principal = null;
             return false;
         }
-    }
-
-    private bool IsRefreshTokenExistsForUser(string? userId, string token)
-    {
-        Guid.TryParse(userId, out Guid userIdGuid);
-        return repository.Any<User>(x => x.Id == userIdGuid && x.RefreshToken == token);
     }
 }

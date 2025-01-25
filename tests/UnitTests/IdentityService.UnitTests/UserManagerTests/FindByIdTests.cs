@@ -35,7 +35,6 @@ public class FindByIdTests
             FirstName = "Test",
             LastName = "User",
             PhoneNumber = "1234567890",
-            RefreshToken = "token",
             Role = role,
             RoleId = role.Id
         };

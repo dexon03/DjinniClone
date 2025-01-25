@@ -15,7 +15,7 @@ public class IdentityDbContext : DbContext
         var roles = GetRoles();
         modelBuilder.Entity<Role>().HasData(roles);
 
-        var passwordSalt = PasswordUtility.CreatePasswordSalt();
+        var passwordSalt = "a/5Fl1UItotDXvD8sDuaBQ==";
         var admin = new User
         {
             Id = Guid.Parse("01943117-825a-7c86-b126-2e2839404e47"),
